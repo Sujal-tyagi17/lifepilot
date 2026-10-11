@@ -68,11 +68,32 @@ def test_resume_parse_formats(client):
 def test_job_match_endpoint(client):
     r = client.post("/api/opportunities/jobs/match", json={
         "profile": {"education_level": "Undergraduate"}, "resume_text": "Python SQL", "desired_role": "Backend Engineer"})
-    jobs = r.json()
+    body = r.json()
+    jobs = body["jobs"]
     assert r.status_code == 200 and jobs
-    assert jobs[0]["fit_score"] >= jobs[-1]["fit_score"]
+    target = [j for j in jobs if j["group"] == "target"]
+    assert target and jobs[: len(target)] == target  # the role asked for comes first
+    assert target[0]["fit_score"] >= target[-1]["fit_score"]
     assert all(j["salary"] == "Not disclosed" and j["salary_num"] is None for j in jobs)
     assert "fit_breakdown" in jobs[0]
+    assert body["target_family"] == "backend" and body["resume"]["has_resume"]
+
+
+def test_job_plan_endpoint(client):
+    base = {"profile": {"education_level": "Undergraduate"}, "resume_text": "Skills\nPython", "hours_per_week": 4}
+    plan = client.post("/api/opportunities/jobs/plan", json={**base, "job_id": "sample-001"}).json()
+    assert plan["job"]["id"] == "sample-001" and plan["steps"][-1]["id"] == "job-ready"
+    assert plan["fit_after"] > plan["fit_start"]
+    learn = [s["skills"][0] for s in plan["steps"] if s["kind"] == "learn"]
+    ticked = client.post("/api/opportunities/jobs/plan",
+                         json={**base, "job_id": "sample-001", "learned": learn[:2]}).json()
+    assert ticked["fit_now"] > plan["fit_now"]
+    assert [s["done"] for s in ticked["steps"]][:2] == [True, True]
+    # A job from a live source is sent in full; its family is never trusted from the client
+    live = {"title": "Python developer", "description": "Requirements: Python, Django.", "source": "adzuna", "family": "nursing"}
+    assert client.post("/api/opportunities/jobs/plan", json={**base, "job": live}).json()["family"] == "backend"
+    assert client.post("/api/opportunities/jobs/plan", json={**base, "job_id": "nope"}).status_code == 404
+    assert client.post("/api/opportunities/jobs/plan", json={**base, "job_id": "sample-001", "hours_per_week": 500}).status_code == 422
 
 
 def test_list_opportunities_returns_curated(client):
