@@ -1,7 +1,8 @@
 /* Home: your file. One sentence verdict, what to do this week, deadlines, documents. */
 import { esc, fmtINR, daysLeft, fmtDate, matchStatus } from '../util.js';
 import { t, getLang } from '../i18n.js';
-import { icon, stamp, skeleton, emptyState } from '../ui.js';
+import { icon, stamp, skeleton } from '../ui.js';
+import { emptyCard, ring, animateIn } from '../components.js';
 import { state, eligibleMatches, readiness, hasDoc } from '../state.js';
 import { runAgents } from '../run.js';
 import { downloadCalendar, printPlan } from '../print.js';
@@ -22,14 +23,14 @@ function fileFields() {
   const p = state.profile || {};
   const edu = EDUCATION.find(([v]) => v === p.education_level);
   const fields = [
-    ['f.education', 'Education', edu ? (getLang() === 'hi' ? edu[2] : edu[1]) : null],
-    ['f.category', 'Category', p.category],
-    ['f.state', 'State', p.state],
-    ['f.income', 'Family income per year (₹)', p.annual_income != null ? fmtINR(p.annual_income) : null],
+    ['f.education', 'Education', edu ? (getLang() === 'hi' ? edu[2] : edu[1]) : null, 'graduation-cap'],
+    ['f.category', 'Category', p.category, 'users'],
+    ['f.state', 'State', p.state, 'map-pin'],
+    ['f.income', 'Family income per year (₹)', p.annual_income != null ? fmtINR(p.annual_income) : null, 'wallet'],
   ];
-  return `<dl class="file-fields">${fields.map(([k, en, v]) => `
-    <div class="file-field"><dt>${esc(t(k, en).replace(' (₹)', ''))}</dt><dd>${v ? esc(v)
-      : `<a class="blank" href="#/profile">${icon('plus', 'icon-sm')}${esc(t('home.addMissing', 'Add'))}</a>`}</dd></div>`).join('')}</dl>`;
+  return `<div class="profile-chips">${fields.map(([k, en, v, ic]) => v
+    ? `<a class="pchip" href="#/profile" title="${esc(t(k, en).replace(' (₹)', ''))}">${icon(ic, 'icon-sm')}${esc(v)}</a>`
+    : `<a class="pchip blank" href="#/profile">${icon('plus', 'icon-sm')}${esc(t('home.addField', 'Add {field}', { field: t(k, en).replace(' (₹)', '').toLowerCase() }))}</a>`).join('')}</div>`;
 }
 
 /** Up to four next actions, most urgent first. Every item comes from real data. */
@@ -118,11 +119,13 @@ function deadlines() {
 function readinessBlock() {
   const r = readiness();
   if (!r.total) return '';
-  return `<section class="panel panel-pad" aria-labelledby="hRead">
-    <div class="section-head" style="margin:0"><h2 class="h3" id="hRead">${esc(t('home.readiness', 'Documents ready'))}</h2>
-      <a class="link small" href="#/documents">${esc(t('btn.open', 'Open'))}</a></div>
-    <p class="small quiet">${esc(t('home.readyOf', '{have} of {n} documents ready', { have: r.owned, n: r.total }))}</p>
-    <div class="meter" style="margin-top:10px" role="img" aria-label="${r.pct}%"><span class="seg-education" style="width:${r.pct}%"></span></div>
+  return `<section class="card panel-pad" aria-labelledby="hRead">
+    <div class="row" style="gap:18px;align-items:center">
+      ${ring(r.pct, { size: 96, stroke: 9, label: `${r.pct}%` })}
+      <div style="min-width:0"><h2 class="h3" id="hRead">${esc(t('home.readiness', 'Documents ready'))}</h2>
+        <p class="small quiet">${esc(t('home.readyOf', '{have} of {n} documents ready', { have: r.owned, n: r.total }))}</p>
+        <a class="link small" href="#/documents" style="display:inline-block;margin-top:6px">${esc(t('home.manageDocs', 'Manage documents'))}</a></div>
+    </div>
     <div class="doc-strip">${r.docs.slice(0, 6).map((d) => `<span class="doc-chip ${hasDoc(d.document) ? 'have' : ''}">${esc(d.document)}</span>`).join('')}
       ${r.total > 6 ? `<a class="doc-chip" href="#/documents">${esc(t('home.more', '+{n} more', { n: r.total - 6 }))}</a>` : ''}</div>
   </section>`;
@@ -130,23 +133,21 @@ function readinessBlock() {
 
 export const home = {
   title: () => t('nav.home', 'Home'),
+  noHead: true,
   deps: ['run', 'running', 'runError', 'profile', 'jobs', 'vault', 'ownedDocs'],
   render(el) {
-    const name = state.profile?.name || '';
+    const name = (state.profile?.name || '').split(' ')[0];
     if (!state.run) {
       if (state.running) {
-        el.innerHTML = `<section class="file-head">
-          <p class="working quiet"><span class="spinner"></span>${esc(t('run.working', 'Checking your profile against every scheme…'))}</p>
-          <div style="margin-top:24px">${skeleton(5)}</div></section>`;
+        el.innerHTML = `<div class="card hello"><div><p class="working quiet"><span class="spinner"></span>${esc(t('run.working', 'Checking your profile against every scheme…'))}</p>
+          <div style="margin-top:18px">${skeleton(4)}</div></div></div>`;
         return;
       }
       el.innerHTML = state.runError
         ? `<p class="notice notice-bad" role="alert">${icon('triangle-alert')}<span>${esc(state.runError)}</span></p>
            <div class="row" style="margin-top:16px"><button class="btn btn-primary" id="hRun">${icon('refresh-cw')}${esc(t('run.again', 'Check again'))}</button></div>`
-        : emptyState({
-          title: t('ob.finish', 'Find my matches'),
-          action: `<button class="btn btn-primary" id="hRun">${esc(t('ob.finish', 'Find my matches'))}</button>`,
-        });
+        : emptyCard({ title: t('home.noRun', 'Let’s find your matches'), body: t('home.noRunP', 'Run a check against every scheme with your saved profile.'),
+          action: `<button class="btn btn-primary" id="hRun">${icon('sparkles')}${esc(t('ob.finish', 'Find my matches'))}</button>` });
       el.querySelector('#hRun')?.addEventListener('click', () => runAgents().catch(() => {}));
       return;
     }
@@ -156,44 +157,59 @@ export const home = {
     const fresh = stampedRunId !== state.run.id;
     stampedRunId = state.run.id;
     const todo = priorities();
+    const r = readiness();
+    const nextDeadline = eligibleMatches().map((m) => daysLeft(m.deadline)).filter((d) => d !== null && d >= 0).sort((a, b) => a - b)[0];
 
     el.innerHTML = `
-      ${state.running ? `<p class="notice" role="status"><span class="spinner"></span>${esc(t('run.working', 'Checking your profile against every scheme…'))}</p>` : ''}
-      <section class="file-head" aria-labelledby="hVerdict">
-        <p class="quiet">${esc(t('home.fileFor', 'File'))}: <strong style="color:var(--ink)">${esc(name)}</strong></p>
-        <div class="verdict">
-          <h2 class="display" id="hVerdict">${esc(verdictSentence(ins))}</h2>
-          ${ins.eligible_count ? stamp('eligible', fresh ? 'stamp-press' : '') : ''}
+      ${state.running ? `<p class="notice" role="status" style="margin-bottom:14px"><span class="spinner"></span>${esc(t('run.working', 'Checking your profile against every scheme…'))}</p>` : ''}
+      <section class="card hello" aria-labelledby="hVerdict">
+        <div>
+          <p class="quiet">${esc(t('home.hi', 'Hi {name}, here is your file', { name }))}</p>
+          <h1 class="display" id="hVerdict" style="margin-top:8px">${esc(verdictSentence(ins))}</h1>
+          ${ins.one_time_benefit ? `<p class="lede" style="margin-top:10px">${esc(t('home.oneTime', 'Plus one-time support worth up to {amount}.', { amount: fmtINR(ins.one_time_benefit) }))}</p>` : ''}
+          ${partial ? `<p style="margin-top:10px"><a class="link" href="#/schemes?filter=partial">${esc(t('home.close', '{n} more are close. See what is missing.', { n: partial }))}</a></p>` : ''}
+          ${fileFields()}
         </div>
-        ${ins.one_time_benefit ? `<p class="lede" style="margin-top:12px">${esc(t('home.oneTime', 'Plus one-time support worth up to {amount}.', { amount: fmtINR(ins.one_time_benefit) }))}</p>` : ''}
-        ${partial ? `<p class="lede" style="margin-top:8px"><a class="link" href="#/schemes?filter=partial">${esc(t('home.close', '{n} more are close. See what is missing.', { n: partial }))}</a></p>` : ''}
-        ${fileFields()}
+        <div class="verdict-stamp">${ins.eligible_count ? stamp('eligible', fresh ? 'stamp-press' : '') : stamp('partial')}</div>
       </section>
 
+      <div class="stats">
+        <div class="card stat"><span class="stat-accent" style="background:var(--green)"></span><p class="stat-value num" data-count="${ins.eligible_count}">0</p><p class="stat-label">${esc(t('home.statElig', 'Schemes you qualify for'))}</p></div>
+        <div class="card stat"><span class="stat-accent" style="background:var(--saffron)"></span><p class="stat-value num" data-count="${ins.estimated_annual_benefit}" data-money="1">₹0</p><p class="stat-label">${esc(t('home.statYear', 'Worth each year'))}</p></div>
+        <div class="card stat"><span class="stat-accent" style="background:var(--red)"></span><p class="stat-value num">${nextDeadline !== undefined ? `<span data-count="${nextDeadline}">0</span><span class="small quiet"> ${esc(t('home.days', 'days'))}</span>` : '–'}</p><p class="stat-label">${esc(t('home.statNext', 'Until the next deadline'))}</p></div>
+        <div class="card stat"><span class="stat-accent" style="background:var(--indigo)"></span><p class="stat-value num"><span data-count="${r.owned}">0</span><span class="small quiet"> / ${r.total}</span></p><p class="stat-label">${esc(t('home.statDocs', 'Documents ready'))}</p></div>
+      </div>
+
       <div class="home-grid">
-        <section class="panel" aria-labelledby="hTodo">
-          <div class="panel-head"><h2 class="h3" id="hTodo">${esc(t('home.todo', 'Do this week'))}</h2></div>
+        <section class="card" aria-labelledby="hTodo">
+          <div class="panel-head"><h2 class="h3" id="hTodo">${esc(t('home.todo', 'Do this week'))}</h2>
+            <button class="btn btn-quiet btn-sm" id="hRerun" ${state.running ? 'disabled' : ''}>${icon('refresh-cw', 'icon-sm')}${esc(t('run.again', 'Check again'))}</button></div>
           ${todo.length ? `<ol class="todo">${todo.map((i) => `
             <li><div><p class="todo-title">${esc(i.title)}</p><p class="todo-meta">${esc(i.meta)}</p></div>${i.action}</li>`).join('')}</ol>`
-            : `<p class="quiet" style="padding:16px 20px">${esc(t('home.todoEmpty', 'Nothing urgent right now. Check back for new schemes.'))}</p>`}
+            : `<p class="quiet" style="padding:18px 22px">${esc(t('home.todoEmpty', 'Nothing urgent right now. Check back for new schemes.'))}</p>`}
         </section>
-        <div class="stack">
-          <section class="panel" aria-labelledby="hDead">
-            <div class="panel-head"><h2 class="h3" id="hDead">${esc(t('home.deadlines', 'Coming deadlines'))}</h2></div>
+        <div class="stack" style="margin-top:0">
+          <section class="card" aria-labelledby="hDead">
+            <div class="panel-head"><h2 class="h3" id="hDead">${esc(t('home.deadlines', 'Coming deadlines'))}</h2>
+              <button class="btn btn-quiet btn-sm" id="hCal" title="${esc(t('home.calendar', 'Add to calendar'))}">${icon('calendar-plus', 'icon-sm')}<span class="sr-only">${esc(t('home.calendar', 'Add to calendar'))}</span></button></div>
             ${deadlines()}
           </section>
           ${readinessBlock()}
         </div>
       </div>
-
       <div class="row row-wrap section">
-        <button class="btn btn-secondary" id="hRerun" ${state.running ? 'disabled' : ''}>${icon('refresh-cw')}${esc(t('run.again', 'Check again'))}</button>
-        <button class="btn btn-quiet" id="hCal">${icon('calendar-plus')}${esc(t('home.calendar', 'Add to calendar'))}</button>
         <button class="btn btn-quiet" id="hPrint">${icon('printer')}${esc(t('home.print', 'Print action plan'))}</button>
+        <button class="btn btn-quiet" data-assistant>${icon('message-circle')}${esc(t('cmd.asst', 'Ask the assistant'))}</button>
       </div>`;
 
     el.querySelector('#hRerun').addEventListener('click', () => runAgents().catch(() => {}));
     el.querySelector('#hCal').addEventListener('click', downloadCalendar);
     el.querySelector('#hPrint').addEventListener('click', printPlan);
+    if (fresh) {
+      animateIn(el);   // count up numbers and fill the ring once per new result
+    } else {
+      el.querySelectorAll('[data-count]').forEach((n) => { n.textContent = n.dataset.money === '1' ? fmtINR(+n.dataset.count) : (+n.dataset.count).toLocaleString('en-IN'); });
+      el.querySelectorAll('circle[data-offset]').forEach((c) => { c.style.transition = 'none'; c.style.strokeDashoffset = c.dataset.offset; });
+    }
   },
 };

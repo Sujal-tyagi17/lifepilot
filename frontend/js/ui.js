@@ -48,7 +48,3 @@ export function stamp(status, extra = '') {
 export const skeleton = (lines = 4) =>
   `<div aria-hidden="true"><div class="skeleton sk-title"></div>${Array.from({ length: lines }, (_, i) =>
     `<div class="skeleton sk-line" style="width:${92 - i * 9}%"></div>`).join('')}</div>`;
-
-export function emptyState({ title, body = '', action = '' }) {
-  return `<div class="panel empty"><h2 class="h3">${esc(title)}</h2>${body ? `<p class="quiet">${esc(body)}</p>` : ''}${action ? `<div class="row" style="margin-top:16px">${action}</div>` : ''}</div>`;
-}

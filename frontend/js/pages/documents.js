@@ -1,7 +1,8 @@
 /* Documents: one register of every document your schemes need. Files stay in this browser. */
 import { esc } from '../util.js';
 import { t } from '../i18n.js';
-import { icon, toast, emptyState, confirmDialog } from '../ui.js';
+import { icon, toast, confirmDialog } from '../ui.js';
+import { emptyCard, ring, animateIn } from '../components.js';
 import { state, setState, readiness, hasDoc, saveDocs } from '../state.js';
 import { vaultPut, vaultGet, vaultDelete, vaultClear } from '../vault.js';
 
@@ -40,10 +41,11 @@ const table = (docs) => `<table class="register">
 
 export const documents = {
   title: () => t('nav.documents', 'Documents'),
+  sub: () => t('docs.lede', 'Every document your schemes ask for, in one list. Mark what you have, or keep a copy in this browser.'),
   deps: ['run', 'vault', 'ownedDocs'],
   render(el) {
     if (!state.run) {
-      el.innerHTML = emptyState({ title: t('docs.empty', 'Fill in your profile first to build your document list.'), action: `<a class="btn btn-primary" href="#/start">${esc(t('welcome.start', 'Start'))}</a>` });
+      el.innerHTML = emptyCard({ iconName: 'folder-check', title: t('docs.empty', 'Fill in your profile first to build your document list.'), action: `<a class="btn btn-primary" href="#/start">${esc(t('land.start', 'Get started free'))}</a>` });
       return;
     }
     const r = readiness();
@@ -51,16 +53,18 @@ export const documents = {
     const others = (state.run.insights?.master_documents || []).filter((d) => !mainKeys.has(d.document.toLowerCase().trim()));
 
     el.innerHTML = `
-      <p class="lede">${esc(t('docs.lede', 'Every document your schemes ask for, in one list. Mark what you have, or keep a copy in this browser.'))}</p>
-      <div class="section-head section" style="margin-top:24px">
-        <p class="h2 num">${esc(t('home.readyOf', '{have} of {n} documents ready', { have: r.owned, n: r.total }))}</p>
-      </div>
-      <div class="meter" role="img" aria-label="${r.pct}%"><span class="seg-education" style="width:${r.pct}%"></span></div>
-      <p class="notice" style="margin-top:20px">${icon('shield-check')}<span>${esc(t('docs.privacy', 'Files stay in this browser and are never uploaded. They will not appear on another device.'))}</span></p>
-      <section class="panel section" style="margin-top:20px">${r.total ? table(r.docs) : `<p class="quiet" style="padding:20px">${esc(t('docs.empty', 'No documents needed yet.'))}</p>`}</section>
+      <section class="card docs-top">
+        ${ring(r.pct, { size: 120, stroke: 10, label: `${r.pct}%` })}
+        <div class="stack" style="margin-top:0">
+          <p class="h1 num">${esc(t('home.readyOf', '{have} of {n} documents ready', { have: r.owned, n: r.total }))}</p>
+          <p class="notice" style="margin-top:12px">${icon('shield-check')}<span>${esc(t('docs.privacy', 'Files stay in this browser and are never uploaded. They will not appear on another device.'))}</span></p>
+        </div>
+      </section>
+      <section class="card section">${r.total ? table(r.docs) : `<p class="quiet" style="padding:22px">${esc(t('docs.none', 'No documents needed yet.'))}</p>`}</section>
       ${others.length ? `<details class="section"><summary class="h3" style="cursor:pointer">${esc(t('docs.others', 'For schemes you are close to'))} <span class="quiet num">(${others.length})</span></summary>
-        <section class="panel" style="margin-top:12px">${table(others)}</section></details>` : ''}
+        <section class="card" style="margin-top:12px">${table(others)}</section></details>` : ''}
       ${Object.keys(state.vault).length ? `<div class="section"><button class="btn btn-danger-quiet" type="button" id="dClear">${icon('trash-2')}${esc(t('docs.clear', 'Remove all files'))}</button></div>` : ''}`;
+    animateIn(el);
 
     el.querySelectorAll('[data-have]').forEach((cb) => cb.addEventListener('change', () => {
       cb.checked ? state.ownedDocs.add(cb.dataset.have) : state.ownedDocs.delete(cb.dataset.have);
