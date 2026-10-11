@@ -15,11 +15,19 @@ let kindeClient = null;
 let currentAuthUser = null;
 let authToken = null;
 
+// Guest profiles are protected by a secret key the server gives the browser
+// that created them; it is sent with every request (see backend/app/ownership.py).
+const PROFILE_KEY_STORE = 'lp_pkey';
+const getProfileKey = () => { try { return localStorage.getItem(PROFILE_KEY_STORE); } catch { return null; } };
+const setProfileKey = (k) => { try { if (k) localStorage.setItem(PROFILE_KEY_STORE, k); } catch {} };
+
 async function api(path, opts = {}) {
   opts.headers = opts.headers || {};
   if (authToken) {
     opts.headers['Authorization'] = `Bearer ${authToken}`;
   }
+  const pkey = getProfileKey();
+  if (pkey) opts.headers['X-Profile-Key'] = pkey;
   const r = await fetch(path, opts);
   if (!r.ok) {
     let detail = r.statusText;
@@ -29,14 +37,32 @@ async function api(path, opts = {}) {
   return r.status === 204 ? null : r.json();
 }
 
+// Annual rupee value of a recurring benefit; 0 for one-time or unknown amounts.
+// Mirrors backend/app/services/analytics.py parse_amount ("₹20 lakh" = 20,00,000).
 function parseAmount(text) {
   if (!text) return 0;
-  const nums = [...text.matchAll(/₹\s*([\d,]+)/g)].map((m) => +m[1].replace(/,/g, ''));
+  const nums = [...text.matchAll(/₹\s*([\d,]+(?:\.\d+)?)\s*(lakhs?|lacs?|crores?|cr\b|l\b)?/gi)].map((m) => {
+    let n = +m[1].replace(/,/g, '');
+    const unit = (m[2] || '').toLowerCase();
+    if (/^(lakh|lac|l$)/.test(unit)) n *= 1e5;
+    else if (/^(crore|cr)/.test(unit)) n *= 1e7;
+    return n;
+  });
   if (!nums.length) return 0;
-  let v = Math.max(...nums);
-  if (/month/i.test(text)) v *= 12;
-  return v;
+  const v = Math.max(...nums);
+  if (/month/i.test(text)) return v * 12;
+  if (/year|annum|p\.a/i.test(text)) return v;
+  return 0;
 }
+
+// Match status from the backend: eligible | partial | needs_review | closed
+const matchStatus = (m) => m.status || (m.eligible ? 'eligible' : 'partial');
+const STATUS_BADGE = {
+  eligible: ['badge-good', 'Eligible'],
+  partial: ['badge-warn', 'Partial'],
+  needs_review: ['badge-warn', 'Check portal'],
+  closed: ['badge-bad', 'Closed'],
+};
 
 function daysLeft(d) {
   if (!d) return null;
@@ -164,6 +190,7 @@ $('#profileForm')?.addEventListener('submit', async (e) => {
   try {
     const profile = await api('/api/profiles', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     state.profileId = profile.id; state.profile = payload;
+    setProfileKey(profile.guest_key);
     localStorage.setItem('lp_pid', profile.id);
     localStorage.setItem('lp_profile', JSON.stringify(payload));
     await runAgents(true);
@@ -175,9 +202,25 @@ $('#profileForm')?.addEventListener('submit', async (e) => {
 });
 
 // ───────── run agents ─────────
+function forgetProfile() {
+  state.profileId = null; state.profile = null; state.run = null;
+  try { ['lp_pid', 'lp_profile', PROFILE_KEY_STORE].forEach((k) => localStorage.removeItem(k)); } catch {}
+}
+
 async function runAgents(celebrate = false) {
   if (!state.profileId) return;
-  const data = await api(`/api/agent/run/${state.profileId}`, { method: 'POST' });
+  let data;
+  try {
+    data = await api(`/api/agent/run/${state.profileId}`, { method: 'POST' });
+  } catch (err) {
+    if (/not found/i.test(err.message)) {
+      // Saved before profiles were protected, or deleted: start a fresh profile.
+      forgetProfile();
+      switchView('profile');
+      throw new Error('Please save your profile again to continue.');
+    }
+    throw err;
+  }
   state.run = data;
   state.baseline = { eligible: data.insights.eligible_count, benefit: data.insights.estimated_annual_benefit };
   $('#rerunBtn').classList.remove('hidden'); $('#rerunBtn').classList.add('flex');
@@ -281,7 +324,7 @@ function renderCharts(ins) {
   });
 
   // benefit bar (eligible only)
-  const elig = state.run.matches.filter((m) => m.eligible).map((m) => ({ t: m.title, v: parseAmount(m.amount) })).filter((x) => x.v > 0).sort((a, b) => b.v - a.v).slice(0, 6);
+  const elig = state.run.matches.filter((m) => matchStatus(m) === 'eligible').map((m) => ({ t: m.title, v: parseAmount(m.amount) })).filter((x) => x.v > 0).sort((a, b) => b.v - a.v).slice(0, 6);
   state.charts.benefit?.destroy();
   state.charts.benefit = new Chart($('#chartBenefit'), {
     type: 'bar',
@@ -308,9 +351,10 @@ function drawDiscoverGrid() {
   empty.classList.add('hidden');
   const q = ($('#discoverSearch').value || '').toLowerCase();
   let items = state.run.matches.filter((m) => {
-    if (state.discoverFilter === 'eligible' && !m.eligible) return false;
-    if (state.discoverFilter === 'partial' && m.eligible) return false;
-    if (state.discoverFilter === 'open' && !((daysLeft(m.deadline) ?? -1) >= 0)) return false;
+    const st = matchStatus(m);
+    if (state.discoverFilter === 'eligible' && st !== 'eligible') return false;
+    if (state.discoverFilter === 'partial' && st !== 'partial' && st !== 'needs_review') return false;
+    if (state.discoverFilter === 'open' && st === 'closed') return false;
     if (q && !(`${m.title} ${m.provider}`.toLowerCase().includes(q))) return false;
     return true;
   });
@@ -322,9 +366,13 @@ $('#discoverSearch')?.addEventListener('input', drawDiscoverGrid);
 
 function matchCard(m) {
   const dl = daysLeft(m.deadline);
-  const badge = m.eligible ? `<span class="chip badge-good">Eligible</span>` : `<span class="chip badge-warn">Partial</span>`;
-  const dlTxt = m.deadline ? (dl < 0 ? `<span style="color:var(--bad)">Closed</span>` : `${esc(m.deadline)} · ${dl}d`) : 'See portal';
-  const col = m.eligible ? 'var(--good)' : 'var(--warn)';
+  const st = matchStatus(m);
+  const [badgeCls, badgeTxt] = STATUS_BADGE[st] || STATUS_BADGE.partial;
+  const badge = `<span class="chip ${badgeCls}">${badgeTxt}</span>`;
+  const dlTxt = m.deadline
+    ? (dl < 0 ? `<span style="color:var(--bad)">Closed ${esc(m.deadline)}, reopens next cycle</span>` : `${esc(m.deadline)} · ${dl}d`)
+    : esc(m.deadline_note || 'See portal');
+  const col = st === 'eligible' ? 'var(--good)' : st === 'closed' ? 'var(--bad)' : 'var(--warn)';
   
   const reasons = (m.reasons || []).map((r) => `<li class="flex gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5" style="color:var(--good)"></i><span>${esc(r)}</span></li>`).join('');
   const unmet = (m.unmet || []).map((r) => `<li class="flex gap-1.5"><i data-lucide="dot" class="w-3.5 h-3.5 mt-0.5" style="color:var(--warn)"></i><span>${esc(r)}</span></li>`).join('');
@@ -423,7 +471,7 @@ function updateSliderFill() {
 }
 async function runSimulation() {
   const payload = {
-    name: 'Simulation', annual_income: +$('#simIncome').value, category: $('#simCategory').value,
+    name: state.profile?.name || 'What-if', annual_income: +$('#simIncome').value, category: $('#simCategory').value,
     education_level: $('#simEducation').value, gender: $('#simGender').value, state: $('#simState').value,
     field_of_study: $('#simField').value, disability: $('#simDisability').checked, goals: state.profile?.goals || null,
     owned_documents: [],
@@ -440,7 +488,7 @@ async function runSimulation() {
     $('#simDelta').style.color = col;
     const deltaFormatted = `${sign(dE)}${dE} schemes | ${dB < 0 ? '-' : dB > 0 ? '+' : ''}${fmtINR(Math.abs(dB))}`;
     $('#simDelta').textContent = state.baseline.eligible || state.baseline.benefit ? deltaFormatted : '—';
-    const elig = res.matches.filter((m) => m.eligible);
+    const elig = res.matches.filter((m) => matchStatus(m) === 'eligible');
     $('#simList').innerHTML = (elig.length ? elig : res.matches.slice(0, 5)).map((m) => `
       <div class="flex items-center justify-between gap-3 glass rounded-xl px-3 py-2">
         <div class="min-w-0"><p class="text-xs font-medium truncate">${esc(m.title)}</p><p class="text-[11px] text-[var(--muted)]">${esc(m.amount || '')}</p></div>
@@ -672,7 +720,7 @@ function downloadCalendar() {
 function printActionPlan() {
   if (!state.run) { toast('Run LifePilot first', 'warn'); switchView('profile'); return; }
   const ins = state.run.insights;
-  const elig = state.run.matches.filter((m) => m.eligible);
+  const elig = state.run.matches.filter((m) => matchStatus(m) === 'eligible');
   const docs = ins.master_documents || [];
   const scheme = (m) => `
     <div class="p-scheme">
@@ -808,6 +856,7 @@ async function loadAndPopulateProfile(user) {
     if (saved && saved.id) {
       state.profileId = saved.id;
       state.profile = saved;
+      setProfileKey(saved.guest_key);
       localStorage.setItem('lp_pid', saved.id);
       localStorage.setItem('lp_profile', JSON.stringify(saved));
       
@@ -1096,29 +1145,17 @@ $('#resumeFile')?.addEventListener('change', async (e) => {
   const f = e.target.files[0];
   if (!f) return;
   
-  if (f.name.toLowerCase().endsWith('.pdf')) {
-    const fd = new FormData();
-    fd.append('file', f);
-    toast('Parsing PDF resume content...', 'info');
-    try {
-      const res = await api('/api/opportunities/jobs/parse-resume', {
-        method: 'POST',
-        body: fd
-      });
-      $('#jobResume').value = res.text;
-      toast('PDF resume content parsed and loaded', 'good');
-    } catch (err) {
-      toast('Failed to parse PDF resume: ' + err.message, 'bad');
-    }
-  } else if (f.name.toLowerCase().endsWith('.txt')) {
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      $('#jobResume').value = evt.target.result;
-      toast('Resume loaded successfully', 'good');
-    };
-    reader.readAsText(f);
-  } else {
-    toast('Unsupported file type. Please upload a PDF or TXT file.', 'warn');
+  const fd = new FormData();
+  fd.append('file', f);
+  toast('Reading your resume…', 'info');
+  try {
+    const res = await api('/api/resume/parse', { method: 'POST', body: fd });
+    $('#jobResume').value = res.text;
+    toast('Resume loaded', 'good');
+  } catch (err) {
+    toast('Could not read resume: ' + err.message, 'bad');
+  } finally {
+    e.target.value = '';
   }
 });
 
@@ -1190,8 +1227,8 @@ function drawJobsGrid() {
     
     // Salary Filter (Convert USD base to INR at 1:85)
     if (salVal > 0) {
-      const salComparison = j.country === 'Global' ? j.salary_num * 85 : j.salary_num;
-      if (salComparison < salVal) return false;
+      // salary_num is a stated annual INR salary, or null when the ad doesn't say
+      if (j.salary_num == null || j.salary_num < salVal) return false;
     }
     
     if (q && !(`${j.title} ${j.company} ${j.description} ${j.location}`.toLowerCase().includes(q))) return false;
@@ -1213,10 +1250,11 @@ function jobCard(j) {
       <div class="flex items-start justify-between gap-3">
         <div>
           <span class="chip ${j.eligible ? 'badge-good' : 'badge-warn'} text-[10px] uppercase font-bold px-2 py-0.5 rounded-full mb-1 inline-block">
-            ${j.eligible ? 'Eligible' : 'Gaps Detected'}
+            ${j.eligible ? 'Qualified' : 'Education gap'}
           </span>
+          ${j.source === 'sample' ? '<span class="chip text-[10px] uppercase font-bold px-2 py-0.5 rounded-full mb-1 inline-block" title="Example role, not a live opening. Check the company careers page.">Sample role</span>' : ''}
           <h3 class="font-display font-semibold text-lg leading-snug mt-1">${esc(j.title)}</h3>
-          <p class="text-sm text-[var(--gold-2)] font-medium">${esc(j.company)}</p>
+          <p class="text-sm text-[var(--gold-2)] font-medium">${esc(j.company || 'Company not listed')}</p>
         </div>
         <div class="text-right">
           <span class="num text-2xl font-semibold text-[var(--good)]">${fit}%</span>
@@ -1224,11 +1262,11 @@ function jobCard(j) {
         </div>
       </div>
       
-      <p class="text-xs text-[var(--muted)] mt-3 leading-relaxed">${esc(j.description)}</p>
+      <p class="text-xs text-[var(--muted)] mt-3 leading-relaxed">${esc((j.description || '').length > 280 ? j.description.slice(0, 280) + '…' : j.description)}</p>
 
       <div class="mt-4 flex flex-wrap gap-4 text-xs">
         <span class="flex items-center gap-1 text-[var(--muted)]"><i data-lucide="banknote" class="w-4 h-4 text-[var(--gold-2)]"></i> ${esc(j.salary)}</span>
-        <span class="flex items-center gap-1 text-[var(--muted)]"><i data-lucide="map-pin" class="w-4 h-4"></i> ${esc(j.location)}</span>
+        <span class="flex items-center gap-1 text-[var(--muted)]"><i data-lucide="map-pin" class="w-4 h-4"></i> ${esc(j.location || 'Location not listed')}</span>
       </div>
 
       <!-- Eligibility checklist -->

@@ -15,37 +15,6 @@
   <link rel="apple-touch-icon" href="/static/favicon.svg" />
   <link rel="stylesheet" href="/static/styles.css?var=6.0" />
 </head>
-<script>
-  window.redirectToKinde = function(e) {
-    if (e && e.preventDefault) e.preventDefault();
-    var btn = document.getElementById('enterBtn');
-    var landing = document.getElementById('landing');
-    var loader = document.getElementById('authLoader');
-    var text = document.getElementById('authLoaderText');
-    
-    if (btn) {
-      btn.innerHTML = '<span class="spinner !w-4 !h-4 !border-white/30 !border-t-white !border-r-white mr-2"></span> Opening…';
-      btn.style.pointerEvents = 'none';
-      btn.style.opacity = '0.9';
-    }
-    // 1. Play the curtain animation first
-    if (landing) {
-      landing.classList.add('open');
-    }
-    // 2. Prepare the loader behind the parting curtains
-    if (loader) {
-      loader.style.display = 'flex';
-      loader.style.opacity = '1';
-    }
-    if (text) {
-      text.textContent = 'Connecting to secure sign in…';
-    }
-    // 3. Wait for the 1.15s curtain animation to finish parting before redirecting
-    setTimeout(function() {
-      window.location.href = "/api/auth/login";
-    }, 1150);
-  };
-</script>
 <body class="grain">
   <!-- Auth Transition Loader (behind landing, revealed when curtains part) -->
   <div id="authLoader" class="fixed inset-0 z-[50] hidden flex-col items-center justify-center bg-[#faf9f6] transition-opacity duration-500">
@@ -66,7 +35,7 @@
       <h1 class="landing-title">Claim every benefit<br/>you’re <em>entitled to.</em></h1>
       <div class="landing-rule"></div>
       <p class="landing-sub">LifePilot quietly does the research for you — discovering the scholarships, grants and government schemes you qualify for, and the exact steps to claim them.</p>
-      <button id="enterBtn" onclick="window.redirectToKinde(event)" class="btn btn-primary px-7 py-3.5 text-base flex items-center gap-2">Enter LifePilot <span aria-hidden="true">→</span></button>
+      <button id="enterBtn" class="btn btn-primary px-7 py-3.5 text-base flex items-center gap-2">Enter LifePilot <span aria-hidden="true">→</span></button>
       <p class="landing-trust"><b>Free &amp; open-source</b> · Runs on your device · <b>Your data never leaves your machine</b></p>
     </div>
     <p class="landing-hint">Press Enter or click to open</p>
@@ -330,7 +299,7 @@
                   <span id="attachResumeLink" class="text-[10px] text-[var(--gold-2)] cursor-pointer">Attach file instead</span>
                 </label>
                 <textarea id="jobResume" class="field mt-1 w-full h-32 text-xs font-mono resize-none" placeholder="Paste your resume/cv content here..."></textarea>
-                <input id="resumeFile" type="file" class="hidden" accept=".txt,.pdf" />
+                <input id="resumeFile" type="file" class="hidden" accept=".txt,.pdf,.docx" />
               </div>
 
               <button id="scanJobsBtn" class="btn btn-primary w-full py-3 flex items-center justify-center gap-2">
