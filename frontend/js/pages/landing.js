@@ -133,13 +133,13 @@ export const landing = {
             <span class="pillar-icon j">${icon('briefcase', 'icon-lg')}</span>
             <h3 class="h1">${esc(t('nav.jobs', 'Jobs'))}</h3>
             <ul>
-              <li>${icon('check')}<span>${esc(t('land.job1', 'Reads your resume: PDF, Word or text'))}</span></li>
-              <li>${icon('check')}<span>${esc(t('land.job2', 'A fit score for every job, and how it was made'))}</span></li>
-              <li>${icon('check')}<span>${esc(t('land.job3', 'The exact skills you have, and the ones to learn next'))}</span></li>
+              <li>${icon('check')}<span>${esc(t('land.job1b', 'Live openings from LinkedIn, Naukri, Indeed and company sites, your state first'))}</span></li>
+              <li>${icon('check')}<span>${esc(t('land.job2b', 'Reads your resume and gives each job a fit score learned by ML, with how it was made'))}</span></li>
+              <li>${icon('check')}<span>${esc(t('land.job3b', 'A week-by-week roadmap for any job, shaped by the hours you have'))}</span></li>
             </ul>
             <div class="preview" aria-hidden="true">
-              <div class="row" style="justify-content:space-between;margin-bottom:10px"><p style="font-weight:650">Backend Engineer</p><b class="num">53%</b></div>
-              <div class="meter"><span class="seg-skills" style="width:18%"></span><span class="seg-role" style="width:35%"></span></div>
+              <div class="row" style="justify-content:space-between;margin-bottom:10px"><p style="font-weight:650">Backend developer</p><b class="num">78%</b></div>
+              <div class="meter"><span class="seg-must" style="width:30%"></span><span class="seg-role" style="width:24%"></span><span class="seg-experience" style="width:14%"></span><span class="seg-education" style="width:10%"></span></div>
               <div class="skills"><span class="skill">${icon('check', 'icon-sm')}Python</span><span class="skill">${icon('check', 'icon-sm')}SQL</span><span class="skill missing">Redis</span></div>
             </div>
           </article>
@@ -153,9 +153,11 @@ export const landing = {
             ['message-circle', 'land.f1', 'Ask the assistant', 'land.f1p', 'Ask in plain words about your schemes, documents or deadlines. Answers use your own results.'],
             ['folder-check', 'land.f2', 'Document checklist', 'land.f2p', 'One list of every document your schemes need. Keep copies in your browser, never uploaded.'],
             ['sliders-horizontal', 'land.f3', 'What-if simulator', 'land.f3p', 'Move the income slider or change category and watch your results change instantly.'],
+            ['route', 'land.c1', 'Personal job roadmaps', 'land.c1p', 'A week-by-week plan for each job: skills in the right order, free courses, a project to build.'],
+            ['wand-sparkles', 'land.f5', 'Describe yourself in one line', 'land.f5p', 'Type one sentence in Hindi or English and the form fills itself.'],
+            ['bot', 'land.f6', 'ML Lab', 'land.f6p', 'Six machine learning models with their real accuracy, and a box to try each one.'],
           ].map(([ic, k, en, kp, enp]) => `<article class="card card-lift feature reveal"><span class="feature-icon">${icon(ic)}</span><h3 class="h3">${esc(t(k, en))}</h3><p>${esc(t(kp, enp))}</p></article>`).join('')}
           ${[
-            ['route', 'land.c1', 'Personal job roadmaps', 'land.c1p', 'A week-by-week plan for each job: skills in the right order, free courses, a project to build.'],
             ['scan-line', 'land.c2', 'Document scanner', 'land.c2p', 'Photograph a certificate. LifePilot reads it, ticks your checklist and warns if it has expired.'],
             ['list-todo', 'land.c3', 'Smart priority planner', 'land.c3p', 'Deadlines, amounts and missing documents turned into the best order to apply.'],
             ['mic', 'land.c4', 'Voice in Hindi and English', 'land.c4p', 'Speak your question and hear the answer.'],
