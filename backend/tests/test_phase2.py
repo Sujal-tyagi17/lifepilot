@@ -287,3 +287,14 @@ def test_plan_for_a_thin_post_uses_typical_skills_and_experience():
     assert any(s["title"].startswith("Brush up on") for s in plan3["steps"])
     slow, fast = build_plan(job, fresher, 4), build_plan(job, fresher, 30)
     assert slow["total_weeks"] > fast["total_weeks"]
+
+
+def test_more_hours_never_makes_the_plan_longer():
+    cand = candidate({"education_level": "Undergraduate"}, "", desired_role="Software engineer", user_skills=["Python"], experience_years=0)
+    for job in [{"title": "Software Engineering Intern", "company": "Acme", "description": "Apply now."},
+                next(j for j in sample_jobs() if j["id"] == "sample-001")]:
+        weeks = [build_plan(job, cand, h)["total_weeks"] for h in (3, 6, 10, 16, 24, 32, 40)]
+        assert weeks == sorted(weeks, reverse=True) and weeks[0] > weeks[-1], weeks
+    a = build_plan({"title": "Software Engineering Intern", "company": "Acme", "description": "Apply now."}, cand, 10)
+    b = build_plan({"title": "AI Software Engineer", "company": "Zephy", "description": "Python, machine learning, SQL."}, cand, 10)
+    assert [s["title"] for s in a["steps"]] != [s["title"] for s in b["steps"]]

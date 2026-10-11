@@ -13,6 +13,8 @@
 from __future__ import annotations
 
 import math
+import re
+from datetime import date, timedelta
 import urllib.parse
 
 from app.jobs.catalog import families, family_label, skill_info
@@ -74,8 +76,33 @@ _TASKS_DEFAULT = ["Learn the basics from the first resource", "Practise {s} with
                   "Write one resume line on where you used {s}"]
 
 
-def _tasks(skill: str) -> list[str]:
-    return [t.format(s=skill) for t in _TASKS.get(skill_info(skill)["kind"], _TASKS_DEFAULT)]
+PACES = [
+    # (up to hours/week, key, label, parallel learning tracks)
+    (5, "light", "Light pace: must-have skills only", 1),
+    (15, "steady", "Steady pace: must-haves and the most useful extras", 1),
+    (29, "intensive", "Intensive: weekly self-tests, more practice and mock interviews", 1),
+    (40, "fulltime", "Full-time: everything above plus a second project", 1),
+]
+
+
+def pace_for(hours: int) -> dict:
+    for limit, key, label, tracks in PACES:
+        if hours <= limit:
+            return {"key": key, "label": label, "tracks": tracks}
+    return {"key": "fulltime", "label": PACES[-1][2], "tracks": 1}
+
+
+def _tasks(skill: str, hours_week: float = 8, pace: str = "steady") -> list[str]:
+    tasks = [t.format(s=skill) for t in _TASKS.get(skill_info(skill)["kind"], _TASKS_DEFAULT)]
+    per_day = hours_week / 6
+    tasks.insert(0, f"About {per_day:.1f} hours a day, 6 days a week" if per_day >= 1
+                 else f"About {round(hours_week * 60 / 3)} minutes, 3 times a week")
+    if skill in ("Data Structures", "Algorithms", "Python", "Java", "C++", "JavaScript", "SQL"):
+        n = max(3, round(hours_week / 1.5))
+        tasks.append(f"Solve {n} practice problems a week on LeetCode, HackerRank or GeeksforGeeks")
+    if pace in ("intensive", "fulltime"):
+        tasks.append(f"End of each week: a 30-minute self-test on what you learned in {skill}")
+    return tasks
 
 
 def _resources(skill: str) -> list[dict]:
@@ -133,7 +160,12 @@ def build_plan(job: dict, cand: dict, hours_per_week: int = 8, learned: list[str
     have = [{"skill": s, "evidence": STRENGTH_LABEL[strength[s]]} for s in start["skills_matched"] if strength.get(s, 0) >= 2]
     strengthen = [{"skill": s, "why": "Listed on your resume or form, but not shown in a project or job"}
                   for s in start["skills_weak"][:MAX_STRENGTHEN]]
-    targets = start["skills_missing"] + start["skills_missing_nice"][:MAX_NICE]
+    pace = pace_for(hours)
+    is_intern = bool(re.search(r"\bintern(ship)?\b|\btrainee\b|\bapprentice\b", job.get("title", ""), re.IGNORECASE))
+    # Light pace: must-haves only. More time: the good-to-haves too.
+    # (More hours never adds skills: it makes the plan shorter and deeper.)
+    nice_extra = 0 if pace["key"] == "light" else MAX_NICE
+    targets = start["skills_missing"] + start["skills_missing_nice"][:nice_extra]
     must_set = set(start["skills_missing"])
     learn_order = learning_order(targets, has)
     learn = [{
@@ -141,23 +173,52 @@ def build_plan(job: dict, cand: dict, hours_per_week: int = 8, learned: list[str
         "must": s in must_set,
         "prereq_for": needed_for,
         "weeks": scaled_weeks(skill_info(s)["weeks"], hours),
+        "hours": skill_info(s)["weeks"] * 8,
         "alternatives": start["alternatives"].get(s, []),
         "demand": {"jobs": dem[s][0], "of": dem[s][1]} if s in dem else None,
         "typical": s in typical,
     } for s, needed_for in learn_order]
 
-    # Steps
+    # Steps, one after another; a skill never starts before the skills it needs.
+    # Every step's length is its effort in hours divided by your hours a week.
     steps: list[dict] = []
+    tracks = [0] * pace["tracks"]
+    finish: dict[str, int] = {}
     week = 0
 
-    def add(step: dict):
+    def place(step: dict, after: int = 0, track_hours: float | None = None):
         nonlocal week
-        step["start_week"] = week + 1
-        week += step["weeks"]
-        step["end_week"] = week
+        t = min(range(len(tracks)), key=lambda i: max(tracks[i], after))
+        begin = max(tracks[t], after)
+        step["start_week"] = begin + 1
+        step["end_week"] = begin + step["weeks"]
+        step["track"] = t + 1 if len(tracks) > 1 else None
+        step["hours_per_week"] = round(track_hours or hours, 1)
+        tracks[t] = step["end_week"]
+        week = max(week, step["end_week"])
         step["done"] = bool(step["skills"]) and all(x in learned for x in step["skills"])
         steps.append(step)
+        return step
 
+    def add(step: dict):
+        """A step everyone works on together, after everything before it."""
+        begin = max(tracks)
+        for i in range(len(tracks)):
+            tracks[i] = begin
+        place(step, begin)
+        for i in range(len(tracks)):
+            tracks[i] = step["end_week"]
+
+    if is_intern or cand["fresher"] and parsed["junior"]:
+        add({"id": "apply-early", "kind": "apply", "skills": [], "title": "Apply now, learn alongside",
+             "why": "Internships and fresher roles fill fast; most ask for basics and a willingness to learn",
+             "weeks": 1, "hours": 3,
+             "tasks": [f"Apply to {job.get('title') or 'this role'}" + (f" at {job['company']}" if job.get("company") else "") + " this week",
+                       "Write a 3-line cover note: what you know, what you are learning (from this plan), why this company",
+                       f"Apply to {3 if pace['key'] == 'light' else 5 if pace['key'] == 'steady' else 10} more similar internships every week from your matches"],
+             "resources": [{"provider": "Internshala", "title": "Internships", "url": "https://internshala.com/internships"}]})
+
+    per_track = hours / pace["tracks"]
     for item in learn:
         sk = item["skill"]
         why = (f"Needed before {item['prereq_for']}" if item["prereq_for"]
@@ -168,37 +229,46 @@ def build_plan(job: dict, cand: dict, hours_per_week: int = 8, learned: list[str
             why += " (this post doesn't list skills; roles like it usually ask for it)"
         # Someone with 2+ years of work likely knows the foundations already: a refresher, not a course
         refresher = experienced and item["prereq_for"]
-        weeks = max(1, math.ceil(item["weeks"] / 2)) if refresher else item["weeks"]
-        add({"id": f"learn-{sk}", "kind": "learn", "skills": [sk],
-             "title": f"Brush up on {sk}" if refresher else f"Learn {sk}", "why": why,
-             "weeks": weeks, "tasks": _tasks(sk), "resources": _resources(sk)})
+        effort = item["hours"] / (2 if refresher else 1)
+        weeks = max(1, math.ceil(effort / per_track))
+        needs = [finish[p] for p in skill_info(sk)["prereqs"] if p in finish]
+        step = place({"id": f"learn-{sk}", "kind": "learn", "skills": [sk],
+                      "title": f"Brush up on {sk}" if refresher else f"Learn {sk}", "why": why,
+                      "weeks": weeks, "hours": round(effort), "tasks": _tasks(sk, per_track, pace["key"]),
+                      "resources": _resources(sk)}, after=max(needs, default=0), track_hours=per_track)
+        finish[sk] = step["end_week"]
 
-    # One project proves the new skills and the listed-only ones together.
+    # The project mirrors this job and proves the new and the listed-only skills.
     prove = [x["skill"] for x in strengthen]
     fam = families().get(family or "", {})
-    uses = [x["skill"] for x in learn if not x["prereq_for"]][:4] + prove
-    if fam.get("project"):
-        add({"id": "build-project", "kind": "build", "skills": prove, "title": "Build a portfolio project",
-             "why": f"Proof that you can do the work of a {fam['label'].lower()}",
-             "weeks": scaled_weeks(3 + 0.5 * len(prove), hours),
-             "tasks": [fam["project"],
-                       f"Use {', '.join(uses)}" if uses else "Use the skills this job asks for",
-                       "Write a short README with screenshots and what you learned",
-                       "Add it to your resume with one result in numbers"],
+    uses = [x["skill"] for x in learn if not x["prereq_for"]][:4] + prove + [x["skill"] for x in have][:2]
+    what = job.get("title") or (fam.get("label") or "this role")
+    at = f" at {job['company']}" if job.get("company") else ""
+    if fam.get("project") or uses:
+        add({"id": "build-project", "kind": "build", "skills": prove, "title": "Build a project for this job",
+             "why": f"Proof you can do the work of a {what}{at}",
+             "weeks": scaled_weeks(3 + 0.5 * len(prove), hours), "hours": round((3 + 0.5 * len(prove)) * 8),
+             "tasks": [f"Pick a problem {job['company']} or its customers have, and solve a small part of it" if job.get("company")
+                       else "Pick a real problem from your college, family business or city",
+                       fam.get("project") or "Build a small working version end to end",
+                       f"Use {', '.join(dict.fromkeys(uses))}" if uses else "Use the skills this job asks for",
+                       "Write a README with screenshots, and add it to your resume with one result in numbers"]
+                      + (["Deploy it so a recruiter can open it from a link"] if pace["key"] != "light" else []),
              "resources": []})
-    elif prove:
-        add({"id": "prove-skills", "kind": "build", "skills": prove, "title": f"Prove {', '.join(prove)}",
-             "why": "Listed on your resume or form, but not shown in a project or job",
-             "weeks": scaled_weeks(len(prove), hours),
-             "tasks": [f"Do one small real task with each of {', '.join(prove)}",
-                       "Add a resume line for each: what you did and the result"],
+    if pace["key"] == "fulltime":
+        add({"id": "build-second", "kind": "build", "skills": [], "title": "Build a second, bigger project",
+             "why": "With full-time hours you can show depth: two projects beat one",
+             "weeks": scaled_weeks(4, hours), "hours": 32,
+             "tasks": ["Extend the first project or build a new one with a database, login and tests",
+                       "Get 3 friends or classmates to use it and fix what they report",
+                       "Write a short blog post or LinkedIn post about what you built"],
              "resources": []})
 
     if gap:
         short = need - cand["years"]
         add({"id": "experience", "kind": "build", "skills": [], "title": "Get real work experience",
              "why": f"This job asks for about {need:g}+ years; you have {cand['years']:g}. Close part of the gap with real work.",
-             "weeks": scaled_weeks(6, hours),
+             "weeks": scaled_weeks(6, hours), "hours": 48,
              "tasks": [
                  "Apply for internships or trainee roles in this field (Internshala, LinkedIn, college placement cell)"
                  if cand["fresher"] else "Take on a freelance or side project for a real client",
@@ -211,13 +281,16 @@ def build_plan(job: dict, cand: dict, hours_per_week: int = 8, learned: list[str
                            {"provider": "GitHub", "title": "Good first issues in open source", "url": "https://github.com/topics/good-first-issue"}]})
 
     topics = fam.get("interview") or ["Explaining your projects end to end", "Why you want this role"]
+    mocks = {"light": 1, "steady": 2, "intensive": 4, "fulltime": 6}[pace["key"]]
     add({"id": "job-ready", "kind": "apply", "skills": [], "title": "Get interview-ready and apply",
-         "why": "Turn the plan into applications", "weeks": 1,
+         "why": f"Turn the plan into applications for {what}{at}", "weeks": max(1, math.ceil((8 if pace["key"] in ("light", "steady") else 16) / hours)),
+         "hours": 8 if pace["key"] in ("light", "steady") else 16,
          "tasks": [f"Revise: {t}" for t in topics[:4]] + [
+             f"Do {mocks} mock interview{'s' if mocks > 1 else ''} with a friend or on Pramp",
              "Update your resume with the fixes above",
-             "Apply to this job and 5 similar ones from your matches"]
-             + (["Also apply to internships and trainee roles: they hire freshers fastest"] if cand["fresher"] else []),
-         "resources": []})
+             f"Apply to this job and {5 if pace['key'] in ('light', 'steady') else 10} similar ones from your matches"]
+             + (["Also apply to internships and trainee roles: they hire freshers fastest"] if cand["fresher"] and not is_intern else []),
+         "resources": [{"provider": "Pramp", "title": "Free mock interviews", "url": "https://www.pramp.com/"}] if family in ("backend", "frontend", "fullstack", "software", "data_scientist", "mobile") else []})
 
     # Fit: now (with ticked skills) and after the whole plan
     def with_skills(skills) -> dict:
@@ -235,6 +308,9 @@ def build_plan(job: dict, cand: dict, hours_per_week: int = 8, learned: list[str
         "family_label": family_label(family),
         "hours_per_week": hours,
         "total_weeks": week,
+        "pace": pace,
+        "ready_by": (date.today() + timedelta(weeks=week)).isoformat(),
+        "per_day": round(hours / 6, 1),
         "fit_start": start["fit_score"],
         "fit_now": fit_now,
         "fit_after": fit_after,

@@ -1,6 +1,6 @@
 /* One job's plan: focus areas, resume fixes and a week-by-week roadmap you can tick off. */
 import { esc, store, debounce } from '../util.js';
-import { t } from '../i18n.js';
+import { t, getLang } from '../i18n.js';
 import { icon, toast } from '../ui.js';
 import { api } from '../api.js';
 import { state, saveJobs } from '../state.js';
@@ -49,7 +49,9 @@ function journey(p) {
       <div class="j-point"><span class="tiny quiet">${esc(t('plan.after', 'After the plan'))}</span><b class="num" style="color:var(--green)">${pct(p.fit_after)}%</b></div>
     </div>
     <div class="progress-line"><span style="width:${steps ? (100 * done) / steps : 0}%"></span></div>
-    <p class="small quiet" style="margin-top:8px">${esc(t('plan.progress', '{d} of {n} steps done · {w} weeks at {h} hrs/week', { d: done, n: steps, w: p.total_weeks, h: p.hours_per_week }))}</p>`;
+    <p class="small quiet" style="margin-top:8px">${esc(t('plan.progress', '{d} of {n} steps done · {w} weeks at {h} hrs/week', { d: done, n: steps, w: p.total_weeks, h: p.hours_per_week }))}</p>
+    ${p.ready_by ? `<p class="ready-by">${icon('calendar-clock', 'icon-sm')} ${esc(t('plan.readyBy', 'Job-ready by {d}', { d: new Date(p.ready_by).toLocaleDateString(getLang() === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) }))}</p>` : ''}
+    ${p.pace ? `<p class="pace pace-${esc(p.pace.key)}">${icon('gauge', 'icon-sm')} ${esc(t(`pace.${p.pace.key}`, p.pace.label))}</p>` : ''}`;
 }
 
 function focusCards(p) {
@@ -73,7 +75,7 @@ function stepItem(s, done) {
     <div class="step-rail"><span class="step-dot">${icon(done ? 'check' : KIND_ICON[s.kind] || 'flag', 'icon-sm')}</span></div>
     <div class="step-card card">
       <div class="step-top">
-        <span class="step-weeks">${esc(s.start_week === s.end_week ? t('plan.week', 'Week {a}', { a: s.start_week }) : t('plan.weeks', 'Weeks {a}–{b}', { a: s.start_week, b: s.end_week }))}</span>
+        <span class="step-weeks">${esc(s.start_week === s.end_week ? t('plan.week', 'Week {a}', { a: s.start_week }) : t('plan.weeks', 'Weeks {a}–{b}', { a: s.start_week, b: s.end_week }))}${s.hours ? ` · ${esc(t('plan.effort', 'about {n} hrs of work', { n: s.hours }))}` : ''}</span>
         <label class="tick"><input type="checkbox" data-tick="${esc(s.id)}" ${done ? 'checked' : ''} /><span>${esc(t('plan.done', 'Done'))}</span></label>
       </div>
       <h3 class="h3">${esc(s.title)}</h3>
