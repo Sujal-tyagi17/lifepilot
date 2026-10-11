@@ -84,3 +84,12 @@ def test_csp_allows_no_external_scripts(client):
     csp = client.get("/api/health").headers["content-security-policy"]
     assert "script-src 'self'" in csp
     assert "unsafe-eval" not in csp and "cdn." not in csp and "unpkg" not in csp
+
+
+def test_ui_files_are_always_revalidated(client):
+    # Stale cached modules after an update used to leave a blank page
+    for path in ["/", "/static/js/main.js", "/static/css/app.css"]:
+        r = client.get(path)
+        assert r.status_code == 200, path
+        assert r.headers["cache-control"] == "no-cache", path
+    assert "no-cache" not in client.get("/api/health").headers.get("cache-control", "")

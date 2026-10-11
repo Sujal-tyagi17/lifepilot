@@ -46,6 +46,13 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response: Response = await call_next(request)
         for key, value in _SECURITY_HEADERS.items():
             response.headers.setdefault(key, value)
+        # The UI is plain ES modules with no build step, so their URLs never
+        # change between versions. "no-cache" makes the browser revalidate each
+        # file (a cheap 304 when unchanged) instead of mixing old cached modules
+        # with new ones after an update, which leaves a blank page.
+        path = request.url.path
+        if path == "/" or path.startswith("/static/"):
+            response.headers["Cache-Control"] = "no-cache"
         return response
 
 
