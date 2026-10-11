@@ -16,13 +16,14 @@ import { onboarding } from './pages/start.js';
 import { home } from './pages/home.js';
 import { schemes, whatIf } from './pages/schemes.js';
 import { jobs } from './pages/jobs.js';
+import { jobPlan } from './pages/plan.js';
 import { documents } from './pages/documents.js';
 import { how } from './pages/how.js';
 import { profile, applyTheme } from './pages/profile.js';
 
 const ROUTES = {
   '': landing, welcome: landing, start: onboarding, home, schemes, 'schemes/what-if': whatIf,
-  jobs, documents, 'how-it-works': how, profile,
+  jobs, 'jobs/plan': jobPlan, documents, 'how-it-works': how, profile,
 };
 
 const NAV = [
