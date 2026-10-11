@@ -24,7 +24,7 @@ import { how } from './pages/how.js';
 import { mlLab } from './pages/mllab.js';
 import { profile, applyTheme } from './pages/profile.js';
 import { initFx } from './fx.js';
-import { logoMark } from './brand.js';
+import { logoMark, rosette } from './brand.js';
 
 const ROUTES = {
   '': landing, welcome: landing, start: onboarding, home, schemes, 'schemes/what-if': whatIf, 'schemes/map': schemeMap, planner,
@@ -105,6 +105,46 @@ function renderChrome() {
   document.body.classList.toggle('tabbar-hidden', !state.profileId && (current.page === landing || current.page === onboarding));
 }
 
+/* ── Footer ── */
+let footerLang = null;
+function renderFooter() {
+  const f = $('#siteFooter');
+  if (!f) return;
+  f.hidden = current.page === onboarding;
+  if (footerLang === getLang() && f.innerHTML) return;   // the footer only changes with the language
+  footerLang = getLang();
+  const col = (title, links) => `<div class="foot-col"><h2 class="foot-h">${esc(title)}</h2><ul>${links.map(([href, k, en]) =>
+    `<li><a href="${href}">${esc(t(k, en))}</a></li>`).join('')}</ul></div>`;
+  f.innerHTML = `
+    <div class="foot-edge" aria-hidden="true"></div>
+    <div class="foot-rosette">${rosette()}</div>
+    <div class="wrap foot-inner">
+      <div class="foot-brandcol">
+        <a class="foot-brand" href="#/">${logoMark()}<span>LifePilot</span></a>
+        <p class="foot-tag">${esc(t('land.foot', 'Scholarships, schemes and jobs, checked against your profile.'))}</p>
+        <div class="foot-actions">
+          <button type="button" class="foot-pill" data-foot="lang">${icon('languages', 'icon-sm')}<span>${getLang() === 'hi' ? 'English' : 'हिन्दी'}</span></button>
+          <button type="button" class="foot-pill" data-foot="theme">${icon('moon', 'icon-sm')}<span>${esc(t('foot.theme', 'Light / dark'))}</span></button>
+        </div>
+      </div>
+      ${col(t('foot.find', 'Find'), [['#/schemes', 'nav.schemes', 'Schemes'], ['#/schemes/what-if', 'sch.whatif', 'What if'], ['#/schemes/map', 'map.title', 'Scheme map'], ['#/jobs', 'nav.jobs', 'Jobs']])}
+      ${col(t('foot.plan', 'Plan'), [['#/home', 'nav.home', 'Home'], ['#/planner', 'pp.title', 'Your plan'], ['#/documents', 'nav.documents', 'Documents'], ['#/profile', 'nav.profile', 'Profile and settings']])}
+      ${col(t('foot.learn', 'Learn'), [['#/how-it-works', 'nav.how', 'How it works'], ['#/ml-lab', 'ml.title', 'ML Lab']])}
+      <div class="foot-col foot-trust">
+        <h2 class="foot-h">${esc(t('foot.trust', 'Your data'))}</h2>
+        <p>${icon('shield-check', 'icon-sm')}${esc(t('foot.t1', 'Documents and scans stay in your browser.'))}</p>
+        <p>${icon('scale', 'icon-sm')}${esc(t('foot.t2', 'Eligibility comes from each scheme’s published rules.'))}</p>
+        <p>${icon('wifi-off', 'icon-sm')}${esc(t('foot.t3', 'Nothing loads from outside sites.'))}</p>
+      </div>
+    </div>
+    <div class="wrap foot-base">
+      <span>© ${new Date().getFullYear()} LifePilot</span>
+      <span>${esc(t('foot.disclaimer', 'Not a government website. Always confirm details on the official portal before you apply.'))}</span>
+    </div>`;
+  f.querySelector('[data-foot="lang"]').addEventListener('click', toggleLang);
+  f.querySelector('[data-foot="theme"]').addEventListener('click', toggleTheme);
+}
+
 function setTitle() {
   const title = current.page?.title?.() || '';
   document.title = title ? `${title} · LifePilot` : 'LifePilot · Scholarships, schemes and jobs you qualify for';
@@ -148,6 +188,7 @@ function route() {
   menuOpen = false;
   renderChrome();
   renderPage(changed);
+  renderFooter();
   if (changed) {
     window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
     if (!firstRoute) $('#content').focus({ preventScroll: true });
@@ -194,6 +235,7 @@ function toggleLang() {
   setLang(getLang() === 'hi' ? 'en' : 'hi');
   setCommands(commands());
   ctx.refresh();
+  renderFooter();
 }
 
 /* ── Startup ── */

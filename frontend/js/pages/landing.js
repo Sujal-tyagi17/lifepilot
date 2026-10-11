@@ -235,7 +235,6 @@ export const landing = {
         </div>
       </section>
 
-      <footer class="footer"><span class="foot-brand">${logoMark()}<b>LifePilot</b></span><span>${esc(t('land.foot', 'Scholarships, schemes and jobs, checked against your profile.'))}</span></footer>
     </div>`;
 
     el.querySelectorAll('[data-signin]').forEach((b) => b.addEventListener('click', signIn));
