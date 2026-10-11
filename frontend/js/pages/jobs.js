@@ -174,13 +174,15 @@ function results(el) {
   const list = (arr) => `<section class="card"><ul class="rows">${arr.map(jobItem).join('')}</ul></section>`;
   const head = (txt, n) => `<h2 class="h3 group-head">${esc(txt)} <span class="count">${n}</span></h2>`;
   const noLive = !target.length && !other.length;
-  const samplesOpen = showSamples || noLive;
+  const samplesOpen = showSamples;
+  const status = rep.source_status || [];
+  const failed = status.filter((x) => x.message.startsWith('failed'));
   const places = [['all', t('jobs.allIndia', 'All India')], ...(rep.state ? [['near', rep.state]] : []), ['remote', t('jobs.remote', 'Remote')]];
 
   box.innerHTML = `
     ${readCard(rep)}
     ${insightCard(rep.insight)}
-    ${!(rep.sources || []).length ? `<p class="notice notice-warn" style="margin-top:14px">${icon('wifi-off', 'icon-sm')} ${esc(t('jobs.noLiveSrc', 'Live job search is not set up on this server, so only example roles are shown. Add SERPER_API_KEY (free at serper.dev) to backend/.env to see real openings from LinkedIn, Naukri, Indeed and more.'))}</p>` : ''}
+    ${!(rep.sources || []).length ? `<p class="notice notice-warn" style="margin-top:14px">${icon('wifi-off', 'icon-sm')} ${esc(t('jobs.noLiveSrc', 'Live job search is not set up on this server, so only example roles are shown. Add SERPER_API_KEY (free at serper.dev) or SERPAPI_KEY (free at serpapi.com) to backend/.env and restart to see real openings.'))}</p>` : ''}
     <div class="toolbar" style="margin-top:18px">
       <label class="input-icon"><span class="sr-only">${esc(t('jobs.filterPh', 'Filter by title or company'))}</span>${icon('search')}<input class="input" type="search" id="jFilter" value="${esc(q)}" placeholder="${esc(t('jobs.filterPh', 'Filter by title or company'))}" /></label>
       <div class="segmented" role="group" aria-label="${esc(t('jobs.where', 'Where'))}">
@@ -188,17 +190,17 @@ function results(el) {
       </div>
     </div>
     <div class="legend" aria-hidden="true" style="margin-bottom:12px">${SEGMENTS.map(([k, key, en]) => `<span><i class="seg-${k}"></i>${esc(t(key, en))}</span>`).join('')}</div>
+    ${status.length ? `<p class="${failed.length ? 'notice notice-warn' : 'tiny quiet'} search-status" style="margin:0 0 8px">${icon(failed.length ? 'triangle-alert' : 'search', 'icon-sm')} ${esc(t('jobs.searched', 'Searched'))}: ${status.map((x) => `<span>${esc(x.source)} — ${esc(x.message)}</span>`).join(' · ')}</p>` : ''}
     ${rep.state && !noLive ? `<p class="tiny quiet" style="margin-bottom:4px">${esc(t('jobs.orderNote', 'Jobs in {s} first, then remote, then the rest of India.', { s: rep.state }))}</p>` : ''}
     ${target.length ? head(rep.target_from === 'resume' ? t('jobs.gResume', 'Best for your resume') : t('jobs.gTarget', 'Roles you asked for'), target.length) + list(target) : ''}
     ${other.length ? head(target.length ? t('jobs.gOther', 'Also fits your resume') : t('jobs.gMatches', 'Your matches'), other.length) + list(other) : ''}
-    ${noLive && (rep.sources || []).length ? `<div class="card"><p class="quiet" style="padding:22px">${esc(t('jobs.noLive', 'No live openings found for this search right now. Try another role or the All India filter. Example roles are shown below.'))}</p></div>` : ''}
+    ${noLive && (rep.sources || []).length ? `<div class="card"><p class="quiet" style="padding:22px">${esc(t('jobs.noLive2', 'No live openings matched this search right now. Try a shorter role name (for example "Data analyst"), or check the search status above.'))}</p></div>` : ''}
     ${weak.length ? `<div class="row" style="justify-content:center;margin-top:16px"><button class="btn btn-quiet btn-sm" type="button" id="jWeak" aria-expanded="${showWeak}">
         ${icon(showWeak ? 'chevron-up' : 'chevron-down', 'icon-sm')}${esc(showWeak ? t('jobs.hideWeak', 'Hide weaker matches') : t('jobs.showWeak', 'Show {n} weaker matches', { n: weak.length }))}</button></div>
       ${showWeak ? `<div style="margin-top:12px">${list(weak)}</div>` : ''}` : ''}
-    ${samples.length ? `${noLive ? head(t('jobs.gSamples', 'Example roles (not live openings)'), samples.length) + list(samples)
-      : `<div class="row" style="justify-content:center;margin-top:10px"><button class="btn btn-quiet btn-sm" type="button" id="jSamples" aria-expanded="${samplesOpen}">
+    ${samples.length ? `<div class="row" style="justify-content:center;margin-top:10px"><button class="btn btn-quiet btn-sm" type="button" id="jSamples" aria-expanded="${samplesOpen}">
           ${icon(samplesOpen ? 'chevron-up' : 'chevron-down', 'icon-sm')}${esc(samplesOpen ? t('jobs.hideSamples', 'Hide example roles') : t('jobs.showSamples', 'Show {n} example roles', { n: samples.length }))}</button></div>
-        ${samplesOpen ? `<div style="margin-top:12px">${head(t('jobs.gSamples', 'Example roles (not live openings)'), samples.length)}${list(samples)}</div>` : ''}`}` : ''}`;
+        ${samplesOpen ? `<div style="margin-top:12px">${head(t('jobs.gSamples', 'Example roles (not live openings)'), samples.length)}${list(samples)}</div>` : ''}` : ''}`;
   animateIn(box);
   const f = box.querySelector('#jFilter');
   f.addEventListener('input', () => { const pos = f.selectionStart; results(el); const n = el.querySelector('#jFilter'); n.focus(); n.setSelectionRange(pos, pos); });

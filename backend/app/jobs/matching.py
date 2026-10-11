@@ -237,6 +237,8 @@ def score_with(job: dict, cand: dict, parsed: dict | None = None) -> dict:
         group = "target"
     elif coverage >= 0.6 or fit >= 0.5 or (role is None and (coverage >= 0.34 or fit >= 0.35)):
         group = "other"
+    elif job.get("source") in _LIVE and fit >= 0.25:
+        group = "other"   # a live opening found by searching for this role: never bury it
     else:
         group = "weak"
 
@@ -274,6 +276,7 @@ def score_job(job: dict, profile: dict, resume_text: str = "", desired_role: str
 
 # ── Many jobs ─────────────────────────────────────────────────
 
+_LIVE = {"web_job", "google_jobs", "adzuna", "jooble"}
 _GROUP_ORDER = {"target": 0, "other": 1, "weak": 2}
 
 

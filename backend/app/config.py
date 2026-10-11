@@ -51,6 +51,8 @@ class Settings(BaseSettings):
     adzuna_country: str = "in"
     # Jooble job search API (optional, free key on request: jooble.org/api/about)
     jooble_api_key: str = ""
+    # SerpApi Google Jobs (optional, free plan: serpapi.com) — structured listings with place and company
+    serpapi_key: str = ""
 
     # ── ChromaDB ─────────────────────────────────────────────
     chroma_persist_dir: str = "./chroma_data"

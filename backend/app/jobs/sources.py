@@ -31,7 +31,7 @@ from typing import Callable
 import httpx
 
 from app.config import settings
-from app.jobs.locations import find_place, find_state, is_remote
+from app.jobs.locations import STATE_CITIES, find_place, find_state, is_remote
 
 logger = logging.getLogger("lifepilot.jobs.sources")
 
@@ -162,10 +162,12 @@ def adzuna_jobs(query: str, location: str | None) -> list[dict]:
                 resp = client.get(url, params=params)
             if resp.status_code != 200:
                 logger.warning(f"Adzuna search failed: HTTP {resp.status_code}")
+                _note(f"Adzuna · {location or 'India'}", f"failed: HTTP {resp.status_code}")
                 return []
             results = resp.json().get("results", [])
         except (httpx.HTTPError, ValueError) as e:
             logger.warning(f"Adzuna search failed: {e}")
+            _note(f"Adzuna · {location or 'India'}", f"failed: {e.__class__.__name__}")
             return []
 
         jobs = []
@@ -183,6 +185,7 @@ def adzuna_jobs(query: str, location: str | None) -> list[dict]:
                 country="India" if settings.adzuna_country == "in" else settings.adzuna_country.upper(),
                 salary_min=smin, salary_max=smax, currency="INR" if settings.adzuna_country == "in" else None,
             ))
+        _note(f"Adzuna · {location or 'India'}", f"{len(jobs)} listings found")
         return jobs
 
     return cached(f"adzuna:{query.lower()}:{(location or '').lower()}", fetch)
@@ -203,9 +206,33 @@ JOB_SITES: list[tuple[str, str, str]] = [
     ("internshala.com/job/detail", r"internshala\.com/(?:job|internship)/detail/", "Internshala"),
     ("cutshort.io/job", r"cutshort\.io/job/", "Cutshort"),
     ("instahyre.com/job", r"instahyre\.com/job-", "Instahyre"),
+    # Company career pages on common hiring systems: real openings straight from the employer
+    ("jobs.lever.co", r"jobs\.lever\.co/[^/]+/[0-9a-f-]{20,}", "Company site"),
+    ("boards.greenhouse.io", r"greenhouse\.io/[^/]+/jobs/\d+", "Company site"),
+    ("myworkdayjobs.com", r"myworkdayjobs\.com/.+/job/", "Company site"),
+    ("apply.workable.com", r"apply\.workable\.com/[^/]+/j/", "Company site"),
 ]
-_SUFFIX = re.compile(r"\s*[|\-–]\s*(linkedin|naukri(?:\.com)?|indeed(?:\.com)?|foundit(?:\.in)?|internshala|cutshort|instahyre|job details)\s*$", re.IGNORECASE)
+# One Google query per group: simple queries return far more than one long OR of every site.
+QUERY_GROUPS: list[list[str]] = [
+    ["linkedin.com/jobs/view"],
+    ["naukri.com/job-listings", "foundit.in/job"],
+    ["in.indeed.com/viewjob", "internshala.com/job/detail"],
+    ["jobs.lever.co", "boards.greenhouse.io", "myworkdayjobs.com", "apply.workable.com", "cutshort.io/job", "instahyre.com/job"],
+]
+_SUFFIX = re.compile(r"\s*[|\-–]\s*(linkedin|naukri(?:\.com)?|indeed(?:\.com)?|foundit(?:\.in)?|internshala|cutshort|instahyre|job details|careers?|lever|greenhouse|workday|workable)\s*$", re.IGNORECASE)
 _YEARS_PART = re.compile(r"^\d+\s*(?:-|to)\s*\d+\s*(?:years?|yrs?)$|^\d+\+?\s*(?:years?|yrs?)$|^fresher", re.IGNORECASE)
+
+# What each live source last reported, shown on the Jobs page so a missing or
+# wrong key, a quota error or an empty search is visible instead of silent.
+_status: dict[str, str] = {}
+
+
+def _note(source: str, message: str) -> None:
+    _status[source] = message
+
+
+def source_status() -> dict[str, str]:
+    return dict(_status)
 
 
 def _site_of(link: str) -> str | None:
@@ -243,51 +270,118 @@ def parse_posting_title(title: str) -> tuple[str, str | None, str | None]:
     return role, company, place
 
 
+def _place_terms(location: str | None) -> str:
+    """Words for Google: the state plus its two biggest cities, or India."""
+    if not location:
+        return "India"
+    cities = [c.title() for c in STATE_CITIES.get(location, [])[:2]]
+    return "(" + " OR ".join(f'"{x}"' for x in [location, *cities]) + ")"
+
+
+def _serper(q: str) -> list[dict] | str:
+    """Organic results, or an error message."""
+    try:
+        with httpx.Client(timeout=12.0) as client:
+            resp = client.post(
+                "https://google.serper.dev/search",
+                headers={"X-API-KEY": settings.serper_api_key, "Content-Type": "application/json"},
+                json={"q": q, "gl": "in", "hl": "en", "num": 10},
+            )
+    except httpx.HTTPError as e:
+        return f"could not connect ({e.__class__.__name__})"
+    if resp.status_code != 200:
+        hint = {401: "key not accepted", 403: "key not accepted", 429: "free searches used up"}.get(resp.status_code, "")
+        return f"HTTP {resp.status_code}" + (f": {hint}" if hint else "")
+    try:
+        return resp.json().get("organic", [])
+    except ValueError:
+        return "bad response"
+
+
 def web_job_postings(query: str, location: str | None) -> list[dict]:
     if not settings.serper_api_key:
         return []
 
     def fetch() -> list[dict]:
-        sites = " OR ".join(f"site:{f}" for f, _p, _n in JOB_SITES)
-        where = f'"{location}"' if location else "India"
-        q = f'"{query}" {where} ({sites})'
-        try:
-            with httpx.Client(timeout=12.0) as client:
-                resp = client.post(
-                    "https://google.serper.dev/search",
-                    headers={"X-API-KEY": settings.serper_api_key, "Content-Type": "application/json"},
-                    # gl/hl: Indian results; tbs=qdr:m: pages from the last month, so fewer closed jobs
-                    json={"q": q, "num": 20, "gl": "in", "hl": "en", "tbs": "qdr:m"},
-                )
-            if resp.status_code != 200:
-                logger.warning(f"Serper search failed: HTTP {resp.status_code}")
-                return []
-            organic = resp.json().get("organic", [])
-        except (httpx.HTTPError, ValueError) as e:
-            logger.warning(f"Serper search failed: {e}")
-            return []
+        place = _place_terms(location)
+        queries = [f'{" OR ".join(f"site:{x}" for x in group)} "{query}" {place}' for group in QUERY_GROUPS]
+        with ThreadPoolExecutor(max_workers=len(queries)) as pool:
+            answers = list(pool.map(_serper, queries))
+        errors = [a for a in answers if isinstance(a, str)]
+        organic = [item for a in answers if isinstance(a, list) for item in a]
 
-        jobs = []
+        jobs, seen = [], set()
         for item in organic:
             link = item.get("link", "")
             site = _site_of(link)
-            if not site:
-                continue  # a listing page or an unrelated result
-            role, company, place = parse_posting_title(item.get("title", ""))
+            if not site or link in seen:
+                continue  # a listing page, an unrelated result, or one we already have
+            seen.add(link)
+            role, company, where = parse_posting_title(item.get("title", ""))
             snippet = item.get("snippet", "") or ""
-            place = place or find_place(snippet)
+            where = where or find_place(snippet) or (location if location and find_state(snippet) == location else None)
+            if site == "Company site" and not company:
+                company = re.sub(r"^https?://[^/]+/([^/]+).*", r"\1", link).replace("-", " ").title()
             job = _job(
                 id=f"web-{hashlib.md5(link.encode()).hexdigest()[:12]}", title=role, company=company,
-                location=place, description=snippet, url=link, source="web_job",
-                job_type="Remote" if is_remote(f"{place} {snippet}") else None,
-                country="India" if find_state(place) else None,
+                location=where, description=snippet, url=link, source="web_job",
+                job_type="Remote" if is_remote(f"{where} {snippet}") else None,
+                country="India" if find_state(where) or find_state(snippet) else None,
             )
             job["site"] = site
             job["posted"] = item.get("date")
             jobs.append(job)
+        if errors and not organic:
+            logger.warning(f"Serper job search failed: {errors[0]}")
+            _note(f"Google · {location or 'India'}", f"failed: {errors[0]}")
+        else:
+            _note(f"Google · {location or 'India'}", f"{len(jobs)} postings found")
         return jobs
 
     return cached(f"webjobs:{query.lower()}:{(location or 'india').lower()}", fetch)
+
+
+# ── 4b. Google Jobs through SerpApi (free plan: serpapi.com) ──
+
+def google_jobs(query: str, location: str | None) -> list[dict]:
+    """Structured listings from Google's job search: title, company, place, full description."""
+    if not settings.serpapi_key:
+        return []
+
+    def fetch() -> list[dict]:
+        params = {"engine": "google_jobs", "q": query, "location": f"{location}, India" if location else "India",
+                  "gl": "in", "hl": "en", "api_key": settings.serpapi_key}
+        try:
+            with httpx.Client(timeout=20.0) as client:
+                resp = client.get("https://serpapi.com/search.json", params=params)
+            data = resp.json()
+        except (httpx.HTTPError, ValueError) as e:
+            _note(f"Google Jobs · {location or 'India'}", f"failed: {e.__class__.__name__}")
+            return []
+        if resp.status_code != 200 or data.get("error"):
+            logger.warning(f"SerpApi Google Jobs failed: {data.get('error') or resp.status_code}")
+            _note(f"Google Jobs · {location or 'India'}", f"failed: {data.get('error') or resp.status_code}")
+            return []
+        jobs = []
+        for r in data.get("jobs_results", []):
+            ext = r.get("detected_extensions") or {}
+            apply = (r.get("apply_options") or [{}])[0]
+            link = apply.get("link") or r.get("share_link")
+            via = re.sub(r"^via\s+", "", r.get("via") or "", flags=re.IGNORECASE) or None
+            job = _job(
+                id=f"gj-{hashlib.md5((r.get('job_id') or link or r.get('title', '')).encode()).hexdigest()[:12]}",
+                title=r.get("title", ""), company=r.get("company_name"), location=r.get("location"),
+                description=r.get("description", ""), url=link, source="google_jobs",
+                job_type="Remote" if ext.get("work_from_home") else ext.get("schedule_type"),
+                country="India", salary=ext.get("salary"),
+            )
+            job["site"] = apply.get("title") or via
+            job["posted"] = ext.get("posted_at")
+            jobs.append(job)
+        _note(f"Google Jobs · {location or 'India'}", f"{len(jobs)} listings found")
+        return jobs
+
+    return cached(f"gjobs:{query.lower()}:{(location or 'india').lower()}", fetch)
 
 
 # ── 5. Jooble (free key on request: jooble.org/api/about) ────
@@ -303,10 +397,12 @@ def jooble_jobs(query: str, location: str | None) -> list[dict]:
                                    json={"keywords": query, "location": location or "India"})
             if resp.status_code != 200:
                 logger.warning(f"Jooble search failed: HTTP {resp.status_code}")
+                _note(f"Jooble · {location or 'India'}", f"failed: HTTP {resp.status_code}")
                 return []
             results = resp.json().get("jobs", [])
         except (httpx.HTTPError, ValueError) as e:
             logger.warning(f"Jooble search failed: {e}")
+            _note(f"Jooble · {location or 'India'}", f"failed: {e.__class__.__name__}")
             return []
         jobs = []
         for r in results[:40]:
@@ -321,6 +417,7 @@ def jooble_jobs(query: str, location: str | None) -> list[dict]:
             job["site"] = r.get("source")
             job["posted"] = (r.get("updated") or "")[:10] or None
             jobs.append(job)
+        _note(f"Jooble · {location or 'India'}", f"{len(jobs)} listings found")
         return jobs
 
     return cached(f"jooble:{query.lower()}:{(location or 'india').lower()}", fetch)
@@ -333,14 +430,16 @@ def live_sources() -> list[str]:
         out.append("Adzuna")
     if settings.jooble_api_key:
         out.append("Jooble")
+    if settings.serpapi_key:
+        out.append("Google Jobs")
     if settings.serper_api_key:
-        out.append("Google (LinkedIn, Naukri, Indeed and more)")
+        out.append("Google (LinkedIn, Naukri, Indeed, company sites)")
     return out
 
 
 # ── Combined search ───────────────────────────────────────────
 
-LIVE_API_SOURCES = ("adzuna", "jooble", "web_job")
+LIVE_API_SOURCES = ("adzuna", "jooble", "web_job", "google_jobs")
 _TECH_WORDS = {"developer", "engineer", "sde", "programmer", "software", "coder", "coding", "development"}
 
 
@@ -350,7 +449,8 @@ def _matches_query(job: dict, terms: list[str]) -> bool:
 
 
 def search_jobs(query: str = "", skills: list[str] | None = None, location: str | None = None,
-                live: bool = True, limit: int = 50, filter_samples: bool = True) -> list[dict]:
+                live: bool = True, limit: int = 50, filter_samples: bool = True,
+                include_rss: bool = True) -> list[dict]:
     """Search all sources, filter by the query, and de-duplicate."""
     skills = skills or []
     q = (query or "").strip().lower()
@@ -364,11 +464,12 @@ def search_jobs(query: str = "", skills: list[str] | None = None, location: str 
             # The user's state first, then all of India, so nearby jobs are
             # never crowded out by the big cities.
             scopes = [location, None] if location and location.lower() not in ("india", "remote") else [None]
-            calls = [(fn, where) for where in scopes for fn in (adzuna_jobs, jooble_jobs, web_job_postings)]
+            calls = [(fn, where) for where in scopes for fn in (adzuna_jobs, jooble_jobs, web_job_postings, google_jobs)]
             with ThreadPoolExecutor(max_workers=len(calls)) as pool:  # sources are slow; ask them all at once
                 for found in pool.map(lambda c: c[0](q, c[1]), calls):
                     jobs += found
-        jobs += rss_jobs()
+        if include_rss:
+            jobs += rss_jobs()  # worldwide remote jobs; left out of matching for India
 
     if terms:
         # Live API results were already searched for the query. RSS feeds are
