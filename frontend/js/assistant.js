@@ -4,6 +4,7 @@ import { t } from './i18n.js';
 import { icon } from './ui.js';
 import { api } from './api.js';
 import { state } from './state.js';
+import { canListen, canSpeak, listen, stopListening, listening, speak, stopSpeaking, speakOn, voiceLang } from './voice.js';
 
 const log = [];   // { who: 'user' | 'bot', text, intent }
 
@@ -49,6 +50,7 @@ function render() {
       <span class="bot-face" aria-hidden="true">${icon('sparkles')}</span>
       <div style="flex:1"><h2 class="h3" id="drawerTitle">${esc(t('asst.title', 'Assistant'))}</h2>
         <p class="tiny quiet">${esc(t('asst.lede', 'Answers based on your real matches'))}</p></div>
+      ${canSpeak() ? `<button class="btn btn-quiet btn-icon" type="button" id="speakBtn" aria-pressed="${speakOn.get()}" aria-label="${esc(t('voice.speak', 'Read answers aloud'))}" title="${esc(t('voice.speak', 'Read answers aloud'))}">${icon(speakOn.get() ? 'volume-2' : 'volume-x')}</button>` : ''}
       <button class="btn btn-quiet btn-icon" type="button" id="drawerClose" aria-label="${esc(t('asst.close', 'Close'))}">${icon('x')}</button>
     </div>
     <div class="chat-log" id="chatLog" aria-live="polite">
@@ -63,15 +65,44 @@ function render() {
     <form class="chat-form" id="chatForm">
       <label class="sr-only" for="chatInput">${esc(t('asst.ph', 'Ask about eligibility, documents, deadlines'))}</label>
       <input class="input" id="chatInput" autocomplete="off" maxlength="500" placeholder="${esc(t('asst.ph', 'Ask about eligibility, documents, deadlines'))}" ${state.profileId ? '' : 'disabled'} />
+      ${canListen() ? `<button class="btn btn-secondary btn-icon mic-btn" type="button" id="micBtn" aria-pressed="false" aria-label="${esc(t('voice.mic', 'Speak your question ({lang})', { lang: voiceLang() === 'hi-IN' ? 'हिन्दी' : 'English' }))}" title="${esc(t('voice.micTip', 'Speak in {lang}. Your browser sends the audio to its speech service to turn it into text.', { lang: voiceLang() === 'hi-IN' ? 'हिन्दी' : 'English' }))}" ${state.profileId ? '' : 'disabled'}>${icon('mic')}</button>` : ''}
       <button class="btn btn-primary btn-icon" type="submit" aria-label="${esc(t('asst.send', 'Send'))}" ${state.profileId ? '' : 'disabled'}>${icon('send')}</button>
     </form>`;
   const chat = $('#chatLog'); chat.scrollTop = chat.scrollHeight;
   $('#drawerClose').addEventListener('click', closeAssistant);
   d.querySelectorAll('[data-q]').forEach((b) => b.addEventListener('click', () => ask(b.dataset.q)));
   $('#chatForm').addEventListener('submit', (e) => { e.preventDefault(); ask($('#chatInput').value); });
+  $('#speakBtn')?.addEventListener('click', () => {
+    speakOn.set(!speakOn.get());
+    if (!speakOn.get()) stopSpeaking();
+    render();
+    $('#speakBtn')?.focus();
+  });
+  $('#micBtn')?.addEventListener('click', toggleMic);
 }
 
-async function ask(q) {
+async function toggleMic() {
+  const btn = $('#micBtn');
+  if (listening()) { stopListening(); return; }
+  stopSpeaking();
+  btn.setAttribute('aria-pressed', 'true');
+  btn.classList.add('live');
+  const input = $('#chatInput');
+  input.placeholder = t('voice.listening', 'Listening…');
+  try {
+    const text = await listen({ onText: (txt) => { if ($('#chatInput')) $('#chatInput').value = txt; } });
+    if (text) ask(text, { spoken: true });
+  } catch (err) {
+    log.push({ who: 'bot', text: err.message });
+    render();
+  } finally {
+    const b = $('#micBtn');
+    if (b) { b.setAttribute('aria-pressed', 'false'); b.classList.remove('live'); }
+    if ($('#chatInput')) $('#chatInput').placeholder = t('asst.ph', 'Ask about eligibility, documents, deadlines');
+  }
+}
+
+async function ask(q, { spoken = false } = {}) {
   q = (q || '').trim();
   if (!q || !state.profileId) return;
   log.push({ who: 'user', text: q });
@@ -80,6 +111,7 @@ async function ask(q) {
   try {
     const res = await api('/api/agent/assistant', { method: 'POST', json: { profile_id: state.profileId, question: q } });
     log[log.length - 1] = { who: 'bot', text: res.answer, intent: res.intent };
+    if (speakOn.get() || spoken) speak(res.answer);
   } catch (err) {
     log[log.length - 1] = { who: 'bot', text: t('asst.error', 'Could not get an answer: {msg}', { msg: err.message }) };
   }
@@ -98,6 +130,8 @@ export function openAssistant() {
 }
 
 export function closeAssistant() {
+  stopListening();
+  stopSpeaking();
   $('#drawer').classList.remove('open');
   $('#scrim').hidden = true;
   document.querySelectorAll('[data-assistant]').forEach((b) => b.setAttribute('aria-expanded', 'false'));

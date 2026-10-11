@@ -7,6 +7,7 @@ import { state, eligibleMatches, readiness, hasDoc } from '../state.js';
 import { runAgents } from '../run.js';
 import { downloadCalendar, printPlan } from '../print.js';
 import { EDUCATION } from '../profileFields.js';
+import { thisWeek } from './planner.js';
 
 let stampedRunId = null; // the stamp animation plays once per new result, not on every visit
 
@@ -75,7 +76,7 @@ export function priorities() {
     });
   }
 
-  const top = state.jobs?.results?.find((j) => j.fit_score >= 0.3);
+  const top = (state.jobs?.report?.jobs || []).find((j) => j.fit_score >= 0.3 && j.source !== 'sample');
   if (!state.jobs) {
     items.push({
       urgency: 40,
@@ -183,10 +184,11 @@ export const home = {
       <div class="home-grid">
         <section class="card" aria-labelledby="hTodo">
           <div class="panel-head"><h2 class="h3" id="hTodo">${esc(t('home.todo', 'Do this week'))}</h2>
-            <button class="btn btn-quiet btn-sm" id="hRerun" ${state.running ? 'disabled' : ''}>${icon('refresh-cw', 'icon-sm')}${esc(t('run.again', 'Check again'))}</button></div>
-          ${todo.length ? `<ol class="todo">${todo.map((i) => `
+            <div class="row" style="gap:4px"><a class="btn btn-quiet btn-sm" href="#/planner">${icon('list-todo', 'icon-sm')}${esc(t('pp.full', 'Full plan'))}</a>
+            <button class="btn btn-quiet btn-sm" id="hRerun" ${state.running ? 'disabled' : ''}>${icon('refresh-cw', 'icon-sm')}${esc(t('run.again', 'Check again'))}</button></div></div>
+          <div id="hWeek">${todo.length ? `<ol class="todo">${todo.map((i) => `
             <li><div><p class="todo-title">${esc(i.title)}</p><p class="todo-meta">${esc(i.meta)}</p></div>${i.action}</li>`).join('')}</ol>`
-            : `<p class="quiet" style="padding:18px 22px">${esc(t('home.todoEmpty', 'Nothing urgent right now. Check back for new schemes.'))}</p>`}
+            : `<p class="quiet" style="padding:18px 22px">${esc(t('home.todoEmpty', 'Nothing urgent right now. Check back for new schemes.'))}</p>`}</div>
         </section>
         <div class="stack" style="margin-top:0">
           <section class="card" aria-labelledby="hDead">
@@ -203,6 +205,7 @@ export const home = {
       </div>`;
 
     el.querySelector('#hRerun').addEventListener('click', () => runAgents().catch(() => {}));
+    thisWeek(el.querySelector('#hWeek'));   // the planner's first week replaces the quick list when it is ready
     el.querySelector('#hCal').addEventListener('click', downloadCalendar);
     el.querySelector('#hPrint').addEventListener('click', printPlan);
     if (fresh) {

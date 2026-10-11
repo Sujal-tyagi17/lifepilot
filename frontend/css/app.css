@@ -856,3 +856,56 @@ kbd { font-family: inherit; font-size: .75rem; border: 1px solid var(--line-stro
   body.print-plan .card { box-shadow: none; border: 1pt solid #bbb; background: #fff; backdrop-filter: none; }
   body.print-plan .step { page-break-inside: avoid; }
 }
+
+/* ── Phase 4: what would change it, planner, scheme map, scanner, voice ── */
+.cf-card > summary { list-style: none; flex-wrap: wrap; }
+.cf-card > summary::-webkit-details-marker { display: none; }
+.cf-card:not([open]) > summary { border-bottom: 0; }
+.cf-list { list-style: none; margin: 0; padding: 0; }
+.cf-list > li { padding: 14px 22px; border-top: 1px solid var(--line); }
+.cf-list > li:first-child { border-top: 0; }
+.cf-item { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+.cf-icon { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; background: var(--indigo-tint); color: var(--indigo); }
+.cf-change { font-weight: 620; }
+@media (max-width: 560px) { .cf-item { grid-template-columns: 30px minmax(0, 1fr); } .cf-item > :last-child { grid-column: 2; justify-self: start; } }
+
+.ptasks { list-style: none; margin: 0; padding: 0; }
+.ptask { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 14px 22px; border-top: 1px solid var(--line); }
+.ptask:first-child { border-top: 0; }
+.ptask.risk { background: var(--red-tint); }
+.ptask-icon { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; background: var(--surface-2); }
+.ptask-icon.k-document { background: var(--saffron-tint); color: var(--saffron-deep); }
+.ptask-icon.k-scheme { background: var(--indigo-tint); color: var(--indigo); }
+.ptask-icon.k-job { background: var(--green-tint); color: var(--green); }
+.ptask-icon.k-skill { background: var(--surface-2); color: var(--ink-2); }
+@media (max-width: 560px) { .ptask { grid-template-columns: 30px minmax(0, 1fr); } .ptask > :last-child { grid-column: 2; justify-self: start; } }
+.week .panel-head { flex-wrap: wrap; }
+.plan-link { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; color: inherit; text-decoration: none; }
+.plan-link:hover { border-color: var(--line-strong); }
+
+.graph-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 14px; margin-top: 14px; }
+.graph-canvas { height: 560px; padding: 0; overflow: hidden; }
+.graph-side { align-self: start; position: sticky; top: 92px; }
+.graph-legend { list-style: none; margin: 18px 0 0; padding: 14px 0 0; border-top: 1px solid var(--line); display: grid; gap: 8px; font-size: .8125rem; color: var(--ink-3); }
+.graph-legend li { display: flex; align-items: center; gap: 8px; }
+.graph-legend i { width: 14px; height: 14px; flex: none; border: 2px solid var(--ink-3); background: var(--surface-2); }
+.graph-legend .lg-scheme { border-radius: 4px; }
+.graph-legend .lg-scheme.on { background: var(--indigo); border-color: var(--indigo); }
+.graph-legend .lg-doc { border-radius: 50%; border: 2px dashed var(--saffron); background: var(--surface); }
+.graph-legend .lg-doc.on { background: var(--green); border: 2px solid var(--green); }
+.graph-legend .lg-rule { transform: rotate(45deg) scale(.8); border-color: var(--red); background: var(--surface); }
+.graph-legend .lg-rule.on { background: var(--green); border-color: var(--green); }
+@media (max-width: 900px) { .graph-wrap { grid-template-columns: 1fr; } .graph-canvas { height: 440px; } .graph-side { position: static; } }
+
+.scan-result { margin-top: 14px; padding: 16px; border-radius: 14px; background: var(--surface-2); }
+.scan-fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 12px 0 0; }
+.scan-fields div { padding: 8px 10px; border-radius: 10px; background: var(--surface); }
+.scan-fields dt { font-size: .75rem; color: var(--ink-3); }
+.scan-fields dd { margin: 2px 0 0; font-weight: 640; }
+.scan-preview { white-space: pre-wrap; word-break: break-word; margin-top: 6px; }
+.scan-progress { margin-top: 12px; display: grid; gap: 6px; }
+
+.mic-btn.live { background: var(--red); border-color: var(--red); color: #fff; animation: mic-pulse 1.2s ease-in-out infinite; }
+@keyframes mic-pulse { 50% { box-shadow: 0 0 0 6px var(--red-tint); } }
+@media (prefers-reduced-motion: reduce) { .mic-btn.live { animation: none; } }
+.scan-progress .lift-bar { display: block; flex: none; }

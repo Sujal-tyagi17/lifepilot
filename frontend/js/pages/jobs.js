@@ -5,6 +5,7 @@ import { icon, toast } from '../ui.js';
 import { api } from '../api.js';
 import { state, saveJobs } from '../state.js';
 import { tagInput, chips, bindControls, ring, animateIn } from '../components.js';
+import { canListen, listen, listening, stopListening } from '../voice.js';
 
 export const SEGMENTS = [
   ['must', 'seg.must', 'Must-have skills'], ['nice', 'seg.nice', 'Good to have'], ['role', 'seg.role', 'Role'],
@@ -154,6 +155,24 @@ function insightCard(ins) {
     </div></section>`;
 }
 
+/** What would change it, for jobs: one skill (or two) and how many more jobs reach 70% fit. */
+function changeCard(rows) {
+  const useful = (rows || []).filter((r) => r.jobs_gained > 0 || r.good_gained > 0 || (r.jobs_lifted >= 2 && !r.pair));
+  if (!useful.length) return '';
+  return `<section class="card panel-pad section" aria-labelledby="jCfH" style="margin-top:14px">
+    <h2 class="h3" id="jCfH">${icon('wand-sparkles', 'icon-sm')} ${esc(t('cf.jobsT', 'What would change it?'))}</h2>
+    <p class="small quiet">${esc(t('cf.jobsLede', 'Each skill tried as if you had used it in a project, then your jobs scored again.'))}</p>
+    <ul class="cf-list">${useful.slice(0, 4).map((r) => `<li>
+      <p><strong>${esc(t('cf.learn', 'Learn {s}', { s: r.skill }))}</strong> <span class="quiet small">· ${esc(r.weeks === 1 ? t('cf.week1', 'about 1 week') : t('cf.weeks', 'about {w} weeks', { w: r.weeks }))}</span></p>
+      <p class="small">${r.jobs_gained
+        ? `${esc(r.jobs_gained === 1 ? t('cf.jobsOne', '1 more job reaches 70% fit') : t('cf.jobsN', '{n} more jobs reach 70% fit', { n: r.jobs_gained }))} <span class="quiet">(${r.above_before} → ${r.above_after})</span>`
+        : r.good_gained
+          ? esc(r.good_gained === 1 ? t('cf.goodOne', '1 more job becomes a good match (50%+)') : t('cf.goodN', '{n} more jobs become good matches (50%+)', { n: r.good_gained }))
+          : esc(t('cf.lift', 'Raises your fit on {n} jobs by about {p} points', { n: r.jobs_lifted, p: Math.round(r.avg_lift * 100) }))}</p>
+      ${(r.examples || []).length ? `<p class="tiny quiet">${esc(r.examples.map((e) => e.company ? `${e.title}, ${e.company}` : e.title).join(' · '))}</p>` : ''}
+    </li>`).join('')}</ul></section>`;
+}
+
 function results(el) {
   const box = el.querySelector('#jResults');
   const data = jobsData();
@@ -190,6 +209,7 @@ function results(el) {
   box.innerHTML = `
     ${readCard(rep)}
     ${insightCard(rep.insight)}
+    ${changeCard(rep.what_would_change)}
     ${!(rep.sources || []).length ? `<p class="notice notice-warn" style="margin-top:14px">${icon('wifi-off', 'icon-sm')} ${esc(t('jobs.noLiveSrc', 'Live job search is not set up on this server, so only example roles are shown. Add SERPER_API_KEY (free at serper.dev) or SERPAPI_KEY (free at serpapi.com) to backend/.env and restart to see real openings.'))}</p>` : ''}
     <div class="toolbar" style="margin-top:18px">
       <label class="input-icon"><span class="sr-only">${esc(t('jobs.filterPh', 'Filter by title or company'))}</span>${icon('search')}<input class="input" type="search" id="jFilter" value="${esc(q)}" placeholder="${esc(t('jobs.filterPh', 'Filter by title or company'))}" /></label>
@@ -280,7 +300,8 @@ export const jobs = {
             <p class="hint">${icon('lock', 'icon-sm')} ${esc(t('jobs.privacy', 'Kept only in this browser tab. Closing the tab removes it.'))}</p>
           </div>
           <div class="field"><label class="label" for="jRole">${esc(t('jobs.role', 'Role you want'))} <span class="quiet">(${esc(t('ob.optional', 'optional'))})</span></label>
-            <div class="input-icon">${icon('target')}<input class="input" id="jRole" name="role" maxlength="120" value="${esc(last.role || '')}" placeholder="${esc(t('jobs.rolePh', 'e.g. Data analyst'))}" /></div>
+            <div class="row" style="gap:6px;flex-wrap:nowrap"><div class="input-icon" style="flex:1">${icon('target')}<input class="input" id="jRole" name="role" maxlength="120" value="${esc(last.role || '')}" placeholder="${esc(t('jobs.rolePh', 'e.g. Data analyst'))}" /></div>
+            ${canListen() ? `<button class="btn btn-secondary btn-icon mic-btn" type="button" id="jMic" aria-pressed="false" aria-label="${esc(t('voice.role', 'Say the role'))}" title="${esc(t('voice.role', 'Say the role'))}">${icon('mic')}</button>` : ''}</div>
             <p class="hint">${esc(t('jobs.roleHint', 'Leave it empty and we go by your resume.'))}</p>
             <div class="suggest">${ROLES.map((r) => `<button type="button" data-role="${esc(r)}">${esc(r)}</button>`).join('')}</div></div>
           ${tagInput('skills', last.skills || [], { label: t('jobs.skills', 'Skills not on your resume'), placeholder: t('jobs.skillsPh', 'Type a skill and press Enter'), suggestions: SKILL_IDEAS.filter((s) => !(last.skills || []).some((x) => x.toLowerCase() === s.toLowerCase())) })}
@@ -298,6 +319,14 @@ export const jobs = {
 
     const form = el.querySelector('#jForm');
     el.querySelectorAll('[data-role]').forEach((b) => b.addEventListener('click', () => { el.querySelector('#jRole').value = b.dataset.role; }));
+    el.querySelector('#jMic')?.addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      if (listening()) { stopListening(); return; }
+      btn.classList.add('live'); btn.setAttribute('aria-pressed', 'true');
+      try { await listen({ onText: (txt) => { el.querySelector('#jRole').value = txt.replace(/[.।]$/, ''); } }); }
+      catch (err) { toast(err.message, 'bad'); }
+      btn.classList.remove('live'); btn.setAttribute('aria-pressed', 'false');
+    });
     const drop = el.querySelector('#jDrop');
     el.querySelector('#jFile').addEventListener('change', (e) => { const f = e.target.files[0]; if (f) readResume(f, el); });
     drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('drag'); });

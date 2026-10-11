@@ -25,6 +25,7 @@ from __future__ import annotations
 import math
 import re
 from collections import Counter
+from itertools import combinations
 
 from app.jobs.catalog import classify_role, families, family_label, skill_info
 from app.jobs.locations import location_rank
@@ -380,6 +381,67 @@ def market_insight(ranked: list[dict], cand: dict, top: int = 10) -> dict | None
     }
 
 
+def skill_counterfactuals(ranked: list[dict], cand: dict, threshold: float = 0.7, top: int = 20,
+                          max_skills: int = 6) -> list[dict]:
+    """What would change it, for jobs: "Learn SQL and 4 more jobs reach 70% fit".
+
+    For each skill missing from your best matches, pretend you have it at project
+    level (the same as ticking it off in a roadmap), re-score those jobs and count
+    how many cross the threshold. Ranked by jobs gained per week of learning.
+    """
+    pool = [j for j in ranked if j["relevant"]][:top]
+    if not pool:
+        return []
+    counts = Counter(s for j in pool for s in j["skills_missing"] + j.get("skills_missing_nice", []))
+    before_ok = {id(j) for j in pool if j["fit_score"] >= threshold}
+    before_good = {id(j) for j in pool if j["fit_score"] >= 0.5}
+    out = []
+    for skill, _n in counts.most_common(max_skills * 2)[: max_skills * 2]:
+        lifted = {**cand, "strength": {**cand["strength"], skill: max(cand["strength"].get(skill, 0), 2)}}
+        gained, lift, good = [], [], 0
+        for j in pool:
+            if skill not in j["skills_missing"] and skill not in j.get("skills_missing_nice", []):
+                continue
+            new = score_with(j, lifted)["fit_score"]
+            lift.append(new - j["fit_score"])
+            if id(j) not in before_good and new >= 0.5:
+                good += 1
+            if id(j) not in before_ok and new >= threshold:
+                gained.append({"title": j.get("title"), "company": j.get("company"),
+                               "before": j["fit_score"], "after": new})
+        if not lift:
+            continue
+        weeks = skill_info(skill)["weeks"]
+        out.append({
+            "skill": skill,
+            "weeks": weeks,
+            "jobs_gained": len(gained),
+            "good_gained": good,          # more jobs reaching a good (50%) match
+            "jobs_lifted": sum(d > 0 for d in lift),
+            "avg_lift": round(sum(lift) / len(lift), 2),
+            "above_before": len(before_ok),
+            "above_after": len(before_ok) + len(gained),
+            "examples": sorted(gained, key=lambda g: -g["after"])[:3],
+            "score": round((len(gained) * 2 + good + sum(lift) * 5) / max(1, weeks), 2),
+        })
+    out.sort(key=lambda r: (-r["jobs_gained"], -r["good_gained"], -r["score"]))
+    out = [r for r in out if r["jobs_gained"] or r["good_gained"] or r["avg_lift"] >= 0.03][:max_skills]
+    # Two skills together sometimes unlock jobs neither does alone
+    best_single = max((r["jobs_gained"] for r in out), default=0)
+    best_pair = None
+    for a, b in combinations([r["skill"] for r in out[:4]], 2):
+        lifted = {**cand, "strength": {**cand["strength"], a: max(cand["strength"].get(a, 0), 2),
+                                       b: max(cand["strength"].get(b, 0), 2)}}
+        gained = [j for j in pool if id(j) not in before_ok and score_with(j, lifted)["fit_score"] >= threshold]
+        if len(gained) > best_single and (best_pair is None or len(gained) > best_pair["jobs_gained"]):
+            best_pair = {"skill": f"{a} + {b}", "skills": [a, b],
+                         "weeks": skill_info(a)["weeks"] + skill_info(b)["weeks"], "jobs_gained": len(gained),
+                         "above_before": len(before_ok), "above_after": len(before_ok) + len(gained),
+                         "examples": [{"title": j.get("title"), "company": j.get("company")} for j in gained[:3]],
+                         "pair": True}
+    return out + ([best_pair] if best_pair else [])
+
+
 def search_query(cand: dict) -> str:
     """What to search live sources for: the role typed, else the role the resume points to."""
     return cand["desired"] or family_label(cand["target_family"]) or cand["field"] or ""
@@ -396,6 +458,7 @@ def match_report(jobs: list[dict], profile: dict, resume_text: str = "", desired
         "target_label": family_label(cand["target_family"]),
         "target_from": cand["target_from"],
         "insight": market_insight(ranked, cand),
+        "what_would_change": skill_counterfactuals(ranked, cand),
         "relevant_count": sum(j["relevant"] for j in ranked),
         "target_count": sum(j["group"] == "target" for j in ranked),
         "live_count": sum(j.get("source") != "sample" and j["relevant"] for j in ranked),

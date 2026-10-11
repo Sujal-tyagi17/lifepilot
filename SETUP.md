@@ -239,6 +239,18 @@ Open **ML Lab** from the account menu (or How it works) to see each model's data
 confusion matrix and a box to try it. The labelling rules for the data are in
 `backend/app/ml/data/LABELLING.md`.
 
+## 8c. Phase 4 features
+
+| Feature | Where | How it works |
+|---|---|---|
+| What would change it? | Schemes → Matches (top card); Jobs (under "Best next skill") | `services/counterfactual.py` tries small honest changes (next education level, field, goals, a disability certificate, income only as "if it changes") and re-runs the same rules. Caste, gender, age and state are never suggested. For jobs, `matching.skill_counterfactuals` adds one missing skill at a time and re-scores your matches. |
+| Weekly plan | `#/planner`, Home "Do this week", link on Documents | `services/planner.py`: every document, application, job and skill becomes a task with hours and a value. Each week a 0/1 knapsack picks the most valuable set that fits your hours; ties go to the earliest deadline. The page compares it with nearest-deadline-first. |
+| Scheme map | Schemes → Map | `services/graph.py` builds scheme → document and scheme → rule edges; drawn with Cytoscape.js (`frontend/vendor/graph`). Shows the missing document that unblocks the most. |
+| Document scanner | Documents → Scan a document | Tesseract.js (English + Hindi, `frontend/vendor/ocr`, about 12 MB, loaded on first use) reads the photo **in the browser**. Only the text goes to `POST /api/documents/verify`, which finds the type (the ML document classifier), pulls out name, date, income, category and checks them. Nothing is stored. It checks consistency, not authenticity. |
+| Voice | Mic in the assistant and on the Jobs role box; speaker button in the assistant | Web Speech API in `js/voice.js`, Hindi (`hi-IN`) or English (`en-IN`) by the language toggle. Works in Chrome and Edge on `localhost` or HTTPS; those browsers send the audio to their speech service. Hindi questions get Hindi answers. |
+
+All libraries are served from this server (no CDN). The CSP allows `'wasm-unsafe-eval'` so the scanner's WebAssembly can run; JavaScript `eval` stays blocked.
+
 ## 9. Troubleshooting
 
 | Problem | Fix |

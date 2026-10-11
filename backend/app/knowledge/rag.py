@@ -6,6 +6,7 @@ question with that context, and sends it to the LLM for a grounded answer.
 from __future__ import annotations
 
 import logging
+import re
 
 from app.knowledge.vectorstore import search as vector_search
 from datetime import date
@@ -139,18 +140,38 @@ _GENERIC = {"scheme", "schemes", "scholarship", "scholarships", "students", "stu
 
 
 _KEYWORDS = {
-    "eligibility": ("eligible", "qualify", "can i get", "which scheme", "schemes for me", "my schemes", "पात्र", "योग्य"),
-    "documents": ("document", "papers", "checklist", "certificate", "दस्तावेज", "कागज"),
-    "deadlines": ("deadline", "last date", "when", "closing", "तारीख", "तिथि"),
-    "benefits": ("how much", "benefit", "money", "amount", "राशि", "पैसे"),
-    "how_to_apply": ("how do i apply", "how to apply", "where do i apply", "apply link", "process", "आवेदन कैसे"),
-    "jobs": ("job", "career", "internship", "नौकरी"),
+    "eligibility": ("eligible", "qualify", "can i get", "which scheme", "schemes for me", "my schemes", "पात्र", "योग्य",
+                    "कौन सी योजना", "कौनसी योजना", "कौन सी स्कॉलरशिप", "मिल सकती", "मिल सकता"),
+    "documents": ("document", "papers", "checklist", "certificate", "दस्तावेज", "कागज", "डॉक्यूमेंट", "प्रमाण पत्र", "प्रमाणपत्र"),
+    "deadlines": ("deadline", "last date", "when", "closing", "तारीख", "तिथि", "आखिरी", "अंतिम", "कब तक", "डेडलाइन"),
+    "benefits": ("how much", "benefit", "money", "amount", "राशि", "पैसे", "कितना", "कितने", "रुपये", "फायदा"),
+    "how_to_apply": ("how do i apply", "how to apply", "where do i apply", "apply link", "process", "आवेदन कैसे",
+                     "कैसे अप्लाई", "कहाँ आवेदन", "कहां आवेदन", "आवेदन करें"),
+    "jobs": ("job", "career", "internship", "नौकरी", "जॉब", "करियर"),
 }
+
+_DEVANAGARI = re.compile(r"[\u0900-\u097F]")
+
+
+def is_hindi(text: str) -> bool:
+    return bool(_DEVANAGARI.search(text or ""))
+
+
+def _keyword_intent(q: str) -> str | None:
+    for label, words in _KEYWORDS.items():
+        if any(w in q for w in words):
+            return label
+    return None
 
 
 def detect_intent(question: str) -> dict:
     """What the question is about: the trained intent classifier (app/ml), or keywords if it is not sure."""
     from app.ml.predict import intent as ml_intent
+    if is_hindi(question):
+        # The classifier was trained on English questions; Hindi goes by Hindi keywords
+        label = _keyword_intent(question.lower())
+        if label:
+            return {"label": label, "confidence": None, "by": "keywords"}
     r = ml_intent(question)
     if r and r["confidence"] >= 0.4:
         out = {"label": r["label"], "confidence": r["confidence"], "by": "model"}
@@ -159,10 +180,9 @@ def detect_intent(question: str) -> dict:
         if second and second["score"] >= 0.25 and second["label"] != "other" and r["label"] != "other":
             out["also"] = second["label"]
         return out
-    q = question.lower()
-    for label, words in _KEYWORDS.items():
-        if any(w in q for w in words):
-            return {"label": label, "confidence": None, "by": "keywords"}
+    label = _keyword_intent(question.lower())
+    if label:
+        return {"label": label, "confidence": None, "by": "keywords"}
     return {"label": "other", "confidence": r["confidence"] if r else None, "by": "model" if r else "keywords"}
 
 
@@ -176,11 +196,68 @@ def _named_scheme(q: str, matches: list[dict]) -> dict | None:
     return None
 
 
+def _when_hi(m: dict) -> str:
+    d = _days_left(m.get("deadline"))
+    if d is None:
+        return "अंतिम तिथि: पोर्टल देखें"
+    return f"अंतिम तिथि {m['deadline']} ({d} दिन बाकी)" if d >= 0 else f"{m['deadline']} को बंद हो गई"
+
+
+def _offline_answer_hi(intent: str, eligible: list[dict], profile: dict | None) -> str | None:
+    """Hindi answers for the most common questions, used when the question is in Hindi."""
+    if intent == "eligibility":
+        if not eligible:
+            return "अभी आप किसी योजना के लिए पूरी तरह पात्र नहीं हैं। **Schemes** में देखें कि हर योजना के लिए क्या कमी है।"
+        ordered = sorted(eligible, key=lambda m: (_days_left(m.get("deadline")) is None, _days_left(m.get("deadline")) or 0))
+        lines = [f"आप **{len(eligible)} {'योजना' if len(eligible) == 1 else 'योजनाओं'}** के लिए पात्र हैं:", ""]
+        lines += [f"• **{m['title']}**: {m.get('amount') or 'राशि नहीं बताई गई'} · {_when_hi(m)}" for m in ordered[:6]]
+        first = ordered[0]
+        lines += ["", f"**अगला कदम:** सबसे पहले {first['title']} के लिए आवेदन करें" + (f": {first['url']}" if first.get("url") else "।")]
+        return "\n".join(lines)
+    if intent == "documents":
+        with_docs = [m for m in eligible if m.get("documents")]
+        if not with_docs:
+            return "अभी कोई दस्तावेज़ तैयार करने की ज़रूरत नहीं: आप किसी योजना के लिए पूरी तरह पात्र नहीं हैं।"
+        common: dict[str, int] = {}
+        for m in with_docs:
+            for d in m["documents"]:
+                common[d] = common.get(d, 0) + 1
+        ordered = sorted(common, key=lambda d: -common[d])
+        lines = ["जिन योजनाओं के लिए आप पात्र हैं, उनके दस्तावेज़:", ""]
+        lines += [f"• {d}" + (f" ({common[d]} योजनाओं के लिए)" if common[d] > 1 else "") for d in ordered[:10]]
+        lines += ["", "**अगला कदम:** **Documents** में हर दस्तावेज़ पर निशान लगाएँ या उसकी फ़ोटो स्कैन करें।"]
+        return "\n".join(lines)
+    if intent == "deadlines":
+        dated = sorted(((d, m) for m in eligible if (d := _days_left(m.get("deadline"))) is not None and d >= 0), key=lambda t: t[0])
+        if not dated:
+            return "आपकी पात्र योजनाओं में अभी कोई तय अंतिम तिथि नहीं है। तारीख़ के लिए हर पोर्टल देखें।"
+        lines = ["आपकी पात्र योजनाओं की अगली अंतिम तिथियाँ:", ""]
+        lines += [f"• **{m['title']}**: {m['deadline']} ({d} दिन बाकी){' ⚠️' if d <= 7 else ''}" for d, m in dated[:5]]
+        lines += ["", f"**अगला कदम:** पहले {dated[0][1]['title']} पूरा करें।"]
+        return "\n".join(lines)
+    if intent == "benefits" and eligible:
+        lines = [f"आपकी {len(eligible)} पात्र योजनाओं से मिलने वाली राशि:", ""]
+        lines += [f"• **{m['title']}**: {m.get('amount') or 'अलग-अलग'}" for m in eligible[:6]]
+        return "\n".join(lines)
+    if intent == "how_to_apply":
+        return ("ज़्यादातर छात्रवृत्तियों के लिए **राष्ट्रीय छात्रवृत्ति पोर्टल** (https://scholarships.gov.in/) पर ऑनलाइन आवेदन होता है: "
+                "मोबाइल नंबर से रजिस्टर करें, फ़ॉर्म भरें, दस्तावेज़ अपलोड करें, फिर आपका कॉलेज उसे सत्यापित करता है।")
+    if intent == "other":
+        name = profile["name"].split()[0] if profile and profile.get("name") else ""
+        return (f"नमस्ते{' ' + name if name else ''}! मैं आपकी पात्र योजनाओं ({len(eligible)}), ज़रूरी दस्तावेज़ों, अंतिम तिथियों "
+                "और आवेदन के तरीके के बारे में बता सकता हूँ। पूछें: **मैं किन योजनाओं के लिए पात्र हूँ?**")
+    return None
+
+
 def _offline_answer(question: str, matches: list[dict], profile: dict | None, intent: str | None = None) -> str:
     """Answer without an LLM, routed by the question's intent."""
     q = question.lower()
     intent = intent or detect_intent(question)["label"]
     eligible = [m for m in matches if _is_open_eligible(m)]
+    if is_hindi(question):
+        hi = _offline_answer_hi(intent, eligible, profile)
+        if hi:
+            return hi
 
     named = _named_scheme(q, matches)
     if named and intent in ("eligibility", "documents", "deadlines"):

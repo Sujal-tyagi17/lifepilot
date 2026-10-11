@@ -27,7 +27,7 @@ from app import auth
 from app.config import settings
 from app.database import init_db
 from app.llm.provider import get_provider
-from app.routers import agent, ml, opportunities, profiles, resume
+from app.routers import agent, features, ml, opportunities, profiles, resume
 from app.security import add_security
 
 # Configure logging
@@ -113,6 +113,7 @@ app.include_router(opportunities.router)
 app.include_router(agent.router)
 app.include_router(resume.router)
 app.include_router(ml.router)
+app.include_router(features.router)
 app.include_router(auth.router_auth)
 
 # ---- Static frontend (built-in single-page UI) ----

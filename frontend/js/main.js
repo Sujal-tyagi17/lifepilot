@@ -16,6 +16,8 @@ import { onboarding } from './pages/start.js';
 import { home } from './pages/home.js';
 import { schemes, whatIf } from './pages/schemes.js';
 import { jobs } from './pages/jobs.js';
+import { schemeMap } from './pages/graph.js';
+import { planner } from './pages/planner.js';
 import { jobPlan } from './pages/plan.js';
 import { documents } from './pages/documents.js';
 import { how } from './pages/how.js';
@@ -23,7 +25,7 @@ import { mlLab } from './pages/mllab.js';
 import { profile, applyTheme } from './pages/profile.js';
 
 const ROUTES = {
-  '': landing, welcome: landing, start: onboarding, home, schemes, 'schemes/what-if': whatIf,
+  '': landing, welcome: landing, start: onboarding, home, schemes, 'schemes/what-if': whatIf, 'schemes/map': schemeMap, planner,
   jobs, 'jobs/plan': jobPlan, documents, 'how-it-works': how, 'ml-lab': mlLab, profile,
 };
 
@@ -164,6 +166,8 @@ function commands() {
     { icon: 'house', label: t('cmd.home', 'Open Home'), keys: 'dashboard', run: go('#/home') },
     { icon: 'landmark', label: t('cmd.schemes', 'Open Schemes'), keys: 'scholarship', run: go('#/schemes') },
     { icon: 'sliders-horizontal', label: t('cmd.whatif', 'Open What if'), keys: 'simulate income', run: go('#/schemes/what-if') },
+    { icon: 'network', label: t('cmd.map', 'Open Scheme map'), keys: 'graph knowledge documents', run: go('#/schemes/map') },
+    { icon: 'list-todo', label: t('cmd.plan', 'Open your weekly plan'), keys: 'planner priority week schedule', run: go('#/planner') },
     { icon: 'briefcase', label: t('cmd.jobs', 'Open Jobs'), keys: 'resume', run: go('#/jobs') },
     { icon: 'folder-check', label: t('cmd.docs', 'Open Documents'), keys: 'checklist vault', run: go('#/documents') },
     { icon: 'message-circle', label: t('cmd.asst', 'Ask the assistant'), keys: 'chat help', run: openAssistant },
