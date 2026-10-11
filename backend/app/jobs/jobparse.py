@@ -60,6 +60,27 @@ def required_years(text: str) -> tuple[float, float | None] | None:
     return base
 
 
+# Seniority words in a job title and the experience they usually mean.
+SENIORITY = [
+    (r"\b(?:director|vp|vice president|head of)\b", 10, "Director-level role"),
+    (r"\b(?:principal|staff|architect)\b", 8, "Principal-level role"),
+    (r"\b(?:lead|manager)\b", 5, "Lead or manager role"),
+    (r"\b(?:senior|sr\.?)\b|\b(?:engineer|developer|analyst)\s+(?:ii|iii|iv|2|3)\b", 4, "Senior role"),
+]
+JUNIOR = re.compile(r"\b(?:junior|jr\.?|fresher|freshers|graduate|trainee|intern|internship|entry[\s-]level|associate|apprentice)\b", re.IGNORECASE)
+
+
+def seniority(title: str) -> tuple[int, str] | None:
+    """(years usually needed, label) when the title says senior/lead/principal…"""
+    low = (title or "").lower()
+    if JUNIOR.search(low):
+        return None
+    for pattern, years, label in SENIORITY:
+        if re.search(pattern, low):
+            return years, label
+    return None
+
+
 def _sentences(text: str) -> list[str]:
     return [s for s in re.split(r"(?<=[.;\n])\s+|\n", text or "") if s.strip()]
 
@@ -112,6 +133,9 @@ def analyse_job(job: dict) -> dict:
         family, confidence = classify_role(title, description, must + nice)
 
     years = required_years(description)
+    senior = seniority(title)
+    if senior and (not years or years[0] < senior[0]):
+        years = (float(senior[0]), years[1] if years else None)
     edu = required_education(f"{title}\n{description}")
     return {
         "must": must,
@@ -124,4 +148,6 @@ def analyse_job(job: dict) -> dict:
         "family": family,
         "family_label": family_label(family),
         "family_confidence": confidence,
+        "seniority": senior[1] if senior else None,
+        "junior": bool(JUNIOR.search(title)),
     }
