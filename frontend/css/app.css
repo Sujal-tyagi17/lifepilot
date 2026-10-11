@@ -648,6 +648,10 @@ legend { padding: 0; }
 .j-arrow { color: var(--ink-3); }
 .fit-ring.big { width: 92px; height: 92px; }
 .fit-ring.big b { font-size: 1.4rem; }
+.ready-by { margin-top: 10px; font-weight: 720; display: flex; align-items: center; gap: 6px; }
+.pace { margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; font-size: .8125rem; font-weight: 650; padding: 4px 10px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); }
+.pace-intensive, .pace-fulltime { background: var(--saffron-tint); color: var(--saffron-deep); }
+.pace-light { background: var(--indigo-tint); color: var(--indigo); }
 .progress-line { height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; margin-top: 18px; }
 .progress-line span { display: block; height: 100%; background: linear-gradient(90deg, var(--saffron), var(--green)); border-radius: 999px; transition: width .6s var(--ease); }
 .section-title { margin: 30px 0 12px; }
