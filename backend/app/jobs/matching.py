@@ -26,7 +26,7 @@ from collections import Counter
 
 from app.jobs.catalog import classify_role, families, family_label, skill_info
 from app.jobs.locations import location_rank
-from app.jobs.jobparse import analyse_job, required_education  # noqa: F401  (re-exported)
+from app.jobs.jobparse import analyse_job, required_education, with_typical_skills  # noqa: F401  (re-exported)
 from app.jobs.resume import analyse_resume, public_summary
 
 # Families close enough that a job in one suits someone aiming for the other.
@@ -159,6 +159,8 @@ def _units(units: list[list[str]], strength: dict) -> tuple[float | None, list[s
 
 def score_with(job: dict, cand: dict, parsed: dict | None = None) -> dict:
     a = parsed or analyse_job(job)
+    # Search previews often name one skill or none; then use what this kind of role usually asks for
+    a = with_typical_skills(a, a["family"] or cand["target_family"])
     title = job.get("title", "") or ""
     job_text = f"{title}\n{job.get('description', '') or ''}"
     low = job_text.lower()
@@ -257,7 +259,7 @@ def score_with(job: dict, cand: dict, parsed: dict | None = None) -> dict:
     total_weight = sum(WEIGHTS[k] for k in known)
     # A short post that names only one or two skills tells us little, so its
     # score is held back (up to 30%) until it names four or more.
-    detail = 0.7 + 0.3 * min(1.0, len(a["must_units"]) / 4)
+    detail = 0.7 + 0.3 * min(1.0, a["post_skills"] / 4)   # skills the post itself names
     fit = detail * sum(WEIGHTS[k] * v for k, v in known.items()) / total_weight if total_weight else 0.0
     breakdown = [
         {"signal": k, "value": round(v, 2), "weight": round(WEIGHTS[k] / total_weight, 2),
@@ -292,6 +294,7 @@ def score_with(job: dict, cand: dict, parsed: dict | None = None) -> dict:
         "family": a["family"],
         "family_label": a["family_label"],
         "skills_must": a["must"],
+        "skills_typical": a["typical"],
         "skills_nice": a["nice"],
         "skills_required": a["must"] + a["nice"],
         "skills_matched": have_must + have_nice,

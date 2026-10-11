@@ -108,7 +108,12 @@ function render(el) {
       </div>
       <div class="plan-hero-side" id="pJourney">${journey(p)}</div>
     </header>
-    ${!hasResume ? `<p class="notice notice-warn" style="margin-top:14px">${esc(t('plan.noResume', 'This plan only knows the skills you typed. Add your resume on the Jobs page for a sharper one.'))}</p>` : ''}
+    <p class="notice ${hasResume ? '' : 'notice-warn'} plan-basis" style="margin-top:14px">${icon(hasResume ? 'file-search' : 'user-round', 'icon-sm')} ${esc(hasResume
+      ? t('plan.basisResume', 'Built from your resume: skills you have proved are skipped, skills you only list are proved in the project.')
+      : p.years != null
+        ? t('plan.basisForm', 'Built from the job post, the skills you typed and your work experience ({y}). Add your resume on the Jobs page for a sharper plan.', { y: p.years < 1 ? t('exp.fresher', 'fresher') : t('plan.yrs', '{n} yrs', { n: p.years }) })
+        : t('plan.noResume', 'This plan only knows the skills you typed. Add your resume or choose your work experience on the Jobs page for a sharper one.'))}</p>
+    ${(p.typical_skills || []).length ? `<p class="notice" style="margin-top:10px">${icon('lightbulb', 'icon-sm')} ${esc(t('plan.typical', 'This post names few skills, so the plan adds what {r} roles usually ask for: {s}.', { r: (p.family_label || '').toLowerCase() || t('plan.similar', 'similar'), s: p.typical_skills.join(', ') }))}</p>` : ''}
 
     <h2 class="h2 section-title">${esc(t('plan.focusT', 'Focus areas'))}</h2>
     ${focusCards(p)}

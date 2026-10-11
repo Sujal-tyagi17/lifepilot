@@ -263,3 +263,27 @@ def test_duplicate_without_company_is_dropped(monkeypatch):
         monkeypatch.setattr(sources, name, lambda q, w, fresher=False: [])
     out = sources.search_jobs("AI engineer", location=None, include_rss=False, limit=0)
     assert [j["id"] for j in out] == ["1"]
+
+
+def test_listing_pages_by_title_are_not_jobs():
+    from app.jobs.sources import LISTING_TITLE
+    for t in ["91758 Developer Job Vacancies In India", "Data Analyst Jobs in Bangalore - Apply Now",
+              "1,200+ Python jobs in Pune", "Latest Software Engineer Jobs"]:
+        assert LISTING_TITLE.search(t), t
+    for t in ["Acme hiring Data Analyst in Pune | LinkedIn", "Python Developer - Zeta - Hyderabad"]:
+        assert not LISTING_TITLE.search(t), t
+
+
+def test_plan_for_a_thin_post_uses_typical_skills_and_experience():
+    job = {"title": "Software Developer", "description": "Apply now."}
+    fresher = candidate({}, "", desired_role="Software engineer", user_skills=["Python"], experience_years=0)
+    plan = build_plan(job, fresher, 8)
+    assert plan["typical_skills"] and len(plan["focus"]["learn"]) >= 2
+    senior_job = {"title": "Software Developer", "description": "Python, SQL, Git, REST APIs. 3+ years of experience."}
+    plan2 = build_plan(senior_job, fresher, 8)
+    assert any(s["id"] == "experience" for s in plan2["steps"])
+    pro = candidate({}, "", desired_role="Software engineer", user_skills=["Git"], experience_years=4)
+    plan3 = build_plan({"title": "Django developer", "description": "Django, SQL, Git."}, pro, 8)
+    assert any(s["title"].startswith("Brush up on") for s in plan3["steps"])
+    slow, fast = build_plan(job, fresher, 4), build_plan(job, fresher, 30)
+    assert slow["total_weeks"] > fast["total_weeks"]
