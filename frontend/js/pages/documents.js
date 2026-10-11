@@ -38,7 +38,7 @@ function scanResult(res) {
   const docs = res.documents || [];
   return `<div class="scan-result">
     <div class="row" style="justify-content:space-between;gap:12px;align-items:flex-start">
-      <div><p class="tiny quiet" style="text-transform:uppercase;letter-spacing:.06em;font-weight:700">${esc(t('scan.type', 'Document type'))}</p>
+      <div><p class="tiny quiet" style="font-weight:700;color:var(--saffron-deep)">${esc(t('scan.type', 'Document type'))}</p>
         <p class="h3">${esc(res.type_label)}</p>
         <p class="tiny quiet">${esc(c.by === 'model' ? t('scan.byModel', 'ML document classifier, {p}% sure', { p: Math.round((c.confidence || 0) * 100) }) : t('scan.byKeywords', 'recognised by keywords'))}</p></div>
       <span class="stamp ${verdict[0]}">${esc(verdict[1])}</span>

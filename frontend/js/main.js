@@ -23,6 +23,8 @@ import { documents } from './pages/documents.js';
 import { how } from './pages/how.js';
 import { mlLab } from './pages/mllab.js';
 import { profile, applyTheme } from './pages/profile.js';
+import { initFx } from './fx.js';
+import { logoMark } from './brand.js';
 
 const ROUTES = {
   '': landing, welcome: landing, start: onboarding, home, schemes, 'schemes/what-if': whatIf, 'schemes/map': schemeMap, planner,
@@ -201,6 +203,9 @@ async function checkHealth() {
 }
 
 async function boot() {
+  const mark = document.querySelector('.brand-mark');
+  if (mark) mark.innerHTML = logoMark();
+  initFx();
   initAssistant();
   initPalette();
   setCommands(commands());

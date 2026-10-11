@@ -2,6 +2,7 @@
 import { $, esc } from './util.js';
 import { t } from './i18n.js';
 import { icon } from './ui.js';
+import { logoMark } from './brand.js';
 import { api } from './api.js';
 import { state } from './state.js';
 import { canListen, canSpeak, listen, stopListening, listening, speak, stopSpeaking, speakOn, voiceLang } from './voice.js';
@@ -47,7 +48,7 @@ function render() {
   const d = $('#drawer');
   d.innerHTML = `
     <div class="drawer-head">
-      <span class="bot-face" aria-hidden="true">${icon('sparkles')}</span>
+      <span class="bot-face" aria-hidden="true">${logoMark()}</span>
       <div style="flex:1"><h2 class="h3" id="drawerTitle">${esc(t('asst.title', 'Assistant'))}</h2>
         <p class="tiny quiet">${esc(t('asst.lede', 'Answers based on your real matches'))}</p></div>
       ${canSpeak() ? `<button class="btn btn-quiet btn-icon" type="button" id="speakBtn" aria-pressed="${speakOn.get()}" aria-label="${esc(t('voice.speak', 'Read answers aloud'))}" title="${esc(t('voice.speak', 'Read answers aloud'))}">${icon(speakOn.get() ? 'volume-2' : 'volume-x')}</button>` : ''}

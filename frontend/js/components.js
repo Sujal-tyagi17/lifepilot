@@ -3,6 +3,7 @@
    screen readers work without extra code. */
 import { esc, fmtINR } from './util.js';
 import { icon } from './icons.js';
+import { miniRosette } from './brand.js';
 
 const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -157,6 +158,6 @@ export function reveal(root) {
 }
 
 export function emptyCard({ title, body = '', action = '', iconName = 'sparkles' }) {
-  return `<div class="card empty"><span class="empty-icon">${icon(iconName, 'icon-lg')}</span>
+  return `<div class="card empty"><div class="empty-rosette">${miniRosette()}</div><span class="empty-icon">${icon(iconName, 'icon-lg')}</span>
     <h2 class="h2">${esc(title)}</h2>${body ? `<p class="quiet">${esc(body)}</p>` : ''}${action ? `<div class="row row-wrap" style="margin-top:8px">${action}</div>` : ''}</div>`;
 }

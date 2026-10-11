@@ -8,6 +8,8 @@ import { signIn } from '../auth.js';
 import { startWithExample } from './start.js';
 import { countUp, reveal } from '../components.js';
 import { stamp } from '../ui.js';
+import { rosette, miniRosette, logoMark } from '../brand.js';
+import { burst, splitWords } from '../fx.js';
 
 // Fictional sample students. Their results are computed live by the rule engine.
 const SAMPLES = [
@@ -19,9 +21,19 @@ const SAMPLES = [
     profile: { name: 'Meera', age: 23, gender: 'Female', state: 'Maharashtra', category: 'General', education_level: 'Postgraduate', field_of_study: 'Physics', annual_income: 400000 } },
 ];
 
+/* Small moving pictures for the four headline features. */
+const ART = {
+  scan: `<div class="art-doc"><i></i><i></i><i></i><i class="short"></i><span class="art-scanline"></span><b class="art-tick">✓</b></div>`,
+  plan: `<div class="art-weeks">${[78, 54, 92, 36].map((w, i) => `<div><em>W${i + 1}</em><span style="--w:${w}%;--d:${i * 0.18}s"></span></div>`).join('')}</div>`,
+  map: `<svg class="art-map" viewBox="0 0 220 120"><g class="edges">${[[40, 60, 110, 28], [40, 60, 110, 92], [110, 28, 180, 60], [110, 92, 180, 60], [110, 28, 110, 92], [40, 60, 180, 60]].map(([a, b, c, d]) => `<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" />`).join('')}</g>
+    <circle class="n doc" cx="40" cy="60" r="11" /><rect class="n sch" x="99" y="17" width="22" height="22" rx="6" /><rect class="n sch" x="99" y="81" width="22" height="22" rx="6" /><rect class="n sch b" x="169" y="49" width="22" height="22" rx="6" /></svg>`,
+  voice: `<div class="art-eq">${Array.from({ length: 14 }, (_, i) => `<span style="--d:${(i * 0.07).toFixed(2)}s"></span>`).join('')}</div>`,
+};
+
 const WORDS = () => [t('land.w1', 'scholarships'), t('land.w2', 'schemes'), t('land.w3', 'jobs')];
 
 let timers = [];
+let first = true;   // the first stamp waits for the opening sequence
 const clearTimers = () => { timers.forEach(clearInterval); timers = []; };
 
 async function showSample(el, i) {
@@ -39,6 +51,8 @@ async function showSample(el, i) {
     const shown = (elig.length ? elig : res.matches.filter((m) => matchStatus(m) === 'partial')).slice(0, 3);
     const n = card.querySelector('#demoN');
     card.querySelector('#demoStamp').innerHTML = elig.length ? stamp('eligible', 'stamp-press') : stamp('partial', 'stamp-press');
+    if (elig.length) setTimeout(() => burst(card.querySelector('#demoStamp .stamp'), { count: 18, spread: 80 }), first ? 1500 : 420);
+    first = false;
     countUp(n, ins.eligible_count);
     countUp(card.querySelector('#demoAmt'), ins.estimated_annual_benefit, (v) => fmtINR(v));
     list.innerHTML = shown.map((m) => `<li><span>${esc(m.title)}</span>${stamp(matchStatus(m))}</li>`).join('');
@@ -51,6 +65,28 @@ async function showSample(el, i) {
   }
 }
 
+/** The paper plane flies once along the dotted route across the hero, then rests. */
+function flyPlane(el) {
+  const plane = el.querySelector('.flight-plane');
+  const path = el.querySelector('#flightPath');
+  const svg = el.querySelector('.flight');
+  const hero = el.querySelector('.hero-ink');
+  if (!plane || !path || matchMedia('(prefers-reduced-motion: reduce)').matches) { plane?.remove(); return; }
+  const go = () => {
+    const box = svg.getBoundingClientRect(), hb = hero.getBoundingClientRect();
+    const sx = box.width / 1200, sy = box.height / 600, len = path.getTotalLength();
+    const frames = [];
+    for (let i = 0; i <= 48; i++) {
+      const p = path.getPointAtLength((len * i) / 48), q = path.getPointAtLength(Math.min(len, (len * i) / 48 + 4));
+      const x = box.left - hb.left + p.x * sx, y = box.top - hb.top + p.y * sy;
+      const ang = Math.atan2((q.y - p.y) * sy, (q.x - p.x) * sx) * 180 / Math.PI + 22;
+      frames.push({ transform: `translate(${x}px, ${y}px) translate(-50%, -50%) rotate(${ang}deg) scale(${0.7 + 0.5 * Math.sin(Math.PI * i / 48)})`, opacity: i < 2 || i > 46 ? 0 : 1 });
+    }
+    plane.animate(frames, { duration: 3200, delay: 900, easing: 'cubic-bezier(.45,.05,.3,1)', fill: 'both' });
+  };
+  requestAnimationFrame(go);
+}
+
 export const landing = {
   title: () => '',
   full: true,
@@ -58,14 +94,19 @@ export const landing = {
     clearTimers();
     const has = !!state.profileId;
     const startBtn = has
-      ? `<a class="btn btn-primary btn-lg" href="#/home">${esc(t('land.open', 'Open my dashboard'))}${icon('arrow-right', 'arrow')}</a>`
-      : `<a class="btn btn-primary btn-lg" href="#/start">${esc(t('land.start', 'Get started free'))}${icon('arrow-right', 'arrow')}</a>`;
+      ? `<a class="btn btn-primary btn-lg magnetic" href="#/home">${esc(t('land.open', 'Open my dashboard'))}${icon('arrow-right', 'arrow')}</a>`
+      : `<a class="btn btn-primary btn-lg magnetic" href="#/start">${esc(t('land.start', 'Get started free'))}${icon('arrow-right', 'arrow')}</a>`;
     const words = WORDS();
     el.innerHTML = `
-    <div class="wrap">
-      <section class="hero" aria-labelledby="heroTitle">
-        <div>
-          <span class="badge"><span class="dot">${icon('check', 'icon-sm')}</span>${esc(t('land.badge', 'Free · Hindi and English · Works offline'))}</span>
+    <section class="hero-ink ink" data-parallax aria-labelledby="heroTitle">
+      <div class="hero-rosette">${rosette({ cls: 'ros-draw' })}</div>
+      <svg class="flight" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
+        <path id="flightPath" d="M-40 560 C 240 520, 380 300, 640 330 S 980 180, 1240 60" fill="none" stroke="rgba(255,193,77,.45)" stroke-width="2" stroke-dasharray="2 12" stroke-linecap="round" vector-effect="non-scaling-stroke" />
+      </svg>
+      <span class="flight-plane" aria-hidden="true">${logoMark('plane-only')}</span>
+      <div class="wrap hero">
+        <div class="hero-copy">
+          <span class="badge badge-ink"><span class="dot">${icon('check', 'icon-sm')}</span>${esc(t('land.badge', 'Free · Hindi and English · Works offline'))}</span>
           <h1 class="hero-title" id="heroTitle">${esc(t('land.h1a', 'Find the'))}<br />
             <span class="cycle" aria-hidden="true">${words.map((w, i) => `<span class="${i === 0 ? 'on' : ''}">${esc(w)}</span>`).join('')}</span><br />
             ${esc(t('land.h1b', 'you qualify for.'))}
@@ -73,8 +114,8 @@ export const landing = {
           <p class="hero-lede">${esc(t('land.lede', 'LifePilot checks every rule of every scheme against your profile, matches jobs to your resume, and turns it into a plan: what to apply for, which documents to get, and what to learn next.'))}</p>
           <div class="hero-ctas">
             ${startBtn}
-            ${state.user ? '' : `<button class="btn btn-secondary btn-lg" type="button" data-signin>${icon('log-in')}${esc(t('auth.signin', 'Sign in'))}</button>`}
-            ${has ? '' : `<button class="btn btn-quiet btn-lg" type="button" id="tryExample">${icon('play')}${esc(t('land.example', 'Try a sample profile'))}</button>`}
+            ${state.user ? '' : `<button class="btn btn-ghost-ink btn-lg" type="button" data-signin>${icon('log-in')}${esc(t('auth.signin', 'Sign in'))}</button>`}
+            ${has ? '' : `<button class="btn btn-quiet-ink btn-lg" type="button" id="tryExample">${icon('play')}${esc(t('land.example', 'Try a sample profile'))}</button>`}
           </div>
           <p class="hero-note">
             <span>${icon('check', 'icon-sm')}${esc(t('land.n1', 'No account needed'))}</span>
@@ -84,10 +125,11 @@ export const landing = {
         </div>
 
         <div class="demo" aria-label="${esc(t('land.demo', 'Live preview'))}">
-          <div class="float glass float-1">${icon('scale')}<span>${esc(t('land.float1', 'Rules decide, not guesses'))}</span></div>
-          <div class="float glass float-2">${icon('calendar-clock')}<span id="floatDeadline">${esc(t('land.floatRules', 'Every rule checked'))}</span></div>
-          <div class="float glass float-3">${icon('languages')}<span>हिन्दी · English</span></div>
-          <div class="card demo-card" id="demoCard">
+          <div class="float float-1">${icon('scale')}<span>${esc(t('land.float1', 'Rules decide, not guesses'))}</span></div>
+          <div class="float float-2">${icon('calendar-clock')}<span id="floatDeadline">${esc(t('land.floatRules', 'Every rule checked'))}</span></div>
+          <div class="float float-3">${icon('languages')}<span>हिन्दी · English</span></div>
+          <div class="demo-card certificate" id="demoCard" data-tilt>
+            <div class="cert-corner">${miniRosette()}</div>
             <div class="demo-top"><span class="avatar">AK</span><div><p class="demo-person">Aisha, 21</p>
               <p class="tiny quiet">${esc(t('land.demoNote', 'Live preview · real results from the rule engine'))}</p></div></div>
             <div class="demo-facts"></div>
@@ -102,14 +144,17 @@ export const landing = {
               <div class="demo-dots">${SAMPLES.map((s, i) => `<button type="button" aria-label="${esc(s.name)}" aria-pressed="${i === 0}" data-sample="${i}"></button>`).join('')}</div></div>
           </div>
         </div>
-      </section>
+      </div>
+      <div class="microline" aria-hidden="true"></div>
+    </section>
 
+    <div class="wrap">
       <section class="band" id="how" aria-labelledby="howTitle">
         <div class="band-head reveal"><h2 class="h1" id="howTitle">${esc(t('land.howT', 'From “am I eligible?” to a plan in three steps'))}</h2></div>
-        <ol class="steps3">
-          <li class="card card-lift reveal"><h3 class="h2">${esc(t('land.s1', 'Tell us about you'))}</h3><p>${esc(t('land.s1p', 'One question at a time: studies, family income, category, state. Skip anything you are unsure of.'))}</p></li>
-          <li class="card card-lift reveal"><h3 class="h2">${esc(t('land.s2', 'We check every rule'))}</h3><p>${esc(t('land.s2p', 'Each scheme’s rules are checked one by one. You see exactly why you qualify, or what is missing.'))}</p></li>
-          <li class="card card-lift reveal"><h3 class="h2">${esc(t('land.s3', 'Get your plan'))}</h3><p>${esc(t('land.s3p', 'What to apply for this week, which documents to collect, and every deadline in your calendar.'))}</p></li>
+        <ol class="steps3 flightline">
+          <li class="card step-card reveal"><h3 class="h2">${esc(t('land.s1', 'Tell us about you'))}</h3><p>${esc(t('land.s1p', 'One question at a time: studies, family income, category, state. Skip anything you are unsure of.'))}</p></li>
+          <li class="card step-card reveal"><h3 class="h2">${esc(t('land.s2', 'We check every rule'))}</h3><p>${esc(t('land.s2p', 'Each scheme’s rules are checked one by one. You see exactly why you qualify, or what is missing.'))}</p></li>
+          <li class="card step-card reveal"><h3 class="h2">${esc(t('land.s3', 'Get your plan'))}</h3><p>${esc(t('land.s3p', 'What to apply for this week, which documents to collect, and every deadline in your calendar.'))}</p></li>
         </ol>
       </section>
 
@@ -148,27 +193,29 @@ export const landing = {
 
       <section class="band" aria-labelledby="featT">
         <div class="band-head reveal"><h2 class="h1" id="featT">${esc(t('land.featT', 'Everything in one place'))}</h2></div>
-        <div class="features">
+        <div class="features bento">
           ${[
+            ['scan-line', 'land.c2', 'Document scanner', 'land.c2p', 'Photograph a certificate. LifePilot reads it in your browser, checks it against your profile and ticks your checklist.', 'scan'],
+            ['list-todo', 'land.c3', 'Smart priority planner', 'land.c3p', 'Deadlines, amounts and missing documents turned into the best order to apply, week by week.', 'plan'],
+            ['network', 'land.c5', 'Scheme map', 'land.c5p', 'See how one document unlocks several schemes at once.', 'map'],
+            ['mic', 'land.c4', 'Voice in Hindi and English', 'land.c4p', 'Speak your question and hear the answer.', 'voice'],
             ['message-circle', 'land.f1', 'Ask the assistant', 'land.f1p', 'Ask in plain words about your schemes, documents or deadlines. Answers use your own results.'],
-            ['folder-check', 'land.f2', 'Document checklist', 'land.f2p', 'One list of every document your schemes need. Keep copies in your browser, never uploaded.'],
+            ['wand-sparkles', 'land.c6', '“What would change it?”', 'land.c6p', 'The smallest change that would unlock more schemes or jobs for you.'],
             ['sliders-horizontal', 'land.f3', 'What-if simulator', 'land.f3p', 'Move the income slider or change category and watch your results change instantly.'],
             ['route', 'land.c1', 'Personal job roadmaps', 'land.c1p', 'A week-by-week plan for each job: skills in the right order, free courses, a project to build.'],
+            ['folder-check', 'land.f2', 'Document checklist', 'land.f2p', 'One list of every document your schemes need. Keep copies in your browser, never uploaded.'],
             ['wand-sparkles', 'land.f5', 'Describe yourself in one line', 'land.f5p', 'Type one sentence in Hindi or English and the form fills itself.'],
             ['bot', 'land.f6', 'ML Lab', 'land.f6p', 'Six machine learning models with their real accuracy, and a box to try each one.'],
-            ['scan-line', 'land.c2', 'Document scanner', 'land.c2p', 'Photograph a certificate. LifePilot reads it in your browser, checks it against your profile and ticks your checklist.'],
-            ['list-todo', 'land.c3', 'Smart priority planner', 'land.c3p', 'Deadlines, amounts and missing documents turned into the best order to apply, week by week.'],
-            ['mic', 'land.c4', 'Voice in Hindi and English', 'land.c4p', 'Speak your question and hear the answer.'],
-            ['network', 'land.c5', 'Scheme map', 'land.c5p', 'See how one document unlocks several schemes at once.'],
-            ['wand-sparkles', 'land.c6', '“What would change it?”', 'land.c6p', 'The smallest change that would unlock more schemes or jobs for you.'],
             ['calendar-plus', 'land.f7', 'Deadlines in your calendar', 'land.f7p', 'Add every deadline to your phone calendar, or print your action plan.'],
-          ].map(([ic, k, en, kp, enp]) => `<article class="card card-lift feature reveal"><span class="feature-icon">${icon(ic)}</span><h3 class="h3">${esc(t(k, en))}</h3><p>${esc(t(kp, enp))}</p></article>`).join('')}
+          ].map(([ic, k, en, kp, enp, art]) => `<article class="card feature ${art ? `feature-wide feature-${art}` : ''} reveal">
+            ${art ? `<div class="feature-art" aria-hidden="true">${ART[art]}</div>` : ''}
+            <span class="feature-icon">${icon(ic)}</span><h3 class="h3">${esc(t(k, en))}</h3><p>${esc(t(kp, enp))}</p></article>`).join('')}
         </div>
       </section>
 
       <section class="band" aria-labelledby="trustT">
         <h2 class="sr-only" id="trustT">${esc(t('land.trustT', 'Why you can trust it'))}</h2>
-        <div class="trust card reveal">
+        <div class="trust ink reveal"><div class="trust-rosette">${rosette()}</div>
           <div>${icon('scale')}<h3 class="h3">${esc(t('land.t1', 'Rules decide, not AI'))}</h3><p class="small quiet">${esc(t('land.t1p', 'Eligibility comes from each scheme’s published rules. AI never overrules them.'))}</p></div>
           <div>${icon('shield-check')}<h3 class="h3">${esc(t('land.t2', 'Your files stay with you'))}</h3><p class="small quiet">${esc(t('land.t2p', 'Documents are kept in your browser and never uploaded.'))}</p></div>
           <div>${icon('wifi-off')}<h3 class="h3">${esc(t('land.t3', 'Works offline'))}</h3><p class="small quiet">${esc(t('land.t3p', 'Nothing loads from outside sites, so it runs even on a weak connection.'))}</p></div>
@@ -177,7 +224,7 @@ export const landing = {
       </section>
 
       <section class="band" aria-labelledby="ctaT">
-        <div class="card cta-final reveal">
+        <div class="card cta-final reveal"><div class="cta-rosette">${rosette()}</div>
           <h2 class="h1" id="ctaT">${esc(has ? t('land.ctaHas', 'Your plan is waiting') : t('land.ctaT', 'Ready to see what you qualify for?'))}</h2>
           ${has ? startBtn : `<div class="signin-choices">
             <div><h3 class="h3">${esc(t('land.guestT', 'Continue without an account'))}</h3><p class="small quiet">${esc(t('land.guestP', 'Fastest way to start. Your profile is linked to this browser.'))}</p>
@@ -188,12 +235,15 @@ export const landing = {
         </div>
       </section>
 
-      <footer class="footer"><span>LifePilot</span><span>${esc(t('land.foot', 'Scholarships, schemes and jobs, checked against your profile.'))}</span></footer>
+      <footer class="footer"><span class="foot-brand">${logoMark()}<b>LifePilot</b></span><span>${esc(t('land.foot', 'Scholarships, schemes and jobs, checked against your profile.'))}</span></footer>
     </div>`;
 
     el.querySelectorAll('[data-signin]').forEach((b) => b.addEventListener('click', signIn));
     el.querySelector('#tryExample')?.addEventListener('click', () => { startWithExample(); location.hash = '#/start'; });
     reveal(el);
+    splitWords(el.querySelector('.hero-title'));
+    requestAnimationFrame(() => el.querySelector('.hero-ink')?.classList.add('play'));
+    flyPlane(el);
 
     // Cycling headline word
     const cyc = el.querySelectorAll('.cycle > span');
@@ -222,16 +272,6 @@ export const landing = {
       i = (i + 1) % SAMPLES.length; showSample(el, i);
     }, 5200));
 
-    // Gentle tilt of the demo card toward the pointer
-    if (!reduce && matchMedia('(pointer: fine)').matches) {
-      const card = el.querySelector('#demoCard');
-      demo.addEventListener('mousemove', (e) => {
-        const r = demo.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
-        card.style.transform = `perspective(1000px) rotateY(${x * 5}deg) rotateX(${-y * 5}deg)`;
-      });
-      demo.addEventListener('mouseleave', () => { card.style.transform = ''; });
-    }
   },
   leave: clearTimers,
 };
