@@ -108,6 +108,8 @@ def _classify(file: str, text: str, explain_it: bool) -> dict | None:
     model = _load(file)
     if model is None or not (text or "").strip():
         return None
+    if model.steps[0][1].transform([text]).nnz == 0:
+        return None   # not one word the model knows: no guess at all ("Chef for an Italian restaurant")
     classes, probs = _scores(model, text)
     classes = [str(c) for c in classes]
     order = np.argsort(-probs)

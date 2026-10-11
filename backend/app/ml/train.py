@@ -69,7 +69,8 @@ def train_role() -> dict:
     y = [r["family"] for r in rows]
     Xtr, Xte, ytr, yte = _split(X, y)
     model = Pipeline([
-        ("tfidf", TfidfVectorizer(ngram_range=(1, 2), sublinear_tf=True, min_df=1, lowercase=True)),
+        # English stop words out, so "an" or "for" can never decide a role
+        ("tfidf", TfidfVectorizer(ngram_range=(1, 2), sublinear_tf=True, min_df=1, lowercase=True, stop_words="english")),
         ("svm", LinearSVC(C=1.0, random_state=SEED)),
     ])
     model.fit(Xtr, ytr)

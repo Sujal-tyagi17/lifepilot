@@ -38,7 +38,8 @@ Partial matches (not eligible yet):
 {partial}
 {extra}
 {chat_history_section}
-QUESTION ({intent}): {question}"""
+QUESTION ({intent}): {question}
+(If the question asks two things, answer both.)"""
 
 
 def _is_open_eligible(m: dict) -> bool:
@@ -81,7 +82,8 @@ def rag_answer(
     """Answer a question from the person's own matches (plus the scheme database for other schemes)."""
     llm = get_provider()
     matches = matches or []
-    intent = detect_intent(question)["label"]
+    detected = detect_intent(question)
+    intent = detected["label"]
     eligible = [m for m in matches if _is_open_eligible(m)]
     partial = [m for m in matches if not _is_open_eligible(m) and m.get("status") != "closed"]
 
@@ -123,7 +125,11 @@ def rag_answer(
         except Exception as e:
             logger.warning(f"RAG LLM call failed: {e}")
 
-    return _offline_answer(question, matches, profile, intent)
+    first = _offline_answer(question, matches, profile, intent)
+    also = detected.get("also")
+    if also:
+        return first + "\n\n" + _offline_answer(question, matches, profile, also)
+    return first
 
 
 # Words in many scheme names; they don't pick out one scheme
@@ -147,7 +153,12 @@ def detect_intent(question: str) -> dict:
     from app.ml.predict import intent as ml_intent
     r = ml_intent(question)
     if r and r["confidence"] >= 0.4:
-        return {"label": r["label"], "confidence": r["confidence"], "by": "model"}
+        out = {"label": r["label"], "confidence": r["confidence"], "by": "model"}
+        # Two questions in one ("last date and documents?"): keep the second if it is clearly there too
+        second = r["top"][1] if len(r["top"]) > 1 else None
+        if second and second["score"] >= 0.25 and second["label"] != "other" and r["label"] != "other":
+            out["also"] = second["label"]
+        return out
     q = question.lower()
     for label, words in _KEYWORDS.items():
         if any(w in q for w in words):
@@ -280,6 +291,11 @@ def _offline_answer(question: str, matches: list[dict], profile: dict | None, in
             lines += [f"• **{m['title']}**: {m['url']}" for m in with_links[:5]]
         lines += ["", "**Next step:** keep your documents ready in **Documents** before you start the form."]
         return "\n".join(lines)
+
+    if intent == "other":
+        return (f"Hello{', ' + profile['name'].split()[0] if profile and profile.get('name') else ''}! I answer questions about the "
+                f"schemes you qualify for ({len(eligible)} right now), the documents you need, deadlines, amounts and how to apply. "
+                "Try: **Which schemes do I qualify for?**")
 
     if intent == "jobs":
         return ("For jobs, open the **Jobs** page: add your resume (or pick your experience), and you get matched openings "
