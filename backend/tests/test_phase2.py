@@ -248,3 +248,18 @@ def test_experience_from_the_form_without_resume():
     assert score_with(senior, told_fresher)["too_senior"]
     r = score_with(senior, told_five)
     assert not r["too_senior"] and any(b["signal"] == "experience" and b["value"] == 1 for b in r["fit_breakdown"])
+
+
+def test_duplicate_without_company_is_dropped(monkeypatch):
+    from app.jobs import sources
+    a = sources._job(id="1", title="AI Software Engineer", company="Zephy", location="New Delhi, Delhi, India",
+                     description="", url="https://www.linkedin.com/jobs/view/1111111", source="web_job")
+    b = sources._job(id="2", title="AI Software Engineer", company=None, location="New Delhi",
+                     description="", url="https://example.com/x", source="web_job")
+    monkeypatch.setattr(sources, "sample_jobs", lambda: [])
+    monkeypatch.setattr(sources.settings, "scraping_enabled", True)
+    monkeypatch.setattr(sources, "web_job_postings", lambda q, w, fresher=False: [a, b])
+    for name in ("adzuna_jobs", "jooble_jobs", "google_jobs"):
+        monkeypatch.setattr(sources, name, lambda q, w, fresher=False: [])
+    out = sources.search_jobs("AI engineer", location=None, include_rss=False, limit=0)
+    assert [j["id"] for j in out] == ["1"]

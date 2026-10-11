@@ -154,6 +154,7 @@ def adzuna_jobs(query: str, location: str | None) -> list[dict]:
             "app_key": settings.adzuna_app_key,
             "what": query,
             "results_per_page": 30,
+            "max_days_old": MAX_AGE_DAYS,
             "content-type": "application/json",
         }
         if location and location.lower() not in ("india", "remote"):
@@ -466,6 +467,8 @@ def jooble_jobs(query: str, location: str | None) -> list[dict]:
         jobs = []
         for r in results[:40]:
             link = r.get("link") or ""
+            if not is_open({"title": r.get("title"), "snippet": r.get("snippet"), "date": (r.get("updated") or "")[:10]}):
+                continue
             desc = re.sub(r"<[^>]+>", " ", r.get("snippet") or "")
             job = _job(
                 id=f"jooble-{r.get('id') or hashlib.md5(link.encode()).hexdigest()[:12]}", title=r.get("title", ""),
@@ -549,4 +552,9 @@ def search_jobs(query: str = "", skills: list[str] | None = None, location: str 
             continue
         seen |= keys
         unique.append(j)
+    # The same post found twice, once without the company name: keep the fuller one
+    def _tp(j):
+        return j["title"].lower(), (j.get("location") or "").lower().split(",")[0].strip()
+    named = {_tp(j) for j in unique if j.get("company") and j["source"] != "sample"}
+    unique = [j for j in unique if j.get("company") or j["source"] == "sample" or _tp(j) not in named]
     return unique[:limit] if limit else unique
