@@ -118,3 +118,65 @@ def test_plan_without_resume_asks_for_one():
     job = next(j for j in sample_jobs() if j["id"] == "sample-001")
     plan = build_plan(job, candidate({}, "", user_skills=["Python"]))
     assert "resume" in plan["resume_fixes"][0].lower()
+
+
+# ── Locations and live postings ──────────────────────────────
+
+def test_location_ranking():
+    from app.jobs.locations import find_state, location_rank
+    assert find_state("Bangalore Urban") == "Karnataka"
+    assert find_state("Gurgaon, Haryana, India") == "Haryana"
+    assert find_state("New Delhi") == "Delhi"
+    assert location_rank({"location": "Bengaluru, Karnataka"}, "Karnataka") == (0, "near")
+    assert location_rank({"location": "Remote"}, "Karnataka") == (1, "remote")
+    assert location_rank({"location": "Pune"}, "Karnataka") == (2, "india")
+    assert location_rank({"location": "London"}, "Karnataka") == (3, "other")
+
+
+def test_posting_titles_parsed():
+    from app.jobs.sources import parse_posting_title
+    assert parse_posting_title("Acme Analytics hiring Data Analyst in Bengaluru, Karnataka, India | LinkedIn") == \
+        ("Data Analyst", "Acme Analytics", "Bengaluru, Karnataka, India")
+    assert parse_posting_title("Data Analyst - Acme Pvt Ltd - 1 to 3 years - Pune") == ("Data Analyst", "Acme Pvt Ltd", "Pune")
+    assert parse_posting_title("Python Developer - Zeta - Hyderabad, Telangana - Indeed.com") == \
+        ("Python Developer", "Zeta", "Hyderabad, Telangana")
+    assert parse_posting_title("Data Science internship at Foo Labs in Mumbai | Internshala") == \
+        ("Data Science", "Foo Labs", "Mumbai")
+
+
+def test_only_single_postings_are_kept(monkeypatch):
+    import httpx
+    from app.jobs import sources
+    from app.config import settings
+    monkeypatch.setattr(settings, "serper_api_key", "test")
+    sources.clear_cache()
+    organic = [
+        {"title": "15759 Python Data Analytics Job Vacancies In Bangalore", "link": "https://www.naukri.com/python-data-analytics-jobs-in-bangalore", "snippet": "Apply"},
+        {"title": "Acme hiring Data Analyst in Mysuru, Karnataka, India | LinkedIn", "link": "https://in.linkedin.com/jobs/view/data-analyst-at-acme-123", "snippet": "SQL, Excel, Power BI. 0-2 years.", "date": "2 days ago"},
+    ]
+
+    class Resp:
+        status_code = 200
+        def json(self):
+            return {"organic": organic}
+
+    class Client:
+        def __init__(self, *a, **k): pass
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+        def post(self, *a, **k): return Resp()
+
+    monkeypatch.setattr(httpx, "Client", Client)
+    jobs = sources.web_job_postings("Data analyst", "Karnataka")
+    assert len(jobs) == 1
+    j = jobs[0]
+    assert (j["title"], j["company"], j["site"], j["source"]) == ("Data Analyst", "Acme", "LinkedIn", "web_job")
+    rep = match_report(jobs + sample_jobs(), {"state": "Karnataka"}, "", "Data analyst")
+    assert rep["jobs"][0]["id"] == j["id"] and rep["jobs"][0]["location_tag"] == "near"
+    sources.clear_cache()
+
+
+def test_company_named_after_a_city_is_not_the_location():
+    from app.jobs.sources import parse_posting_title
+    assert parse_posting_title("Junior Data Analyst - Mysore Infotech - 0 to 1 years - Mysuru") == \
+        ("Junior Data Analyst", "Mysore Infotech", "Mysuru")

@@ -13,9 +13,9 @@ from urllib.parse import urlparse
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 
-from app.jobs.matching import candidate, match_report
+from app.jobs.matching import candidate, match_report, search_query
 from app.jobs.roadmap import build_plan
-from app.jobs.sources import sample_jobs, search_jobs
+from app.jobs.sources import live_sources, sample_jobs, search_jobs
 from app.knowledge.vectorstore import DATA_FILE, add_schemes, search as vector_search
 from app.scraper.engine import scrape_portals
 
@@ -150,15 +150,14 @@ def match_jobs(payload: JobMatchRequest):
     was read from the resume, and the one skill that would lift the most matches.
     """
     profile = payload.profile or {}
-    query = payload.desired_role or profile.get("field_of_study") or ""
+    cand = candidate(profile, payload.resume_text or "", payload.desired_role or "", payload.skills)
+    query = search_query(cand)
+    # Live sources are searched in the user's state and across India; ranking
+    # then puts their state first, remote next, then the rest of India.
     jobs = search_jobs(query, payload.skills or [], profile.get("state"), limit=0, filter_samples=False)
-    report = match_report(
-        jobs, profile,
-        resume_text=payload.resume_text or "",
-        desired_role=payload.desired_role or "",
-        user_skills=payload.skills,
-    )
-    report["jobs"] = [_public_job(j) for j in report["jobs"][:60]]
+    report = match_report(jobs, profile, cand=cand)
+    report["sources"] = live_sources()
+    report["jobs"] = [_public_job(j) for j in report["jobs"][:80]]
     return report
 
 

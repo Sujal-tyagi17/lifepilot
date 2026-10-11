@@ -25,6 +25,7 @@ import re
 from collections import Counter
 
 from app.jobs.catalog import classify_role, families, family_label, skill_info
+from app.jobs.locations import location_rank
 from app.jobs.jobparse import analyse_job, required_education  # noqa: F401  (re-exported)
 from app.jobs.resume import analyse_resume, public_summary
 
@@ -100,6 +101,7 @@ def candidate(profile: dict | None = None, resume_text: str = "", desired_role: 
         "level": level,
         "level_name": level_name,
         "field": (profile.get("field_of_study") or "").strip(),
+        "state": (profile.get("state") or "").strip() or None,
         "desired": desired,
         "target_family": target,
         "target_from": how if target else None,
@@ -258,6 +260,8 @@ def score_with(job: dict, cand: dict, parsed: dict | None = None) -> dict:
         "skills_weak": weak,
         "alternatives": alts,
         "min_years": a["min_years"],
+        "location_rank": location_rank(job, cand.get("state"))[0],
+        "location_tag": location_rank(job, cand.get("state"))[1],
         "education_required": req[1] if req else None,
         "data_coverage": round(total_weight, 2),
     }
@@ -274,7 +278,10 @@ _GROUP_ORDER = {"target": 0, "other": 1, "weak": 2}
 
 
 def _sort_key(j: dict):
-    return (_GROUP_ORDER[j["group"]], not j["eligible"], -j["fit_score"], -len(j["skills_matched"]))
+    # Within each group: live openings before example roles, then jobs in your
+    # state, remote jobs, the rest of India; then by fit.
+    return (_GROUP_ORDER[j["group"]], j.get("source") == "sample", j["location_rank"],
+            not j["eligible"], -j["fit_score"], -len(j["skills_matched"]))
 
 
 def rank_with(jobs: list[dict], cand: dict) -> list[dict]:
@@ -316,9 +323,14 @@ def market_insight(ranked: list[dict], cand: dict, top: int = 10) -> dict | None
     }
 
 
+def search_query(cand: dict) -> str:
+    """What to search live sources for: the role typed, else the role the resume points to."""
+    return cand["desired"] or family_label(cand["target_family"]) or cand["field"] or ""
+
+
 def match_report(jobs: list[dict], profile: dict, resume_text: str = "", desired_role: str = "",
-                 user_skills: list[str] | None = None) -> dict:
-    cand = candidate(profile, resume_text, desired_role, user_skills)
+                 user_skills: list[str] | None = None, cand: dict | None = None) -> dict:
+    cand = cand or candidate(profile, resume_text, desired_role, user_skills)
     ranked = rank_with(jobs, cand)
     return {
         "jobs": ranked,
@@ -329,4 +341,7 @@ def match_report(jobs: list[dict], profile: dict, resume_text: str = "", desired
         "insight": market_insight(ranked, cand),
         "relevant_count": sum(j["relevant"] for j in ranked),
         "target_count": sum(j["group"] == "target" for j in ranked),
+        "live_count": sum(j.get("source") != "sample" and j["relevant"] for j in ranked),
+        "state": cand["state"],
+        "query": search_query(cand),
     }

@@ -35,15 +35,25 @@ export function personPayload() {
 
 let resume = getResume();
 let showPaste = false;
-let typeFilter = 'all';
+let placeFilter = 'all';
 let showWeak = false;
+let showSamples = false;
 let busy = false;
 
-/** Where the job came from, so search results never pass for real openings. */
+/** Where the job came from, so example roles never pass for real openings. */
 export function sourceStamp(j) {
   if (j.source === 'sample') return `<span class="stamp stamp-sample" title="${esc(t('jobs.sampleNote', 'Example role, not a live opening. Check the company careers page.'))}">${esc(t('st.sample', 'Sample'))}</span>`;
   if (j.source === 'web_search') return `<span class="stamp stamp-web" title="${esc(t('jobs.webNote', 'A web search result page, not a single job posting. Open it to find openings.'))}">${esc(t('st.web', 'Search result'))}</span>`;
-  return `<span class="stamp stamp-live">${esc(t('st.live', 'Live listing'))}</span>`;
+  const site = j.site || ({ adzuna: 'Adzuna', jooble: 'Jooble', rss: 'RSS' })[j.source] || '';
+  const tip = j.source === 'web_job' ? t('jobs.webJobNote', 'Found through Google. Open it to check it is still open.') : '';
+  return `<span class="stamp stamp-live" ${tip ? `title="${esc(tip)}"` : ''}>${esc(t('st.live', 'Live'))}${site ? ` · ${esc(site)}` : ''}</span>`;
+}
+
+function placeTag(j) {
+  const where = j.location && j.location !== 'India' ? j.location : '';
+  if (j.location_tag === 'near') return `<span class="place near">${icon('map-pin', 'icon-sm')}${esc(where || t('jobs.near', 'Your state'))}</span>`;
+  if (j.location_tag === 'remote') return `<span class="place">${icon('map-pin', 'icon-sm')}${esc(t('jobs.remote', 'Remote'))}</span>`;
+  return where ? `<span class="place">${icon('map-pin', 'icon-sm')}${esc(where)}</span>` : '';
 }
 
 export function fitColor(fit) { return fit >= 70 ? 'var(--green)' : fit >= 50 ? 'var(--saffron)' : 'var(--ink-3)'; }
@@ -69,7 +79,8 @@ function jobItem(j) {
           <span class="tier tier-${esc(j.tier)}">${esc(tierLabel(j.tier))}</span>
           ${j.eligible ? '' : `<span class="stamp stamp-partial">${esc(t('jobs.eduGap', 'Education gap'))}</span>`}</div>
         <h3 class="h3">${esc(j.title)}</h3>
-        <p class="small quiet">${esc([j.company, j.family_label, j.location].filter(Boolean).join(' · '))}</p>
+        <p class="small quiet">${esc([j.company, j.family_label].filter(Boolean).join(' · '))}</p>
+        <div class="row row-wrap" style="gap:6px;margin-top:6px">${placeTag(j)}${j.posted ? `<span class="place">${icon('clock', 'icon-sm')}${esc(j.posted)}</span>` : ''}</div>
         <p class="small" style="margin-top:4px">${icon('wallet', 'icon-sm')} ${esc(j.salary === 'Not disclosed' ? t('jobs.notDisclosed', 'Salary not disclosed') : j.salary)}</p>
       </div>
       ${ring(fit, { size: 68, stroke: 7, color: fitColor(fit), label: `${fit}%`, cls: 'fit-ring' })}
@@ -85,7 +96,7 @@ function jobItem(j) {
     ${notes.map((u) => `<p class="small gap" style="margin-top:8px">${esc(u)}</p>`).join('')}
     <div class="row row-wrap" style="margin-top:14px;gap:8px">
       <a class="btn btn-primary btn-sm" href="#/jobs/plan?id=${encodeURIComponent(j.id)}">${icon('route', 'icon-sm')}${esc(t('jobs.plan', 'See my plan'))}</a>
-      ${url ? `<a class="btn btn-secondary btn-sm" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(j.source === 'web_search' ? t('jobs.openSearch', 'Open search results') : t('jobs.applyAt', 'See it on the company site'))}${icon('external-link', 'icon-sm')}<span class="sr-only"> (opens a new tab)</span></a>` : ''}
+      ${url ? `<a class="btn btn-secondary btn-sm" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(j.source === 'web_search' ? t('jobs.openSearch', 'Open search results') : j.site ? t('jobs.openOn', 'Open on {s}', { s: j.site }) : t('jobs.applyAt', 'See it on the company site'))}${icon('external-link', 'icon-sm')}<span class="sr-only"> (opens a new tab)</span></a>` : ''}
     </div>
   </li>`;
 }
@@ -152,36 +163,47 @@ function results(el) {
   const rep = data.report;
   const q = (el.querySelector('#jFilter')?.value || '').toLowerCase();
   const items = rep.jobs.filter((j) => {
-    if (typeFilter === 'remote' && j.job_type !== 'Remote') return false;
-    if (typeFilter === 'onsite' && (j.job_type === 'Remote' || !j.job_type)) return false;
+    if (placeFilter === 'near' && j.location_tag !== 'near') return false;
+    if (placeFilter === 'remote' && j.location_tag !== 'remote') return false;
     return !q || `${j.title} ${j.company || ''} ${j.location || ''} ${j.family_label || ''}`.toLowerCase().includes(q);
   });
-  const by = (g) => items.filter((j) => j.group === g);
+  const live = items.filter((j) => j.source !== 'sample');
+  const samples = items.filter((j) => j.source === 'sample' && j.relevant);
+  const by = (g) => live.filter((j) => j.group === g);
   const target = by('target'), other = by('other'), weak = by('weak');
   const list = (arr) => `<section class="card"><ul class="rows">${arr.map(jobItem).join('')}</ul></section>`;
   const head = (txt, n) => `<h2 class="h3 group-head">${esc(txt)} <span class="count">${n}</span></h2>`;
+  const noLive = !target.length && !other.length;
+  const samplesOpen = showSamples || noLive;
+  const places = [['all', t('jobs.allIndia', 'All India')], ...(rep.state ? [['near', rep.state]] : []), ['remote', t('jobs.remote', 'Remote')]];
 
   box.innerHTML = `
     ${readCard(rep)}
     ${insightCard(rep.insight)}
+    ${!(rep.sources || []).length ? `<p class="notice notice-warn" style="margin-top:14px">${icon('wifi-off', 'icon-sm')} ${esc(t('jobs.noLiveSrc', 'Live job search is not set up on this server, so only example roles are shown. Add SERPER_API_KEY (free at serper.dev) to backend/.env to see real openings from LinkedIn, Naukri, Indeed and more.'))}</p>` : ''}
     <div class="toolbar" style="margin-top:18px">
       <label class="input-icon"><span class="sr-only">${esc(t('jobs.filterPh', 'Filter by title or company'))}</span>${icon('search')}<input class="input" type="search" id="jFilter" value="${esc(q)}" placeholder="${esc(t('jobs.filterPh', 'Filter by title or company'))}" /></label>
-      <div class="segmented" role="group" aria-label="${esc(t('jobs.filterType', 'Type'))}">
-        ${[['all', 'jobs.anyType', 'Any'], ['remote', 'jobs.remote', 'Remote'], ['onsite', 'jobs.onsite', 'Office or hybrid']].map(([k, key, en]) =>
-          `<button type="button" data-type="${k}" aria-pressed="${typeFilter === k}">${esc(t(key, en))}</button>`).join('')}
+      <div class="segmented" role="group" aria-label="${esc(t('jobs.where', 'Where'))}">
+        ${places.map(([k, label]) => `<button type="button" data-place="${k}" aria-pressed="${placeFilter === k}">${esc(label)}</button>`).join('')}
       </div>
     </div>
     <div class="legend" aria-hidden="true" style="margin-bottom:12px">${SEGMENTS.map(([k, key, en]) => `<span><i class="seg-${k}"></i>${esc(t(key, en))}</span>`).join('')}</div>
+    ${rep.state && !noLive ? `<p class="tiny quiet" style="margin-bottom:4px">${esc(t('jobs.orderNote', 'Jobs in {s} first, then remote, then the rest of India.', { s: rep.state }))}</p>` : ''}
     ${target.length ? head(rep.target_from === 'resume' ? t('jobs.gResume', 'Best for your resume') : t('jobs.gTarget', 'Roles you asked for'), target.length) + list(target) : ''}
     ${other.length ? head(target.length ? t('jobs.gOther', 'Also fits your resume') : t('jobs.gMatches', 'Your matches'), other.length) + list(other) : ''}
-    ${!target.length && !other.length ? `<div class="card"><p class="quiet" style="padding:22px">${esc(t('jobs.none', 'No good matches for this role yet. Try another role, or add your resume.'))}</p></div>` : ''}
+    ${noLive && (rep.sources || []).length ? `<div class="card"><p class="quiet" style="padding:22px">${esc(t('jobs.noLive', 'No live openings found for this search right now. Try another role or the All India filter. Example roles are shown below.'))}</p></div>` : ''}
     ${weak.length ? `<div class="row" style="justify-content:center;margin-top:16px"><button class="btn btn-quiet btn-sm" type="button" id="jWeak" aria-expanded="${showWeak}">
         ${icon(showWeak ? 'chevron-up' : 'chevron-down', 'icon-sm')}${esc(showWeak ? t('jobs.hideWeak', 'Hide weaker matches') : t('jobs.showWeak', 'Show {n} weaker matches', { n: weak.length }))}</button></div>
-      ${showWeak ? `<div style="margin-top:12px">${list(weak)}</div>` : ''}` : ''}`;
+      ${showWeak ? `<div style="margin-top:12px">${list(weak)}</div>` : ''}` : ''}
+    ${samples.length ? `${noLive ? head(t('jobs.gSamples', 'Example roles (not live openings)'), samples.length) + list(samples)
+      : `<div class="row" style="justify-content:center;margin-top:10px"><button class="btn btn-quiet btn-sm" type="button" id="jSamples" aria-expanded="${samplesOpen}">
+          ${icon(samplesOpen ? 'chevron-up' : 'chevron-down', 'icon-sm')}${esc(samplesOpen ? t('jobs.hideSamples', 'Hide example roles') : t('jobs.showSamples', 'Show {n} example roles', { n: samples.length }))}</button></div>
+        ${samplesOpen ? `<div style="margin-top:12px">${head(t('jobs.gSamples', 'Example roles (not live openings)'), samples.length)}${list(samples)}</div>` : ''}`}` : ''}`;
   animateIn(box);
   const f = box.querySelector('#jFilter');
   f.addEventListener('input', () => { const pos = f.selectionStart; results(el); const n = el.querySelector('#jFilter'); n.focus(); n.setSelectionRange(pos, pos); });
-  box.querySelectorAll('[data-type]').forEach((b) => b.addEventListener('click', () => { typeFilter = b.dataset.type; results(el); }));
+  box.querySelectorAll('[data-place]').forEach((b) => b.addEventListener('click', () => { placeFilter = b.dataset.place; results(el); }));
+  box.querySelector('#jSamples')?.addEventListener('click', () => { showSamples = !showSamples; results(el); });
   box.querySelector('#jWeak')?.addEventListener('click', () => { showWeak = !showWeak; results(el); });
 }
 
@@ -287,7 +309,7 @@ export const jobs = {
       if (!role && !resume.text.trim() && !skills.length) {
         toast(t('jobs.needSomething', 'Add your resume, a role or a few skills'), 'bad'); el.querySelector('#jFile').closest('label').focus(); return;
       }
-      busy = true; showWeak = false; el.querySelector('#jGo').disabled = true; results(el);
+      busy = true; showWeak = false; showSamples = false; placeFilter = 'all'; el.querySelector('#jGo').disabled = true; results(el);
       try {
         const report = await api('/api/opportunities/jobs/match', {
           method: 'POST',
