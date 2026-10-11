@@ -4,14 +4,18 @@ import { t } from '../i18n.js';
 import { icon, toast } from '../ui.js';
 import { api } from '../api.js';
 import { state, saveJobs } from '../state.js';
-import { tagInput, bindControls, ring, animateIn } from '../components.js';
+import { tagInput, chips, bindControls, ring, animateIn } from '../components.js';
 
 export const SEGMENTS = [
   ['must', 'seg.must', 'Must-have skills'], ['nice', 'seg.nice', 'Good to have'], ['role', 'seg.role', 'Role'],
   ['experience', 'seg.experience', 'Experience'], ['education', 'seg.education', 'Education'],
   ['field', 'seg.field', 'Field'], ['text', 'seg.text', 'Resume wording'],
 ];
-const ROLES = ['Data analyst', 'Backend developer', 'Frontend developer', 'Accountant', 'Sales executive', 'Teacher', 'Graphic designer'];
+const ROLES = ['Software developer', 'Data analyst', 'Backend developer', 'Full-stack developer', 'Frontend developer', 'Accountant', 'Sales executive', 'Teacher', 'Graphic designer'];
+const EXPERIENCE = [
+  ['0', 'exp.0', 'Fresher'], ['0.5', 'exp.1', 'Under 1 year'], ['1.5', 'exp.2', '1–2 years'],
+  ['4', 'exp.3', '3–5 years'], ['6', 'exp.4', 'Over 5 years'],
+];
 const SKILL_IDEAS = ['Python', 'SQL', 'Excel', 'Java', 'React', 'Communication', 'Tally'];
 export const EVIDENCE = {
   work: ['ev.work', 'Used at work'], project: ['ev.project', 'In a project or course'],
@@ -30,7 +34,8 @@ export function jobsData() { return state.jobs?.report ? state.jobs : null; }
 /** What the matcher and planner need to know about the person. */
 export function personPayload() {
   const d = state.jobs || {};
-  return { profile: state.profile || {}, resume_text: getResume().text, desired_role: d.role || '', skills: d.skills || [] };
+  return { profile: state.profile || {}, resume_text: getResume().text, desired_role: d.role || '', skills: d.skills || [],
+    experience_years: d.experience === '' || d.experience == null ? null : Number(d.experience) };
 }
 
 let resume = getResume();
@@ -103,9 +108,12 @@ function jobItem(j) {
 
 function readCard(rep) {
   const r = rep.resume || {};
-  const target = rep.target_label
-    ? `<p class="small">${icon('target', 'icon-sm')} ${esc(t('jobs.lookingFor', 'Looking for'))}: <strong>${esc(rep.target_label)}</strong>
-        <span class="quiet">(${esc(rep.target_from === 'resume' ? t('jobs.fromResume', 'from your resume') : t('jobs.fromRole', 'from the role you typed'))})</span></p>` : '';
+  const typedRole = rep.target_from === 'role' ? (state.jobs?.role || rep.query) : '';
+  const target = typedRole || rep.target_label
+    ? `<p class="small">${icon('target', 'icon-sm')} ${esc(t('jobs.lookingFor', 'Looking for'))}: <strong>${esc(typedRole || rep.target_label)}</strong>
+        <span class="quiet">(${esc(typedRole
+          ? (rep.target_label ? t('jobs.alsoSimilar', 'as you typed; similar {f} roles count too', { f: rep.target_label.toLowerCase() }) : t('jobs.fromRole', 'from the role you typed'))
+          : t('jobs.fromResume', 'from your resume'))})</span></p>` : '';
   if (!r.has_resume) {
     return `<section class="card panel-pad read-card">
       <h2 class="h3">${icon('file-search')} ${esc(t('jobs.readT', 'What we read from your resume'))}</h2>
@@ -276,6 +284,8 @@ export const jobs = {
             <p class="hint">${esc(t('jobs.roleHint', 'Leave it empty and we go by your resume.'))}</p>
             <div class="suggest">${ROLES.map((r) => `<button type="button" data-role="${esc(r)}">${esc(r)}</button>`).join('')}</div></div>
           ${tagInput('skills', last.skills || [], { label: t('jobs.skills', 'Skills not on your resume'), placeholder: t('jobs.skillsPh', 'Type a skill and press Enter'), suggestions: SKILL_IDEAS.filter((s) => !(last.skills || []).some((x) => x.toLowerCase() === s.toLowerCase())) })}
+          ${chips('experience', EXPERIENCE.map(([v, k, en]) => [v, t(k, en)]), last.experience ?? '', { label: t('jobs.exp', 'Work experience') })}
+          <p class="hint" style="margin-top:-6px">${esc(t('jobs.expHint', 'Internships count too. Needed if you have no resume; with one, we use whichever is higher.'))}</p>
           ${hoursField(last.hours || 8)}
           ${state.profile ? `<p class="hint">${icon('user-round', 'icon-sm')} ${esc(t('jobs.usingProfile', 'Also using your profile: {e}{f}', { e: state.profile.education_level || '—', f: state.profile.field_of_study ? `, ${state.profile.field_of_study}` : '' }))}</p>` : ''}
           <button class="btn btn-primary btn-lg btn-block" type="submit" id="jGo" ${busy ? 'disabled' : ''}>${icon('sparkles')}${esc(t('jobs.find', 'Find my jobs'))}</button>
@@ -308,6 +318,7 @@ export const jobs = {
       const role = (fd.get('role') || '').trim();
       const skills = (fd.get('skills') || '').split(',').map((s) => s.trim()).filter(Boolean);
       const hours = Number(fd.get('hours')) || 8;
+      const experience = fd.get('experience') ?? '';
       if (!role && !resume.text.trim() && !skills.length) {
         toast(t('jobs.needSomething', 'Add your resume, a role or a few skills'), 'bad'); el.querySelector('#jFile').closest('label').focus(); return;
       }
@@ -315,9 +326,10 @@ export const jobs = {
       try {
         const report = await api('/api/opportunities/jobs/match', {
           method: 'POST',
-          json: { profile: state.profile || {}, resume_text: resume.text, desired_role: role, skills },
+          json: { profile: state.profile || {}, resume_text: resume.text, desired_role: role, skills,
+            experience_years: experience === '' ? null : Number(experience) },
         });
-        saveJobs({ role, skills, hours, report, at: Date.now() });
+        saveJobs({ role, skills, hours, experience, report, at: Date.now() });
       } catch (err) {
         toast(err.message, 'bad');
       } finally {

@@ -228,3 +228,23 @@ def test_short_posts_are_not_overconfident():
     cand = candidate({}, "", user_skills=["Python"])
     thin = score_with({"title": "Python developer", "description": ""}, cand)
     assert thin["fit_score"] < 0.8
+
+
+def test_closed_and_old_postings_are_dropped():
+    from app.jobs.sources import is_open, posting_key
+    assert not is_open({"title": "AI Software Engineer", "snippet": "No longer accepting applications", "date": "2 days ago"})
+    assert not is_open({"title": "AI Software Engineer", "snippet": "Posted 10 months ago. Python."})
+    assert not is_open({"title": "x", "snippet": "", "date": "3 months ago"})
+    assert is_open({"title": "x", "snippet": "Apply now", "date": "5 days ago"})
+    assert is_open({"title": "x", "snippet": "Apply now"})
+    assert posting_key("https://in.linkedin.com/jobs/view/ai-software-engineer-at-zephy-4123456789?trk=x") == \
+        posting_key("https://www.linkedin.com/jobs/view/4123456789")
+
+
+def test_experience_from_the_form_without_resume():
+    senior = {"title": "Senior Software Engineer", "description": "Python, SQL."}
+    told_fresher = candidate({}, "", user_skills=["Python"], experience_years=0)
+    told_five = candidate({}, "", user_skills=["Python"], experience_years=5)
+    assert score_with(senior, told_fresher)["too_senior"]
+    r = score_with(senior, told_five)
+    assert not r["too_senior"] and any(b["signal"] == "experience" and b["value"] == 1 for b in r["fit_breakdown"])

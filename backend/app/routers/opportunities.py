@@ -140,6 +140,8 @@ class JobMatchRequest(BaseModel):
     desired_role: Optional[str] = Field(default="", max_length=120)
     expected_salary: Optional[int] = None
     skills: Optional[List[str]] = None
+    # Years of work experience picked on the Jobs form (0 = fresher); used when there is no resume
+    experience_years: Optional[float] = Field(default=None, ge=0, le=50)
 
 
 @router.post("/jobs/match")
@@ -150,7 +152,8 @@ def match_jobs(payload: JobMatchRequest):
     was read from the resume, and the one skill that would lift the most matches.
     """
     profile = payload.profile or {}
-    cand = candidate(profile, payload.resume_text or "", payload.desired_role or "", payload.skills)
+    cand = candidate(profile, payload.resume_text or "", payload.desired_role or "", payload.skills,
+                     experience_years=payload.experience_years)
     query = search_query(cand)
     # Live sources are searched in the user's state and across India; ranking
     # then puts their state first, remote next, then the rest of India.
@@ -200,5 +203,6 @@ def job_plan(payload: JobPlanRequest):
             job["family"] = None
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found. Search again and pick it from the list.")
-    cand = candidate(payload.profile or {}, payload.resume_text or "", payload.desired_role or "", payload.skills)
+    cand = candidate(payload.profile or {}, payload.resume_text or "", payload.desired_role or "", payload.skills,
+                     experience_years=payload.experience_years)
     return build_plan(job, cand, payload.hours_per_week, payload.learned)

@@ -24,6 +24,7 @@ import json
 import logging
 import re
 import time
+from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from pathlib import Path
@@ -236,6 +237,53 @@ def source_status() -> dict[str, str]:
     return dict(_status)
 
 
+CLOSED = re.compile(r"no longer accepting|not accepting applications|job (?:has )?expired|this job is closed|"
+                    r"position (?:has been )?filled|applications? (?:are )?closed|expired on", re.IGNORECASE)
+MAX_AGE_DAYS = 30
+
+
+def age_days(text: str | None) -> float | None:
+    """Days since a date like "3 days ago", "2 weeks ago", "10 months ago" or "Sep 14, 2026"."""
+    if not text:
+        return None
+    low = text.lower()
+    m = re.search(r"(\d+)\s*(minute|hour|day|week|month|year)s?\s+ago", low)
+    if m:
+        n, unit = int(m.group(1)), m.group(2)
+        return n * {"minute": 1 / 1440, "hour": 1 / 24, "day": 1, "week": 7, "month": 30, "year": 365}[unit]
+    if re.search(r"\b(?:just now|today|yesterday)\b", low):
+        return 1
+    for fmt in ("%b %d, %Y", "%d %b %Y", "%Y-%m-%d", "%B %d, %Y"):
+        try:
+            return (datetime.now() - datetime.strptime(text.strip()[:18], fmt)).days
+        except ValueError:
+            continue
+    return None
+
+
+def is_open(item: dict) -> bool:
+    """False for a posting that says it is closed or is older than a month."""
+    text = f"{item.get('title', '')} {item.get('snippet', '')}"
+    if CLOSED.search(text):
+        return False
+    age = age_days(item.get("date"))
+    if age is None:  # dates sometimes sit inside the snippet: "Posted 10 months ago"
+        m = re.search(r"\d+\s*(?:minute|hour|day|week|month|year)s?\s+ago", item.get("snippet", "") or "", re.IGNORECASE)
+        age = age_days(m.group(0)) if m else None
+    return age is None or age <= MAX_AGE_DAYS
+
+
+def posting_key(link: str) -> str:
+    """One key per posting: in.linkedin.com and www.linkedin.com links to the same job match."""
+    m = re.search(r"linkedin\.com/jobs/view/(?:[^/?]*-)?(\d{6,})", link)
+    if m:
+        return f"linkedin:{m.group(1)}"
+    m = re.search(r"[?&]jk=([0-9a-f]+)", link)
+    if m:
+        return f"indeed:{m.group(1)}"
+    return re.sub(r"^https?://(?:www\.|in\.|m\.)?", "", link.split("?")[0].split("#")[0]).rstrip("/").lower()
+
+
 def _site_of(link: str) -> str | None:
     for _f, pattern, name in JOB_SITES:
         if re.search(pattern, link, re.IGNORECASE):
@@ -261,7 +309,7 @@ def parse_posting_title(title: str) -> tuple[str, str | None, str | None]:
     m = re.match(r"^(.+?)\s+(?:job|internship)s?\s+(?:at|in)\s+(.+?)(?:\s+in\s+(.+))?$", t, re.IGNORECASE)
     if m:
         return m.group(1).strip(), m.group(2).strip(), (m.group(3) or "").strip() or None
-    parts = [p.strip() for p in re.split(r"\s+[-–|]\s+", t) if p.strip()]
+    parts = [p.strip() for p in re.split(r"\s+[-–—|]\s+", t) if p.strip()]
     if len(parts) == 1:
         m = re.match(r"^(.+?)\s+(?:at|@)\s+(.+)$", t)
         return (m.group(1), m.group(2), None) if m else (t, None, None)
@@ -286,7 +334,8 @@ def _serper(q: str) -> list[dict] | str:
             resp = client.post(
                 "https://google.serper.dev/search",
                 headers={"X-API-KEY": settings.serper_api_key, "Content-Type": "application/json"},
-                json={"q": q, "gl": "in", "hl": "en", "num": 10},
+                # tbs=qdr:m: only pages Google saw change in the last month, so old, closed posts drop out
+                json={"q": q, "gl": "in", "hl": "en", "num": 10, "tbs": "qdr:m"},
             )
     except httpx.HTTPError as e:
         return f"could not connect ({e.__class__.__name__})"
@@ -313,13 +362,17 @@ def web_job_postings(query: str, location: str | None, fresher: bool = False) ->
         errors = [a for a in answers if isinstance(a, str)]
         organic = [item for a in answers if isinstance(a, list) for item in a]
 
-        jobs, seen = [], set()
+        jobs, seen, closed = [], set(), 0
         for item in organic:
             link = item.get("link", "")
             site = _site_of(link)
-            if not site or link in seen:
+            key = posting_key(link)
+            if not site or key in seen:
                 continue  # a listing page, an unrelated result, or one we already have
-            seen.add(link)
+            seen.add(key)
+            if not is_open(item):
+                closed += 1
+                continue
             role, company, where = parse_posting_title(item.get("title", ""))
             snippet = item.get("snippet", "") or ""
             where = where or find_place(snippet) or (location if location and find_state(snippet) == location else None)
@@ -338,7 +391,8 @@ def web_job_postings(query: str, location: str | None, fresher: bool = False) ->
             logger.warning(f"Serper job search failed: {errors[0]}")
             _note(f"Google · {location or 'India'}", f"failed: {errors[0]}")
         else:
-            _note(f"Google · {location or 'India'}", f"{len(jobs)} postings found")
+            _note(f"Google · {location or 'India'}", f"{len(jobs)} open postings found"
+                  + (f", {closed} closed or old ones left out" if closed else ""))
         return jobs
 
     return cached(f"webjobs:{query.lower()}:{(location or 'india').lower()}:{int(fresher)}", fetch)
@@ -368,6 +422,8 @@ def google_jobs(query: str, location: str | None, fresher: bool = False) -> list
         jobs = []
         for r in data.get("jobs_results", []):
             ext = r.get("detected_extensions") or {}
+            if (age_days(ext.get("posted_at")) or 0) > MAX_AGE_DAYS:
+                continue
             apply = (r.get("apply_options") or [{}])[0]
             link = apply.get("link") or r.get("share_link")
             via = re.sub(r"^via\s+", "", r.get("via") or "", flags=re.IGNORECASE) or None
@@ -488,7 +544,7 @@ def search_jobs(query: str = "", skills: list[str] | None = None, location: str 
         keys = {f"{j['title'].lower()}@{(j.get('company') or '').lower()}@{(j.get('location') or '').lower()}"}
         # Sample roles share generic careers-page links, so only live URLs identify a job
         if j.get("url") and j["source"] != "sample":
-            keys.add(j["url"])
+            keys.add(posting_key(j["url"]))
         if keys & seen:
             continue
         seen |= keys
