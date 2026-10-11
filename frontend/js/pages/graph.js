@@ -116,7 +116,7 @@ function insights(g) {
     <div class="card figure"><p class="figure-value num">${ins.counts?.criterion ?? 0}</p><p class="figure-label">${esc(t('map.rulesN', 'Rules'))}</p></div>
   </div>
   ${top ? `<section class="card panel-pad insight" style="margin-top:0;margin-bottom:14px"><span class="insight-icon">${icon('file-search')}</span><div>
-    <p class="tiny quiet" style="text-transform:uppercase;letter-spacing:.06em;font-weight:700">${esc(t('map.topK', 'Most valuable missing document'))}</p>
+    <p class="tiny quiet" style="font-weight:700;color:var(--saffron-deep)">${esc(t('map.topK', 'Most valuable missing document'))}</p>
     <h2 class="h3">${esc(top.label)}</h2>
     <p class="small">${esc(top.schemes.length === 1
       ? t('map.topP1', 'Unblocks a scheme you qualify for: {list}', { list: top.schemes[0] })

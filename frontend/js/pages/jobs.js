@@ -147,7 +147,7 @@ function insightCard(ins) {
   return `<section class="card panel-pad insight">
     <span class="insight-icon">${icon('lightbulb')}</span>
     <div>
-      <p class="tiny quiet" style="text-transform:uppercase;letter-spacing:.06em;font-weight:700">${esc(t('jobs.insightK', 'Best next skill'))}</p>
+      <p class="tiny quiet" style="font-weight:700;color:var(--saffron-deep)">${esc(t('jobs.insightK', 'Best next skill'))}</p>
       <h2 class="h3">${esc(t('jobs.insightT', 'Learn {s} next', { s: ins.skill }))}</h2>
       <p class="small">${esc(t('jobs.insight', 'Asked by {n} of your top {of} matches. Their fit goes from {a}% to {b}%. About {w} weeks at 8 hours a week.', { n: ins.jobs, of: ins.of, a: before, b: after, w: ins.weeks }))}</p>
       <div class="lift"><span class="num">${before}%</span><span class="lift-bar"><i style="width:${before}%"></i><b style="left:${before}%;width:0" data-width="${Math.max(0, after - before)}%"></b></span><span class="num" style="color:var(--green)">${after}%</span></div>

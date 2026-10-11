@@ -101,7 +101,7 @@ function render(el) {
     <header class="card plan-hero">
       <div class="plan-hero-main">
         <div class="row row-wrap" style="gap:8px;margin-bottom:10px">${sourceStamp(job)}${p.family_label ? `<span class="tier">${esc(p.family_label)}</span>` : ''}</div>
-        <p class="tiny quiet" style="text-transform:uppercase;letter-spacing:.06em;font-weight:700">${esc(t('plan.kicker', 'Your plan for'))}</p>
+        <p class="tiny quiet" style="font-weight:700;color:var(--saffron-deep)">${esc(t('plan.kicker', 'Your plan for'))}</p>
         <h1 class="h1">${esc(job.title)}</h1>
         ${job.company ? `<p class="quiet">${esc(job.company)}</p>` : ''}
         ${p.unmet.filter((u) => !u.startsWith('Must-have') && !u.startsWith('Listed but')).map((u) => `<p class="small gap" style="margin-top:6px">${icon('triangle-alert', 'icon-sm')} ${esc(u)}</p>`).join('')}

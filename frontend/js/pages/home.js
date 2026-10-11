@@ -8,6 +8,8 @@ import { runAgents } from '../run.js';
 import { downloadCalendar, printPlan } from '../print.js';
 import { EDUCATION } from '../profileFields.js';
 import { thisWeek } from './planner.js';
+import { rosette } from '../brand.js';
+import { burst } from '../fx.js';
 
 let stampedRunId = null; // the stamp animation plays once per new result, not on every visit
 
@@ -163,7 +165,8 @@ export const home = {
 
     el.innerHTML = `
       ${state.running ? `<p class="notice" role="status" style="margin-bottom:14px"><span class="spinner"></span>${esc(t('run.working', 'Checking your profile against every scheme…'))}</p>` : ''}
-      <section class="card hello" aria-labelledby="hVerdict">
+      <section class="card hello ink" aria-labelledby="hVerdict">
+        <div class="hello-rosette">${rosette({ cls: fresh ? 'ros-draw' : '' })}</div>
         <div>
           <p class="quiet">${esc(t('home.hi', 'Hi {name}, here is your file', { name }))}</p>
           <h1 class="display" id="hVerdict" style="margin-top:8px">${esc(verdictSentence(ins))}</h1>
@@ -209,7 +212,8 @@ export const home = {
     el.querySelector('#hCal').addEventListener('click', downloadCalendar);
     el.querySelector('#hPrint').addEventListener('click', printPlan);
     if (fresh) {
-      animateIn(el);   // count up numbers and fill the ring once per new result
+      animateIn(el);
+      if (ins.eligible_count) setTimeout(() => burst(el.querySelector('.verdict-stamp .stamp')), 650);   // count up numbers and fill the ring once per new result
     } else {
       el.querySelectorAll('[data-count]').forEach((n) => { n.textContent = n.dataset.money === '1' ? fmtINR(+n.dataset.count) : (+n.dataset.count).toLocaleString('en-IN'); });
       el.querySelectorAll('circle[data-offset]').forEach((c) => { c.style.transition = 'none'; c.style.strokeDashoffset = c.dataset.offset; });
