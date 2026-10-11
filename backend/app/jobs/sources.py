@@ -1,9 +1,9 @@
 """Job sources with caching.
 
 Sources, all optional except the sample set:
-1. Sample roles (app/data/indian_jobs.json): always available, works offline.
-   These are illustrative role descriptions, not live openings, and are
-   labelled "Sample" in the UI.
+1. Sample roles (app/data/sample_roles.json): always available, works offline.
+   These describe what a type of role typically asks for in India. They are
+   not live openings and name no employer; the UI labels them "Sample".
 2. Public RSS feeds that publish jobs for reuse (We Work Remotely, python.org).
 3. Adzuna job search API (free developer tier) when ADZUNA_APP_ID/KEY are set.
 4. Serper (Google search API) when SERPER_API_KEY is set.
@@ -29,7 +29,7 @@ from app.config import settings
 
 logger = logging.getLogger("lifepilot.jobs.sources")
 
-SAMPLE_JOBS_FILE = Path(__file__).resolve().parent.parent / "data" / "indian_jobs.json"
+SAMPLE_JOBS_FILE = Path(__file__).resolve().parent.parent / "data" / "sample_roles.json"
 
 RSS_FEEDS = [
     "https://weworkremotely.com/categories/remote-programming-jobs.rss",
@@ -96,13 +96,15 @@ def sample_jobs() -> list[dict]:
         return []
     jobs = []
     for j in items:
-        jobs.append(_job(
+        job = _job(
             id=j["id"], title=j["title"], company=j.get("company"), location=j.get("location"),
             description=j.get("description", ""), url=j.get("url"), source="sample",
             job_type=j.get("job_type"), country=j.get("country"),
             salary=j.get("salary"), salary_min=j.get("salary_min"), salary_max=j.get("salary_max"),
             currency="INR" if j.get("salary_min") else None,
-        ))
+        )
+        job["family"] = j.get("family")
+        jobs.append(job)
     return jobs
 
 
@@ -233,7 +235,7 @@ def _matches_query(job: dict, terms: list[str]) -> bool:
 
 
 def search_jobs(query: str = "", skills: list[str] | None = None, location: str | None = None,
-                live: bool = True, limit: int = 50) -> list[dict]:
+                live: bool = True, limit: int = 50, filter_samples: bool = True) -> list[dict]:
     """Search all sources, filter by the query, and de-duplicate."""
     skills = skills or []
     q = (query or "").strip().lower()
@@ -249,8 +251,11 @@ def search_jobs(query: str = "", skills: list[str] | None = None, location: str 
             jobs += serper_jobs(q, skills, location)
 
     if terms:
-        # Live API results were already searched for the query; filter the rest.
-        jobs = [j for j in jobs if j["source"] in ("adzuna", "web_search") or _matches_query(j, terms)]
+        # Live API results were already searched for the query. RSS feeds are
+        # filtered here. Sample roles are kept only when `filter_samples` is set
+        # (plain search); matching scores all of them and decides relevance itself.
+        keep = {"adzuna", "web_search"} | (set() if filter_samples else {"sample"})
+        jobs = [j for j in jobs if j["source"] in keep or _matches_query(j, terms)]
 
     seen: set[str] = set()
     unique = []
@@ -263,4 +268,4 @@ def search_jobs(query: str = "", skills: list[str] | None = None, location: str 
             continue
         seen |= keys
         unique.append(j)
-    return unique[:limit]
+    return unique[:limit] if limit else unique

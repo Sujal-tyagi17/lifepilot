@@ -1,0 +1,1546 @@
+{
+ "Python": {
+  "weeks": 4,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Python.org",
+    "title": "The official Python tutorial",
+    "url": "https://docs.python.org/3/tutorial/"
+   },
+   {
+    "provider": "Kaggle Learn",
+    "title": "Python course",
+    "url": "https://www.kaggle.com/learn/python"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Java": {
+  "weeks": 6,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "dev.java",
+    "title": "Learn Java (Oracle)",
+    "url": "https://dev.java/learn/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "JavaScript": {
+  "weeks": 5,
+  "prereqs": [
+   "HTML"
+  ],
+  "resources": [
+   {
+    "provider": "javascript.info",
+    "title": "The Modern JavaScript Tutorial",
+    "url": "https://javascript.info/"
+   },
+   {
+    "provider": "MDN",
+    "title": "JavaScript guide",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide"
+   }
+  ],
+  "kind": "tech"
+ },
+ "TypeScript": {
+  "weeks": 2,
+  "prereqs": [
+   "JavaScript"
+  ],
+  "resources": [
+   {
+    "provider": "TypeScript",
+    "title": "The TypeScript Handbook",
+    "url": "https://www.typescriptlang.org/docs/handbook/intro.html"
+   }
+  ],
+  "kind": "tech"
+ },
+ "C": {
+  "weeks": 4,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free C programming courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=C%20programming"
+   }
+  ],
+  "kind": "tech"
+ },
+ "C++": {
+  "weeks": 6,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "learncpp.com",
+    "title": "Learn C++",
+    "url": "https://www.learncpp.com/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "C#": {
+  "weeks": 5,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Microsoft Learn",
+    "title": "C# learning path",
+    "url": "https://learn.microsoft.com/en-us/dotnet/csharp/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Go": {
+  "weeks": 3,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "go.dev",
+    "title": "A Tour of Go",
+    "url": "https://go.dev/tour/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Rust": {
+  "weeks": 6,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "rust-lang.org",
+    "title": "The Rust Book",
+    "url": "https://doc.rust-lang.org/book/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Kotlin": {
+  "weeks": 4,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Kotlin",
+    "title": "Kotlin docs: getting started",
+    "url": "https://kotlinlang.org/docs/getting-started.html"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Swift": {
+  "weeks": 4,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Swift.org",
+    "title": "Swift documentation",
+    "url": "https://www.swift.org/documentation/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "PHP": {
+  "weeks": 4,
+  "prereqs": [
+   "HTML"
+  ],
+  "resources": [
+   {
+    "provider": "PHP.net",
+    "title": "PHP manual: getting started",
+    "url": "https://www.php.net/manual/en/getting-started.php"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Ruby": {
+  "weeks": 4,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "ruby-lang.org",
+    "title": "Ruby documentation",
+    "url": "https://www.ruby-lang.org/en/documentation/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "R": {
+  "weeks": 4,
+  "prereqs": [
+   "Statistics"
+  ],
+  "resources": [
+   {
+    "provider": "R for Data Science",
+    "title": "R for Data Science (free book)",
+    "url": "https://r4ds.hadley.nz/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Scala": {
+  "weeks": 5,
+  "prereqs": [
+   "Java"
+  ],
+  "resources": [
+   {
+    "provider": "Scala",
+    "title": "Scala book",
+    "url": "https://docs.scala-lang.org/scala3/book/introduction.html"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Dart": {
+  "weeks": 2,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "dart.dev",
+    "title": "Dart language tour",
+    "url": "https://dart.dev/language"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Bash": {
+  "weeks": 1,
+  "prereqs": [
+   "Linux"
+  ],
+  "resources": [
+   {
+    "provider": "Linux Journey",
+    "title": "Command line basics",
+    "url": "https://linuxjourney.com/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "HTML": {
+  "weeks": 2,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "MDN",
+    "title": "Learn web development",
+    "url": "https://developer.mozilla.org/en-US/docs/Learn"
+   },
+   {
+    "provider": "freeCodeCamp",
+    "title": "Responsive Web Design",
+    "url": "https://www.freecodecamp.org/learn"
+   }
+  ],
+  "kind": "tech"
+ },
+ "CSS": {
+  "weeks": 2,
+  "prereqs": [
+   "HTML"
+  ],
+  "resources": [
+   {
+    "provider": "web.dev",
+    "title": "Learn CSS",
+    "url": "https://web.dev/learn/css"
+   }
+  ],
+  "kind": "tech"
+ },
+ "React": {
+  "weeks": 4,
+  "prereqs": [
+   "JavaScript",
+   "CSS"
+  ],
+  "resources": [
+   {
+    "provider": "react.dev",
+    "title": "Learn React (official)",
+    "url": "https://react.dev/learn"
+   }
+  ],
+  "kind": "tech"
+ },
+ "React Native": {
+  "weeks": 3,
+  "prereqs": [
+   "React"
+  ],
+  "resources": [
+   {
+    "provider": "React Native",
+    "title": "Getting started",
+    "url": "https://reactnative.dev/docs/getting-started"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Angular": {
+  "weeks": 4,
+  "prereqs": [
+   "TypeScript"
+  ],
+  "resources": [
+   {
+    "provider": "angular.dev",
+    "title": "Angular tutorials",
+    "url": "https://angular.dev/tutorials"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Vue": {
+  "weeks": 3,
+  "prereqs": [
+   "JavaScript"
+  ],
+  "resources": [
+   {
+    "provider": "Vue.js",
+    "title": "Vue tutorial",
+    "url": "https://vuejs.org/tutorial/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Next.js": {
+  "weeks": 2,
+  "prereqs": [
+   "React"
+  ],
+  "resources": [
+   {
+    "provider": "Next.js",
+    "title": "Learn Next.js",
+    "url": "https://nextjs.org/learn"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Node.js": {
+  "weeks": 3,
+  "prereqs": [
+   "JavaScript"
+  ],
+  "resources": [
+   {
+    "provider": "Node.js",
+    "title": "Learn Node.js",
+    "url": "https://nodejs.org/en/learn"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Express": {
+  "weeks": 1,
+  "prereqs": [
+   "Node.js"
+  ],
+  "resources": [
+   {
+    "provider": "Express",
+    "title": "Express getting started",
+    "url": "https://expressjs.com/en/starter/installing.html"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Django": {
+  "weeks": 3,
+  "prereqs": [
+   "Python"
+  ],
+  "resources": [
+   {
+    "provider": "Django",
+    "title": "Writing your first Django app",
+    "url": "https://docs.djangoproject.com/en/stable/intro/tutorial01/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Flask": {
+  "weeks": 2,
+  "prereqs": [
+   "Python"
+  ],
+  "resources": [
+   {
+    "provider": "Flask",
+    "title": "Flask tutorial",
+    "url": "https://flask.palletsprojects.com/en/stable/tutorial/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "FastAPI": {
+  "weeks": 2,
+  "prereqs": [
+   "Python"
+  ],
+  "resources": [
+   {
+    "provider": "FastAPI",
+    "title": "FastAPI tutorial",
+    "url": "https://fastapi.tiangolo.com/tutorial/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Spring Boot": {
+  "weeks": 4,
+  "prereqs": [
+   "Java"
+  ],
+  "resources": [
+   {
+    "provider": "Spring",
+    "title": "Spring guides",
+    "url": "https://spring.io/guides"
+   }
+  ],
+  "kind": "tech"
+ },
+ ".NET": {
+  "weeks": 4,
+  "prereqs": [
+   "C#"
+  ],
+  "resources": [
+   {
+    "provider": "Microsoft Learn",
+    "title": ".NET learning",
+    "url": "https://learn.microsoft.com/en-us/dotnet/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Flutter": {
+  "weeks": 4,
+  "prereqs": [
+   "Dart"
+  ],
+  "resources": [
+   {
+    "provider": "Flutter",
+    "title": "Get started with Flutter",
+    "url": "https://docs.flutter.dev/get-started"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Android": {
+  "weeks": 6,
+  "prereqs": [
+   "Kotlin"
+  ],
+  "resources": [
+   {
+    "provider": "Android Developers",
+    "title": "Android courses",
+    "url": "https://developer.android.com/courses"
+   }
+  ],
+  "kind": "tech"
+ },
+ "iOS": {
+  "weeks": 6,
+  "prereqs": [
+   "Swift"
+  ],
+  "resources": [
+   {
+    "provider": "Apple Developer",
+    "title": "Develop in Swift tutorials",
+    "url": "https://developer.apple.com/tutorials/develop-in-swift"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Tailwind CSS": {
+  "weeks": 1,
+  "prereqs": [
+   "CSS"
+  ],
+  "resources": [
+   {
+    "provider": "Tailwind CSS",
+    "title": "Tailwind docs",
+    "url": "https://tailwindcss.com/docs"
+   }
+  ],
+  "kind": "tech"
+ },
+ "REST APIs": {
+  "weeks": 2,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "MDN",
+    "title": "HTTP overview",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview"
+   }
+  ],
+  "kind": "tech"
+ },
+ "GraphQL": {
+  "weeks": 2,
+  "prereqs": [
+   "REST APIs"
+  ],
+  "resources": [
+   {
+    "provider": "GraphQL",
+    "title": "Learn GraphQL",
+    "url": "https://graphql.org/learn/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "SQL": {
+  "weeks": 3,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "SQLBolt",
+    "title": "Interactive SQL lessons",
+    "url": "https://sqlbolt.com/"
+   },
+   {
+    "provider": "Kaggle Learn",
+    "title": "Intro to SQL",
+    "url": "https://www.kaggle.com/learn/intro-to-sql"
+   }
+  ],
+  "kind": "tech"
+ },
+ "MySQL": {
+  "weeks": 1,
+  "prereqs": [
+   "SQL"
+  ],
+  "resources": [
+   {
+    "provider": "MySQL",
+    "title": "MySQL tutorial",
+    "url": "https://dev.mysql.com/doc/refman/8.0/en/tutorial.html"
+   }
+  ],
+  "kind": "tech"
+ },
+ "PostgreSQL": {
+  "weeks": 1,
+  "prereqs": [
+   "SQL"
+  ],
+  "resources": [
+   {
+    "provider": "PostgreSQL",
+    "title": "PostgreSQL tutorial",
+    "url": "https://www.postgresql.org/docs/current/tutorial.html"
+   }
+  ],
+  "kind": "tech"
+ },
+ "MongoDB": {
+  "weeks": 2,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "MongoDB University",
+    "title": "Free MongoDB courses",
+    "url": "https://learn.mongodb.com/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Redis": {
+  "weeks": 1,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Redis",
+    "title": "Redis learning",
+    "url": "https://redis.io/learn"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Kafka": {
+  "weeks": 2,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Apache Kafka",
+    "title": "Kafka quickstart",
+    "url": "https://kafka.apache.org/quickstart"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Pandas": {
+  "weeks": 2,
+  "prereqs": [
+   "Python"
+  ],
+  "resources": [
+   {
+    "provider": "Kaggle Learn",
+    "title": "Pandas",
+    "url": "https://www.kaggle.com/learn/pandas"
+   },
+   {
+    "provider": "pandas",
+    "title": "Getting started tutorials",
+    "url": "https://pandas.pydata.org/docs/getting_started/intro_tutorials/index.html"
+   }
+  ],
+  "kind": "tech"
+ },
+ "NumPy": {
+  "weeks": 1,
+  "prereqs": [
+   "Python"
+  ],
+  "resources": [
+   {
+    "provider": "NumPy",
+    "title": "NumPy: the absolute basics",
+    "url": "https://numpy.org/doc/stable/user/absolute_beginners.html"
+   }
+  ],
+  "kind": "tech"
+ },
+ "scikit-learn": {
+  "weeks": 2,
+  "prereqs": [
+   "Pandas",
+   "NumPy"
+  ],
+  "resources": [
+   {
+    "provider": "scikit-learn",
+    "title": "Tutorials",
+    "url": "https://scikit-learn.org/stable/tutorial/index.html"
+   }
+  ],
+  "kind": "tech"
+ },
+ "TensorFlow": {
+  "weeks": 3,
+  "prereqs": [
+   "Deep Learning"
+  ],
+  "resources": [
+   {
+    "provider": "TensorFlow",
+    "title": "Tutorials",
+    "url": "https://www.tensorflow.org/tutorials"
+   }
+  ],
+  "kind": "tech"
+ },
+ "PyTorch": {
+  "weeks": 3,
+  "prereqs": [
+   "Deep Learning"
+  ],
+  "resources": [
+   {
+    "provider": "PyTorch",
+    "title": "Learn the basics",
+    "url": "https://pytorch.org/tutorials/beginner/basics/intro.html"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Machine Learning": {
+  "weeks": 6,
+  "prereqs": [
+   "Python",
+   "Statistics"
+  ],
+  "resources": [
+   {
+    "provider": "Google",
+    "title": "Machine Learning Crash Course",
+    "url": "https://developers.google.com/machine-learning/crash-course"
+   },
+   {
+    "provider": "Kaggle Learn",
+    "title": "Intro to Machine Learning",
+    "url": "https://www.kaggle.com/learn/intro-to-machine-learning"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Deep Learning": {
+  "weeks": 6,
+  "prereqs": [
+   "Machine Learning"
+  ],
+  "resources": [
+   {
+    "provider": "fast.ai",
+    "title": "Practical Deep Learning (free)",
+    "url": "https://course.fast.ai/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Artificial Intelligence": {
+  "weeks": 4,
+  "prereqs": [
+   "Python"
+  ],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free artificial intelligence courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=artificial%20intelligence"
+   }
+  ],
+  "kind": "tech"
+ },
+ "NLP": {
+  "weeks": 4,
+  "prereqs": [
+   "Machine Learning"
+  ],
+  "resources": [
+   {
+    "provider": "Hugging Face",
+    "title": "Free courses",
+    "url": "https://huggingface.co/learn"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Computer Vision": {
+  "weeks": 4,
+  "prereqs": [
+   "Machine Learning"
+  ],
+  "resources": [
+   {
+    "provider": "Kaggle Learn",
+    "title": "Computer Vision",
+    "url": "https://www.kaggle.com/learn/computer-vision"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Data Analysis": {
+  "weeks": 3,
+  "prereqs": [
+   "Excel"
+  ],
+  "resources": [
+   {
+    "provider": "Kaggle Learn",
+    "title": "Data cleaning and visualisation",
+    "url": "https://www.kaggle.com/learn"
+   },
+   {
+    "provider": "SWAYAM",
+    "title": "Free data analytics courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=data%20analytics"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Statistics": {
+  "weeks": 4,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Khan Academy",
+    "title": "Statistics and probability",
+    "url": "https://www.khanacademy.org/math/statistics-probability"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Power BI": {
+  "weeks": 2,
+  "prereqs": [
+   "Excel"
+  ],
+  "resources": [
+   {
+    "provider": "Microsoft Learn",
+    "title": "Power BI training",
+    "url": "https://learn.microsoft.com/en-us/training/powerplatform/power-bi"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Tableau": {
+  "weeks": 2,
+  "prereqs": [
+   "Excel"
+  ],
+  "resources": [
+   {
+    "provider": "Tableau",
+    "title": "Free training videos",
+    "url": "https://www.tableau.com/learn/training"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Excel": {
+  "weeks": 2,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Exceljet",
+    "title": "Excel formulas and functions",
+    "url": "https://exceljet.net/"
+   },
+   {
+    "provider": "SWAYAM",
+    "title": "Free MS Excel courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=MS%20Excel"
+   }
+  ],
+  "kind": "office"
+ },
+ "Spark": {
+  "weeks": 3,
+  "prereqs": [
+   "Python",
+   "SQL"
+  ],
+  "resources": [
+   {
+    "provider": "Apache Spark",
+    "title": "Quick start",
+    "url": "https://spark.apache.org/docs/latest/quick-start.html"
+   }
+  ],
+  "kind": "tech"
+ },
+ "AWS": {
+  "weeks": 4,
+  "prereqs": [
+   "Linux"
+  ],
+  "resources": [
+   {
+    "provider": "AWS",
+    "title": "AWS Skill Builder (free courses)",
+    "url": "https://skillbuilder.aws/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Azure": {
+  "weeks": 4,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Microsoft Learn",
+    "title": "Azure training",
+    "url": "https://learn.microsoft.com/en-us/training/azure/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Google Cloud": {
+  "weeks": 4,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Google Cloud",
+    "title": "Training",
+    "url": "https://cloud.google.com/learn/training"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Docker": {
+  "weeks": 2,
+  "prereqs": [
+   "Linux"
+  ],
+  "resources": [
+   {
+    "provider": "Docker",
+    "title": "Get started with Docker",
+    "url": "https://docs.docker.com/get-started/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Kubernetes": {
+  "weeks": 3,
+  "prereqs": [
+   "Docker"
+  ],
+  "resources": [
+   {
+    "provider": "Kubernetes",
+    "title": "Kubernetes basics",
+    "url": "https://kubernetes.io/docs/tutorials/kubernetes-basics/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Linux": {
+  "weeks": 2,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Linux Journey",
+    "title": "Learn Linux",
+    "url": "https://linuxjourney.com/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Git": {
+  "weeks": 1,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Git",
+    "title": "Pro Git book (free)",
+    "url": "https://git-scm.com/book/en/v2"
+   }
+  ],
+  "kind": "tech"
+ },
+ "CI/CD": {
+  "weeks": 1,
+  "prereqs": [
+   "Git"
+  ],
+  "resources": [
+   {
+    "provider": "GitHub",
+    "title": "GitHub Actions docs",
+    "url": "https://docs.github.com/en/actions"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Terraform": {
+  "weeks": 2,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "HashiCorp",
+    "title": "Terraform tutorials",
+    "url": "https://developer.hashicorp.com/terraform/tutorials"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Networking": {
+  "weeks": 3,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free computer networks courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=computer%20networks"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Cybersecurity": {
+  "weeks": 6,
+  "prereqs": [
+   "Networking",
+   "Linux"
+  ],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free cyber security courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=cyber%20security"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Data Structures": {
+  "weeks": 6,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "NPTEL",
+    "title": "Programming, Data Structures and Algorithms",
+    "url": "https://nptel.ac.in/courses"
+   },
+   {
+    "provider": "SWAYAM",
+    "title": "Free data structures courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=data%20structures"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Algorithms": {
+  "weeks": 4,
+  "prereqs": [
+   "Data Structures"
+  ],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free algorithms courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=algorithms"
+   }
+  ],
+  "kind": "tech"
+ },
+ "System Design": {
+  "weeks": 4,
+  "prereqs": [
+   "Data Structures"
+  ],
+  "resources": [
+   {
+    "provider": "GitHub",
+    "title": "The System Design Primer",
+    "url": "https://github.com/donnemartin/system-design-primer"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Microservices": {
+  "weeks": 2,
+  "prereqs": [
+   "REST APIs"
+  ],
+  "resources": [
+   {
+    "provider": "microservices.io",
+    "title": "Microservice patterns",
+    "url": "https://microservices.io/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Testing": {
+  "weeks": 2,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "pytest",
+    "title": "pytest getting started",
+    "url": "https://docs.pytest.org/en/stable/getting-started.html"
+   },
+   {
+    "provider": "Selenium",
+    "title": "Selenium documentation",
+    "url": "https://www.selenium.dev/documentation/"
+   }
+  ],
+  "kind": "tech"
+ },
+ "Agile": {
+  "weeks": 1,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Atlassian",
+    "title": "Agile guide",
+    "url": "https://www.atlassian.com/agile"
+   }
+  ],
+  "kind": "business"
+ },
+ "Figma": {
+  "weeks": 2,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Figma",
+    "title": "Figma help centre",
+    "url": "https://help.figma.com/"
+   }
+  ],
+  "kind": "design"
+ },
+ "UI/UX Design": {
+  "weeks": 4,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "web.dev",
+    "title": "Learn design",
+    "url": "https://web.dev/learn/design"
+   },
+   {
+    "provider": "SWAYAM",
+    "title": "Free user experience design courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=user%20experience%20design"
+   }
+  ],
+  "kind": "design"
+ },
+ "Photoshop": {
+  "weeks": 2,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Adobe",
+    "title": "Photoshop tutorials",
+    "url": "https://helpx.adobe.com/photoshop/tutorials.html"
+   }
+  ],
+  "kind": "design"
+ },
+ "Illustrator": {
+  "weeks": 2,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Adobe",
+    "title": "Illustrator tutorials",
+    "url": "https://helpx.adobe.com/illustrator/tutorials.html"
+   }
+  ],
+  "kind": "design"
+ },
+ "Canva": {
+  "weeks": 1,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Canva",
+    "title": "Canva Design School",
+    "url": "https://www.canva.com/designschool/"
+   }
+  ],
+  "kind": "design"
+ },
+ "Video Editing": {
+  "weeks": 3,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free video editing courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=video%20editing"
+   }
+  ],
+  "kind": "design"
+ },
+ "AutoCAD": {
+  "weeks": 3,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Autodesk",
+    "title": "Autodesk learning",
+    "url": "https://www.autodesk.com/learn"
+   }
+  ],
+  "kind": "engineering"
+ },
+ "SolidWorks": {
+  "weeks": 3,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free SolidWorks courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=SolidWorks"
+   }
+  ],
+  "kind": "engineering"
+ },
+ "MATLAB": {
+  "weeks": 2,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "MathWorks",
+    "title": "MATLAB Onramp (free)",
+    "url": "https://matlabacademy.mathworks.com/"
+   }
+  ],
+  "kind": "engineering"
+ },
+ "Accounting": {
+  "weeks": 4,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free financial accounting courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=financial%20accounting"
+   }
+  ],
+  "kind": "finance"
+ },
+ "Tally": {
+  "weeks": 2,
+  "prereqs": [
+   "Accounting"
+  ],
+  "resources": [
+   {
+    "provider": "Tally Solutions",
+    "title": "TallyPrime help",
+    "url": "https://help.tallysolutions.com/"
+   },
+   {
+    "provider": "SWAYAM",
+    "title": "Free Tally courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=Tally"
+   }
+  ],
+  "kind": "finance"
+ },
+ "GST": {
+  "weeks": 2,
+  "prereqs": [
+   "Accounting"
+  ],
+  "resources": [
+   {
+    "provider": "GST Portal",
+    "title": "GST tutorials (official)",
+    "url": "https://tutorial.gst.gov.in/"
+   },
+   {
+    "provider": "SWAYAM",
+    "title": "Free GST courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=GST"
+   }
+  ],
+  "kind": "finance"
+ },
+ "Taxation": {
+  "weeks": 3,
+  "prereqs": [
+   "Accounting"
+  ],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free income tax courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=income%20tax"
+   }
+  ],
+  "kind": "finance"
+ },
+ "Financial Analysis": {
+  "weeks": 4,
+  "prereqs": [
+   "Excel",
+   "Accounting"
+  ],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free financial analysis courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=financial%20analysis"
+   }
+  ],
+  "kind": "finance"
+ },
+ "Auditing": {
+  "weeks": 3,
+  "prereqs": [
+   "Accounting"
+  ],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free auditing courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=auditing"
+   }
+  ],
+  "kind": "finance"
+ },
+ "Sales": {
+  "weeks": 2,
+  "prereqs": [
+   "Communication"
+  ],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free sales management courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=sales%20management"
+   }
+  ],
+  "kind": "business"
+ },
+ "Marketing": {
+  "weeks": 3,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free marketing management courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=marketing%20management"
+   }
+  ],
+  "kind": "business"
+ },
+ "Digital Marketing": {
+  "weeks": 3,
+  "prereqs": [
+   "Marketing"
+  ],
+  "resources": [
+   {
+    "provider": "Google Skillshop",
+    "title": "Free Google Ads and Analytics training",
+    "url": "https://skillshop.withgoogle.com/"
+   },
+   {
+    "provider": "SWAYAM",
+    "title": "Free digital marketing courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=digital%20marketing"
+   }
+  ],
+  "kind": "business"
+ },
+ "Content Writing": {
+  "weeks": 2,
+  "prereqs": [
+   "English"
+  ],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free content writing courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=content%20writing"
+   }
+  ],
+  "kind": "business"
+ },
+ "Customer Service": {
+  "weeks": 1,
+  "prereqs": [
+   "Communication"
+  ],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free customer relationship management courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=customer%20relationship%20management"
+   }
+  ],
+  "kind": "business"
+ },
+ "Communication": {
+  "weeks": 2,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "British Council",
+    "title": "LearnEnglish (free)",
+    "url": "https://learnenglish.britishcouncil.org/"
+   },
+   {
+    "provider": "SWAYAM",
+    "title": "Free communication skills courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=communication%20skills"
+   }
+  ],
+  "kind": "soft"
+ },
+ "MS Office": {
+  "weeks": 1,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Microsoft",
+    "title": "Microsoft 365 training",
+    "url": "https://support.microsoft.com/en-us/training"
+   }
+  ],
+  "kind": "office"
+ },
+ "Project Management": {
+  "weeks": 3,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free project management courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=project%20management"
+   }
+  ],
+  "kind": "business"
+ },
+ "Operations": {
+  "weeks": 3,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free operations management courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=operations%20management"
+   }
+  ],
+  "kind": "business"
+ },
+ "Inventory Management": {
+  "weeks": 2,
+  "prereqs": [
+   "Excel"
+  ],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free inventory management courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=inventory%20management"
+   }
+  ],
+  "kind": "business"
+ },
+ "HR": {
+  "weeks": 3,
+  "prereqs": [
+   "Communication"
+  ],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free human resource management courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=human%20resource%20management"
+   }
+  ],
+  "kind": "business"
+ },
+ "CRM": {
+  "weeks": 1,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "Salesforce Trailhead",
+    "title": "Free CRM learning",
+    "url": "https://trailhead.salesforce.com/"
+   }
+  ],
+  "kind": "business"
+ },
+ "Negotiation": {
+  "weeks": 1,
+  "prereqs": [
+   "Communication"
+  ],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free negotiation courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=negotiation"
+   }
+  ],
+  "kind": "soft"
+ },
+ "Teaching": {
+  "weeks": 4,
+  "prereqs": [
+   "Communication"
+  ],
+  "resources": [
+   {
+    "provider": "DIKSHA",
+    "title": "Teacher training (Govt. of India)",
+    "url": "https://diksha.gov.in/"
+   },
+   {
+    "provider": "SWAYAM",
+    "title": "Free teaching courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=teaching"
+   }
+  ],
+  "kind": "education"
+ },
+ "Lesson Planning": {
+  "weeks": 1,
+  "prereqs": [
+   "Teaching"
+  ],
+  "resources": [
+   {
+    "provider": "DIKSHA",
+    "title": "Teacher courses",
+    "url": "https://diksha.gov.in/"
+   }
+  ],
+  "kind": "education"
+ },
+ "Nursing": {
+  "weeks": 8,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free nursing courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=nursing"
+   }
+  ],
+  "kind": "health"
+ },
+ "Patient Care": {
+  "weeks": 2,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free patient care courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=patient%20care"
+   }
+  ],
+  "kind": "health"
+ },
+ "Data Entry": {
+  "weeks": 1,
+  "prereqs": [
+   "MS Office"
+  ],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free computer basics courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=computer%20basics"
+   }
+  ],
+  "kind": "office"
+ },
+ "English": {
+  "weeks": 4,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "British Council",
+    "title": "LearnEnglish (free)",
+    "url": "https://learnenglish.britishcouncil.org/"
+   }
+  ],
+  "kind": "soft"
+ },
+ "Hindi": {
+  "weeks": 4,
+  "prereqs": [],
+  "resources": [
+   {
+    "provider": "SWAYAM",
+    "title": "Free Hindi courses on SWAYAM (Govt. of India)",
+    "url": "https://swayam.gov.in/explorer?searchText=Hindi"
+   }
+  ],
+  "kind": "soft"
+ }
+}
