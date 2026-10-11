@@ -11,7 +11,7 @@ import re
 from datetime import date
 
 from app.jobs.catalog import skills_meta
-from app.jobs.skills import extract_skills, normalise_user_skills
+from app.jobs.skills import extract_skills_fuzzy, normalise_user_skills
 
 STRENGTH_LABEL = {3: "work", 2: "project", 1: "listed"}
 
@@ -120,7 +120,7 @@ def analyse_resume(text: str = "", typed_skills: list[str] | None = None) -> dic
     found_any = False
     for name, body in sections.items():
         level = SECTION_WEIGHT.get(name, 1)
-        skills = extract_skills(body)
+        skills = extract_skills_fuzzy(body)   # typos like "Pyhton" still count
         found_any = found_any or bool(skills)
         give(skills, level, name)
 

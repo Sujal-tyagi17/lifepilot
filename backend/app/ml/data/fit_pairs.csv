@@ -1,0 +1,2275 @@
+job_title,job_text,resume_text,education_level,target_role,must,nice,role,experience,education,field,text,rules_fit,label
+Senior cloud support associate,"Help customers solve cloud problems. Requirements: Linux, Networking, Communication skills. Good to have: AWS, Azure. Experience: 3+ years. Education: B.Tech, B.E., BCA or B.Sc.","Candidate
+Skills
+CI/CD
+Experience
+Site reliability engineer, Acme Pvt Ltd  Jan 2021 - present
+Worked with CI/CD, Python, AWS, Git
+Projects
+Built a small project using Docker
+Education
+Diploma in engineering 2023",Diploma,DevOps / cloud,0.33,0.5,0.8,1.0,0.0,,0.14,0.44,Poor
+Senior staff nurse,"Care for patients in a general ward. Requirements: Nursing, Patient care, Communication skills. Good to have: Hindi, English. Experience: 4+ years. Education: B.Sc Nursing or GNM diploma.","Candidate
+Skills
+Hindi
+Projects
+Built a small project using Patient Care
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Healthcare,0.28,0.3,0.8,0.0,1.0,,0.9,0.44,Poor
+Operations executive,"Make sure orders are delivered on time. Requirements: Operations management, Excel, Communication skills. Good to have: Inventory management, SQL. Experience: 0-2 years. Education: Graduate in any stream.","Candidate
+Skills
+Operations
+Experience
+Supply chain executive, Acme Pvt Ltd  Jan 2025 - present
+Worked with Operations, Excel
+Projects
+Built a small project using Inventory Management
+Education
+MBA / M.Tech 2024",Postgraduate,Operations and logistics,0.67,0.42,0.8,1.0,,,1.0,0.67,Okay
+Operations executive,"Make sure orders are delivered on time. Requirements: Operations management, Excel, Communication skills. Good to have: Inventory management, SQL. Experience: 0-2 years. Education: Graduate in any stream.","Candidate
+Skills
+Operations
+Projects
+Built a small project using Operations
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Operations and logistics,0.0,0.0,0.8,1.0,,,0.69,0.32,Okay
+Senior mIS executive,"Prepare daily and monthly MIS reports. Requirements: Advanced Excel, MS Office, Data entry. Good to have: SQL, Power BI. Experience: 3+ years. Education: Graduate in any stream.","Candidate
+Skills
+Data Analysis
+Experience
+MIS executive, Acme Pvt Ltd  Jan 2021 - present
+Worked with Python, MS Office
+Projects
+Built a small project using Data Analysis, Power BI, Excel, SQL
+Education
+MBA / M.Tech 2024",Postgraduate,Data analyst,0.62,0.85,0.8,1.0,,,1.0,0.7,Okay
+Senior customer support associate,"Help customers on calls and chat. Requirements: Customer service, Communication skills, English. Good to have: Hindi, MS Office, CRM. Experience: 3+ years. Education: 12th pass or graduate.","Candidate
+Skills
+Java
+Projects
+Built a small project using Java
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,QA / test engineer,0.0,0.0,0.0,0.0,1.0,,0.0,0.1,Poor
+Video editor,"Edit short videos for YouTube and Instagram. Requirements: Video editing, Premiere Pro. Good to have: After Effects, Photoshop. Experience: 0-2 years.","Candidate
+Skills
+Next.js
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Git
+Projects
+Built a small project using Next.js, CSS
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Frontend developer,0.0,0.0,0.0,1.0,,,0.0,0.09,Poor
+Business development executive,"Find new business clients and close deals. Requirements: Sales, Negotiation, Communication skills, CRM. Good to have: Digital marketing. Experience: 1-3 years. Education: Bachelor's degree; MBA is a plus.","Candidate
+Skills
+Hindi
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Communication, English, MS Office
+Projects
+Built a small project using CRM, Sales
+Education
+Diploma in engineering 2023",Diploma,Sales and business development,0.64,0.0,0.8,0.5,0.0,,0.4,0.51,Poor
+Senior node.js developer,"Build real-time features for a consumer app. Requirements: JavaScript, Node.js, Express, MongoDB, REST APIs. Good to have: TypeScript, Redis, AWS. Experience: 4+ years.","Candidate
+Skills
+Docker
+Projects
+Built a small project using Data Structures
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Backend developer,0.0,0.0,0.8,0.0,,,0.0,0.19,Poor
+Software engineer (fresher),"Join a training programme, then a product team. Requirements: Data structures, algorithms, Java or Python, SQL. Good to have: Git, Linux. Experience: Freshers welcome. Education: B.Tech or B.E. in any branch.","Candidate
+Skills
+Video Editing
+Projects
+Built a small project using Communication
+Education
+Diploma in engineering 2023",Diploma,Marketing,0.0,0.0,0.0,1.0,0.0,,0.0,0.11,Poor
+Senior go backend developer,"Design reliable services for a logistics platform. Requirements: Go, PostgreSQL, REST APIs, Docker. Good to have: Kubernetes, Kafka, Redis. Experience: 4+ years. Education: Bachelor's degree.","Candidate
+Skills
+Python
+Projects
+Built a small project using MySQL
+Education
+Class 12th, 2022",12th,Backend developer,0.0,0.0,1.0,0.0,0.0,,0.0,0.21,Poor
+Accounts assistant (fresher),"Help with entries, invoices and bank reconciliation. Requirements: Tally, MS Excel, Accounting. Good to have: GST. Experience: Freshers welcome. Education: B.Com.","Candidate
+Skills
+React
+Experience
+React developer, Acme Pvt Ltd  Jan 2024 - present
+Worked with Next.js, CSS, Figma
+Projects
+Built a small project using HTML
+Education
+Diploma in engineering 2023",Diploma,Frontend developer,0.0,0.0,0.0,1.0,0.0,,0.0,0.1,Poor
+Senior content writer,"Write clear articles and guides. Requirements: Content writing, English. Good to have: SEO, Digital marketing. Experience: 3+ years.","Candidate
+Skills
+Communication
+Projects
+Built a small project using Communication
+Education
+Diploma in engineering 2023",Diploma,Content writer,0.0,0.0,1.0,0.0,,,0.0,0.2,Poor
+Junior web developer,"Create and update websites for small business clients. Requirements: HTML, CSS, JavaScript. Good to have: React, PHP, MySQL. Experience: Freshers welcome.","Candidate
+Skills
+Next.js
+Experience
+React developer, Acme Pvt Ltd  Jan 2021 - present
+Worked with Next.js
+Projects
+Built a small project using CSS, HTML
+Education
+Diploma in engineering 2023",Diploma,Frontend developer,1.0,0.33,0.8,1.0,,,0.74,0.79,Good
+Full-stack developer (Python + React),"Build internal tools for operations teams. Requirements: Python, Django, React, SQL, Git. Good to have: Docker, CI/CD. Experience: 0-2 years. Education: Bachelor's degree in computer science.","Candidate
+Skills
+JavaScript
+Experience
+MERN stack developer, Acme Pvt Ltd  Jan 2024 - present
+Worked with Git
+Projects
+Built a small project using JavaScript, Node.js, MongoDB, SQL
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Full-stack developer,0.37,0.0,1.0,1.0,1.0,,0.46,0.6,Okay
+Junior design engineer (mechanical),"Create part drawings and 3D models. Requirements: AutoCAD, SolidWorks. Good to have: MATLAB, MS Office. Experience: 0-2 years. Education: B.E. or diploma in mechanical engineering.","Candidate
+Skills
+MATLAB
+Education
+MBA / M.Tech 2024",Postgraduate,Core engineering,0.0,0.3,0.0,1.0,1.0,,0.34,0.22,Poor
+Senior flutter developer,"Ship one codebase to Android and iOS. Requirements: Flutter, Dart, REST APIs, Git. Good to have: Android, iOS. Experience: 3+ years.","Candidate
+Skills
+Git
+Projects
+Built a small project using Git, REST APIs
+Education
+MBA / M.Tech 2024",Postgraduate,Mobile app developer,0.28,,0.8,0.0,,,0.69,0.41,Poor
+Senior flutter developer,"Ship one codebase to Android and iOS. Requirements: Flutter, Dart, REST APIs, Git. Good to have: Android, iOS. Experience: 3+ years.","Candidate
+Skills
+Java
+Projects
+Built a small project using Dart
+Education
+Diploma in engineering 2023",Diploma,Mobile app developer,0.14,,0.8,0.0,,,0.21,0.3,Poor
+Senior junior design engineer (mechanical),"Create part drawings and 3D models. Requirements: AutoCAD, SolidWorks. Good to have: MATLAB, MS Office. Experience: 4+ years. Education: B.E. or diploma in mechanical engineering.","Candidate
+Skills
+SolidWorks
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with MATLAB, AutoCAD, Project Management
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Core engineering,0.8,0.5,0.0,0.12,1.0,,0.39,0.45,Poor
+Senior qA engineer (manual and automation),"Test web and mobile releases before launch. Requirements: Testing, Selenium, SQL. Good to have: Python, Java, CI/CD. Experience: 4+ years.","Candidate
+Skills
+SQL
+Experience
+Software tester, Acme Pvt Ltd  Jan 2025 - present
+Worked with SQL, Agile, Git
+Projects
+Built a small project using Testing
+Education
+MBA / M.Tech 2024",Postgraduate,QA / test engineer,0.5,0.0,0.8,0.45,,,0.46,0.43,Okay
+HR executive,"Hire people, onboard them and keep records. Requirements: Human resources, Recruitment, Communication skills, MS Office. Good to have: Excel. Experience: 0-2 years. Education: Bachelor's degree; MBA in HR is a plus.","Candidate
+Skills
+Excel
+Experience
+Recruiter, Acme Pvt Ltd  Jan 2023 - present
+Worked with English
+Projects
+Built a small project using Excel, Negotiation
+Education
+Diploma in engineering 2023",Diploma,Human resources,0.67,0.85,0.8,1.0,0.0,,0.31,0.61,Poor
+DevOps engineer,"Automate builds, deployments and monitoring. Requirements: Linux, Docker, Kubernetes, CI/CD, AWS. Good to have: Terraform, Bash, Python. Experience: 1-3 years. Education: Bachelor's degree.","Candidate
+Skills
+Terraform
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Linux, Bash, CI/CD, Kubernetes, Docker
+Projects
+Built a small project using Python, Git
+Education
+Diploma in engineering 2023",Diploma,DevOps / cloud,0.8,0.82,0.8,0.5,0.0,,0.92,0.69,Poor
+Tax associate,"Prepare income tax and GST filings for clients. Requirements: Taxation, GST, Excel, Accounting. Good to have: Auditing. Experience: 0-2 years. Education: B.Com; CA Inter is a plus.","Candidate
+Skills
+Excel
+Experience
+Accountant, Acme Pvt Ltd  Jan 2021 - present
+Worked with Accounting
+Projects
+Built a small project using Taxation
+Education
+MBA / M.Tech 2024",Postgraduate,Accounts and finance,0.61,0.0,0.8,1.0,1.0,,0.46,0.66,Good
+Go backend developer,"Design reliable services for a logistics platform. Requirements: Go, PostgreSQL, REST APIs, Docker. Good to have: Kubernetes, Kafka, Redis. Experience: 2-4 years. Education: Bachelor's degree.","Candidate
+Skills
+Excel
+Education
+Diploma in engineering 2023",Diploma,Operations and logistics,0.0,0.0,0.0,0.0,0.0,,0.0,0.0,Poor
+Site engineer (civil),"Supervise construction work and quality. Requirements: AutoCAD, Project management, Communication skills. Good to have: MS Office. Experience: 0-2 years. Education: B.E. or diploma in civil engineering.","Candidate
+Skills
+Project Management
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Project Management
+Projects
+Built a small project using MS Office, AutoCAD
+Education
+MBA / M.Tech 2024",Postgraduate,Core engineering,0.62,0.85,0.0,1.0,1.0,,0.86,0.56,Okay
+Online tutor (maths),"Teach students one to one over video. Requirements: Teaching, Communication skills, English. Good to have: Lesson planning. Experience: Freshers welcome.","Candidate
+Skills
+Hindi, English
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Teaching,0.2,0.0,0.5,1.0,,,0.25,0.32,Poor
+Systems administrator,"Keep servers and office networks running. Requirements: Linux, Networking, Bash. Good to have: Docker, Cybersecurity. Experience: 1-3 years.","Candidate
+Skills
+Kubernetes, Python
+Experience
+System administrator, Acme Pvt Ltd  Jan 2025 - present
+Worked with CI/CD
+Education
+MBA / M.Tech 2024",Postgraduate,DevOps / cloud,0.0,0.0,0.8,1.0,,,0.22,0.29,Okay
+QA engineer (manual and automation),"Test web and mobile releases before launch. Requirements: Testing, Selenium, SQL. Good to have: Python, Java, CI/CD. Experience: 0-2 years.","Candidate
+Skills
+React
+Projects
+Built a small project using CSS, Figma
+Education
+Diploma in engineering 2023",Diploma,Frontend developer,0.0,0.0,0.0,1.0,,,0.0,0.1,Poor
+Data analyst,"Turn sales and operations data into weekly dashboards. Requirements: Excel, SQL, Power BI or Tableau, Data analysis. Good to have: Python, Statistics. Experience: 0-2 years. Education: Bachelor's degree in any discipline.","Candidate
+Skills
+Data Analysis
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with MS Office
+Projects
+Built a small project using Data Analysis, Power BI
+Education
+MBA / M.Tech 2024",Postgraduate,Data analyst,0.51,0.0,1.0,1.0,1.0,,0.97,0.69,Okay
+Technical support associate,"Solve customers' technical problems by phone and chat. Requirements: Customer service, Communication skills, Networking. Good to have: Linux, English. Experience: 0-1 years.","Candidate
+Skills
+MS Office
+Experience
+Call centre executive, Acme Pvt Ltd  Jan 2021 - present
+Worked with MS Office, Hindi, Communication
+Projects
+Built a small project using CRM
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Customer support,0.0,0.0,0.8,1.0,,,0.13,0.29,Okay
+Junior design engineer (mechanical),"Create part drawings and 3D models. Requirements: AutoCAD, SolidWorks. Good to have: MATLAB, MS Office. Experience: 0-2 years. Education: B.E. or diploma in mechanical engineering.","Candidate
+Skills
+MS Office
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Project Management, MATLAB
+Education
+Diploma in engineering 2023",Diploma,Core engineering,0.0,0.8,0.0,1.0,1.0,,0.63,0.28,Poor
+Senior business analyst,"Gather requirements and measure business results. Requirements: Excel, SQL, Communication skills, Data analysis. Good to have: Power BI, Agile. Experience: 5+ years. Education: Bachelor's degree; MBA is a plus.","Candidate
+Skills
+Power BI
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Power BI, Statistics
+Projects
+Built a small project using Python
+Education
+MBA / M.Tech 2024",Postgraduate,Data analyst,0.25,0.5,0.8,0.1,1.0,,0.41,0.46,Poor
+Senior aI intern,"Help build a chatbot for citizen services. Requirements: Python, NumPy, Pandas. Good to have: Machine learning, NLP. Experience: 3+ years.","Candidate
+Skills
+NumPy, Statistics, Python
+Projects
+Built a small project using Deep Learning
+Education
+MBA / M.Tech 2024",Postgraduate,Data scientist / ML,0.48,0.42,0.8,0.0,,,0.69,0.47,Poor
+Staff nurse,"Care for patients in a general ward. Requirements: Nursing, Patient care, Communication skills. Good to have: Hindi, English. Experience: 0-2 years. Education: B.Sc Nursing or GNM diploma.","Candidate
+Skills
+Nursing
+Experience
+Patient care executive, Acme Pvt Ltd  Jan 2021 - present
+Worked with Patient Care, Communication
+Education
+Diploma in engineering 2023",Diploma,Healthcare,0.53,0.0,0.8,0.72,1.0,,1.0,0.58,Okay
+Senior devOps engineer,"Automate builds, deployments and monitoring. Requirements: Linux, Docker, Kubernetes, CI/CD, AWS. Good to have: Terraform, Bash, Python. Experience: 4+ years. Education: Bachelor's degree.","Candidate
+Skills
+CI/CD, Linux
+Experience
+Cloud engineer, Acme Pvt Ltd  Jan 2023 - present
+Worked with AWS
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,DevOps / cloud,0.52,0.0,0.8,0.95,1.0,,0.55,0.62,Okay
+DevOps engineer,"Automate builds, deployments and monitoring. Requirements: Linux, Docker, Kubernetes, CI/CD, AWS. Good to have: Terraform, Bash, Python. Experience: 1-3 years. Education: Bachelor's degree.","Candidate
+Skills
+Terraform
+Projects
+Built a small project using Terraform, Git
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,DevOps / cloud,0.0,0.28,0.8,0.0,1.0,,0.41,0.32,Okay
+AI intern,"Help build a chatbot for citizen services. Requirements: Python, NumPy, Pandas. Good to have: Machine learning, NLP. Experience: Freshers welcome.","Candidate
+Skills
+Next.js
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Tailwind CSS
+Projects
+Built a small project using JavaScript
+Education
+Diploma in engineering 2023",Diploma,Frontend developer,0.0,0.0,0.0,1.0,,,0.16,0.13,Poor
+Data analyst,"Turn sales and operations data into weekly dashboards. Requirements: Excel, SQL, Power BI or Tableau, Data analysis. Good to have: Python, Statistics. Experience: 0-2 years. Education: Bachelor's degree in any discipline.","Candidate
+Skills
+Communication
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with MS Office, Operations, Negotiation
+Education
+Diploma in engineering 2023",Diploma,Operations and logistics,0.0,0.0,0.0,1.0,0.0,,0.13,0.11,Poor
+Flutter developer,"Ship one codebase to Android and iOS. Requirements: Flutter, Dart, REST APIs, Git. Good to have: Android, iOS. Experience: 1-2 years.","Candidate
+Skills
+Flutter
+Experience
+Android developer, Acme Pvt Ltd  Jan 2021 - present
+Worked with REST APIs, Java
+Projects
+Built a small project using Git
+Education
+MBA / M.Tech 2024",Postgraduate,Mobile app developer,0.58,,0.8,1.0,,,1.0,0.72,Okay
+Operations executive,"Make sure orders are delivered on time. Requirements: Operations management, Excel, Communication skills. Good to have: Inventory management, SQL. Experience: 0-2 years. Education: Graduate in any stream.","Candidate
+Skills
+Inventory Management
+Projects
+Built a small project using Inventory Management, Operations, MS Office
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Operations and logistics,0.28,0.42,0.8,1.0,,,1.0,0.51,Okay
+Customer support associate,"Help customers on calls and chat. Requirements: Customer service, Communication skills, English. Good to have: Hindi, MS Office, CRM. Experience: Freshers welcome. Education: 12th pass or graduate.","Candidate
+Skills
+JavaScript
+Experience
+Full stack engineer, Acme Pvt Ltd  Jan 2023 - present
+Worked with JavaScript, TypeScript
+Projects
+Built a small project using Git, React
+Education
+Diploma in engineering 2023",Diploma,Full-stack developer,0.0,0.0,0.0,1.0,1.0,,0.0,0.19,Poor
+Senior machine learning engineer,"Train, deploy and monitor ML models in production. Requirements: Python, Machine learning, PyTorch or TensorFlow, Docker. Good to have: NLP, Computer vision, AWS. Experience: 3+ years. Education: Bachelor's degree in computer science.","Candidate
+Skills
+scikit-learn
+Experience
+ML intern, Acme Pvt Ltd  Jan 2025 - present
+Worked with NumPy
+Projects
+Built a small project using Pandas, Statistics, NLP
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Data scientist / ML,0.5,0.28,0.8,0.12,1.0,,0.11,0.53,Poor
+Graphic designer,"Create social media posts and print material. Requirements: Photoshop, Illustrator, Canva. Good to have: Video editing. Experience: 0-2 years.","Candidate
+Skills
+SQL
+Experience
+Full stack engineer, Acme Pvt Ltd  Jan 2025 - present
+Worked with React
+Projects
+Built a small project using Docker
+Education
+Diploma in engineering 2023",Diploma,Full-stack developer,0.0,0.0,0.0,1.0,,,0.0,0.11,Poor
+Accountant,"Maintain books, file GST returns and handle payments. Requirements: Accounting, Tally, GST, Excel. Good to have: Taxation, Auditing. Experience: 1-3 years. Education: B.Com or M.Com.","Candidate
+Skills
+Auditing
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Auditing, Accounting, Taxation
+Projects
+Built a small project using GST
+Education
+Diploma in engineering 2023",Diploma,Accounts and finance,0.46,1.0,0.8,0.5,0.0,,0.81,0.56,Poor
+Video editor,"Edit short videos for YouTube and Instagram. Requirements: Video editing, Premiere Pro. Good to have: After Effects, Photoshop. Experience: 0-2 years.","Candidate
+Skills
+Tailwind CSS
+Experience
+Frontend developer, Acme Pvt Ltd  Jan 2025 - present
+Worked with HTML
+Education
+MBA / M.Tech 2024",Postgraduate,Frontend developer,0.0,0.0,0.0,1.0,,,0.0,0.09,Poor
+Angular developer,"Build dashboards for an enterprise product. Requirements: Angular, TypeScript, HTML, CSS. Good to have: REST APIs, Testing. Experience: 1-3 years. Education: Bachelor's degree.","Candidate
+Skills
+CSS
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Figma
+Education
+MBA / M.Tech 2024",Postgraduate,Frontend developer,0.15,0.0,0.8,0.5,1.0,,0.18,0.4,Okay
+Senior systems administrator,"Keep servers and office networks running. Requirements: Linux, Networking, Bash. Good to have: Docker, Cybersecurity. Experience: 4+ years.","Candidate
+Skills
+SQL
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with SQL, Agile, Python
+Projects
+Built a small project using Git
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,QA / test engineer,0.0,0.0,0.0,0.12,,,0.0,0.01,Poor
+Android developer,"Build and publish features on our Android app. Requirements: Kotlin, Android, REST APIs, Git. Good to have: Java, Firebase, Testing. Experience: 0-2 years.","Candidate
+Skills
+Android, Java
+Experience
+Mobile app developer, Acme Pvt Ltd  Jan 2023 - present
+Worked with Flutter, Git
+Education
+MBA / M.Tech 2024",Postgraduate,Mobile app developer,0.4,0.6,0.8,1.0,,,1.0,0.62,Okay
+Junior data analyst (fresher),"Clean data and prepare reports for managers. Requirements: Excel, SQL, Communication skills. Good to have: Power BI, Python. Experience: Freshers welcome. Education: Graduate in any stream.","Candidate
+Skills
+Tally
+Projects
+Built a small project using Tally
+Education
+Class 12th, 2022",12th,Accounts and finance,0.0,0.0,0.0,1.0,,,0.0,0.11,Poor
+Frontend developer (React),"Build fast, accessible pages for a growing product. Requirements: HTML, CSS, JavaScript, React, Git. Good to have: TypeScript, Tailwind CSS, Next.js. Experience: 0-2 years.","Candidate
+Skills
+CSS
+Projects
+Built a small project using Git, Next.js
+Education
+MBA / M.Tech 2024",Postgraduate,Frontend developer,0.85,0.28,1.0,1.0,,,0.77,0.83,Good
+Senior qA engineer (manual and automation),"Test web and mobile releases before launch. Requirements: Testing, Selenium, SQL. Good to have: Python, Java, CI/CD. Experience: 6+ years.","Candidate
+Skills
+Digital Marketing, Video Editing
+Projects
+Built a small project using Marketing
+Education
+Diploma in engineering 2023",Diploma,Marketing,0.0,0.0,0.0,0.0,,,0.0,0.0,Poor
+Senior cloud support associate,"Help customers solve cloud problems. Requirements: Linux, Networking, Communication skills. Good to have: AWS, Azure. Experience: 6+ years. Education: B.Tech, B.E., BCA or B.Sc.","Candidate
+Skills
+Terraform
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Kubernetes, CI/CD, Git, Docker
+Projects
+Built a small project using AWS, Python
+Education
+Diploma in engineering 2023",Diploma,DevOps / cloud,0.33,0.42,0.8,0.08,0.0,,0.13,0.34,Poor
+Senior data entry operator,"Enter and check records accurately. Requirements: Data entry, MS Office, Typing. Good to have: Excel, English. Experience: 3+ years. Education: 12th pass.","Candidate
+Skills
+Hindi
+Projects
+Built a small project using Hindi
+Education
+Class 12th, 2022",12th,Office and data entry,0.0,0.0,0.8,0.0,1.0,,0.19,0.24,Poor
+Senior office assistant,"Manage files, schedules and visitors. Requirements: MS Office, Communication skills, English. Good to have: Excel. Experience: 6+ years. Education: Graduate in any stream.","Candidate
+Skills
+NLP, SQL
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with NumPy
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Data scientist / ML,0.0,0.0,0.0,0.08,,,0.0,0.01,Poor
+Accountant,"Maintain books, file GST returns and handle payments. Requirements: Accounting, Tally, GST, Excel. Good to have: Taxation, Auditing. Experience: 1-3 years. Education: B.Com or M.Com.","Candidate
+Skills
+Taxation
+Experience
+Accounts assistant, Acme Pvt Ltd  Jan 2021 - present
+Worked with Auditing
+Education
+Diploma in engineering 2023",Diploma,Accounts and finance,0.25,0.8,0.8,1.0,0.0,,0.36,0.48,Poor
+AI intern,"Help build a chatbot for citizen services. Requirements: Python, NumPy, Pandas. Good to have: Machine learning, NLP. Experience: Freshers welcome.","Candidate
+Skills
+Deep Learning
+Projects
+Built a small project using NLP, TensorFlow
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Data scientist / ML,0.21,0.85,0.8,1.0,,,0.42,0.53,Okay
+Junior design engineer (mechanical),"Create part drawings and 3D models. Requirements: AutoCAD, SolidWorks. Good to have: MATLAB, MS Office. Experience: 0-2 years. Education: B.E. or diploma in mechanical engineering.","Candidate
+Skills
+MS Office
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Core engineering,0.0,0.3,0.0,1.0,1.0,,0.27,0.22,Poor
+Senior sDET,"Build automated test frameworks. Requirements: Python or Java, Testing, Git, CI/CD. Good to have: Docker, REST APIs. Experience: 5+ years. Education: Bachelor's degree in engineering.","Candidate
+Skills
+English
+Projects
+Built a small project using Canva
+Education
+Diploma in engineering 2023",Diploma,Content writer,0.0,0.0,0.0,0.0,0.0,,0.25,0.01,Poor
+Senior cloud support associate,"Help customers solve cloud problems. Requirements: Linux, Networking, Communication skills. Good to have: AWS, Azure. Experience: 5+ years. Education: B.Tech, B.E., BCA or B.Sc.","Candidate
+Skills
+Python, CI/CD
+Experience
+System administrator, Acme Pvt Ltd  Jan 2024 - present
+Worked with Git, Linux
+Projects
+Built a small project using Terraform
+Education
+MBA / M.Tech 2024",Postgraduate,DevOps / cloud,0.33,0.0,0.8,0.56,1.0,,0.14,0.44,Okay
+Office assistant,"Manage files, schedules and visitors. Requirements: MS Office, Communication skills, English. Good to have: Excel. Experience: Freshers welcome. Education: Graduate in any stream.","Candidate
+Skills
+English
+Projects
+Built a small project using Excel, MS Office
+Education
+MBA / M.Tech 2024",Postgraduate,Office and data entry,0.48,0.85,0.8,1.0,,,0.88,0.63,Okay
+Data entry operator,"Enter and check records accurately. Requirements: Data entry, MS Office, Typing. Good to have: Excel, English. Experience: Freshers welcome. Education: 12th pass.","Candidate
+Skills
+Nursing
+Projects
+Built a small project using Nursing
+Education
+Diploma in engineering 2023",Diploma,Healthcare,0.0,0.0,0.0,1.0,1.0,,0.0,0.18,Poor
+Systems administrator,"Keep servers and office networks running. Requirements: Linux, Networking, Bash. Good to have: Docker, Cybersecurity. Experience: 1-3 years.","Candidate
+Skills
+Canva
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with HTML
+Projects
+Built a small project using Illustrator
+Education
+Diploma in engineering 2023",Diploma,UI/UX or graphic designer,0.0,0.0,0.0,0.5,,,0.0,0.05,Poor
+Customer support associate,"Help customers on calls and chat. Requirements: Customer service, Communication skills, English. Good to have: Hindi, MS Office, CRM. Experience: Freshers welcome. Education: 12th pass or graduate.","Candidate
+Skills
+Hindi
+Projects
+Built a small project using English, Communication
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Healthcare,0.28,0.2,0.0,1.0,1.0,,0.54,0.35,Poor
+Senior accounts assistant (fresher),"Help with entries, invoices and bank reconciliation. Requirements: Tally, MS Excel, Accounting. Good to have: GST. Experience: 4+ years. Education: B.Com.","Candidate
+Skills
+CSS
+Experience
+Visual designer, Acme Pvt Ltd  Jan 2025 - present
+Worked with UI/UX Design, Illustrator
+Projects
+Built a small project using CSS, Figma, Photoshop
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,UI/UX or graphic designer,0.0,0.0,0.0,0.45,1.0,,0.14,0.15,Poor
+Digital marketing executive,"Run campaigns and grow our online audience. Requirements: Digital marketing, SEO, Social media marketing. Good to have: Canva, Content writing, Google Ads. Experience: 0-2 years.","Candidate
+Skills
+Communication
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Marketing, Digital Marketing
+Projects
+Built a small project using Content Writing
+Education
+Diploma in engineering 2023",Diploma,Marketing,1.0,0.42,1.0,1.0,,,1.0,0.79,Good
+Frontend developer (React),"Build fast, accessible pages for a growing product. Requirements: HTML, CSS, JavaScript, React, Git. Good to have: TypeScript, Tailwind CSS, Next.js. Experience: 0-2 years.","Candidate
+Skills
+TypeScript
+Projects
+Built a small project using CSS
+Education
+Class 12th, 2022",12th,Frontend developer,0.34,0.2,1.0,1.0,,,0.61,0.57,Okay
+Inside sales associate,"Call interested customers and book demos. Requirements: Communication skills, Sales, English. Good to have: CRM, MS Office. Experience: Freshers welcome.","Candidate
+Skills
+Negotiation
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Negotiation, Communication, English
+Projects
+Built a small project using Sales, Hindi
+Education
+Diploma in engineering 2023",Diploma,Sales and business development,0.95,0.0,0.8,1.0,,,0.54,0.73,Good
+Data scientist,"Build models that predict demand and reduce costs. Requirements: Python, Pandas, Machine learning, SQL, Statistics. Good to have: scikit-learn, Deep learning, Spark. Experience: 1-3 years. Education: Bachelor's or master's degree in a quantitative field.","Candidate
+Skills
+NumPy
+Experience
+Data scientist, Acme Pvt Ltd  Jan 2025 - present
+Worked with Pandas, TensorFlow, Machine Learning
+Projects
+Built a small project using NumPy, SQL
+Education
+MBA / M.Tech 2024",Postgraduate,Data scientist / ML,0.97,0.33,0.8,1.0,1.0,,0.78,0.86,Good
+Senior hindi content writer,"Write and translate content for Hindi readers. Requirements: Content writing, Hindi. Good to have: English, SEO. Experience: 3+ years.","Candidate
+Skills
+Kubernetes, AWS
+Projects
+Built a small project using Docker
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,DevOps / cloud,0.0,0.0,0.0,0.0,,,0.0,0.0,Poor
+Frontend developer (React),"Build fast, accessible pages for a growing product. Requirements: HTML, CSS, JavaScript, React, Git. Good to have: TypeScript, Tailwind CSS, Next.js. Experience: 0-2 years.","Candidate
+Skills
+Photoshop, HTML
+Education
+Diploma in engineering 2023",Diploma,UI/UX or graphic designer,0.12,0.0,0.0,1.0,,,0.27,0.19,Poor
+Junior design engineer (mechanical),"Create part drawings and 3D models. Requirements: AutoCAD, SolidWorks. Good to have: MATLAB, MS Office. Experience: 0-2 years. Education: B.E. or diploma in mechanical engineering.","Candidate
+Skills
+SolidWorks, AutoCAD
+Projects
+Built a small project using Excel
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Core engineering,0.6,0.0,0.0,1.0,1.0,,0.39,0.41,Okay
+Senior school teacher (science),"Teach classes 6 to 10 and run lab sessions. Requirements: Teaching, Lesson planning, Communication skills, English. Good to have: MS Office. Experience: 3+ years. Education: B.Sc and B.Ed.","Candidate
+Skills
+Hindi
+Experience
+Primary school teacher, Acme Pvt Ltd  Jan 2025 - present
+Worked with Hindi, Lesson Planning
+Education
+MBA / M.Tech 2024",Postgraduate,Teaching,0.75,0.0,0.5,0.45,1.0,,0.64,0.61,Okay
+Senior frontend developer (React),"Build fast, accessible pages for a growing product. Requirements: HTML, CSS, JavaScript, React, Git. Good to have: TypeScript, Tailwind CSS, Next.js. Experience: 4+ years.","Candidate
+Skills
+Tailwind CSS, Next.js, HTML
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with JavaScript, React, Git, TypeScript
+Projects
+Built a small project using Figma
+Education
+Diploma in engineering 2023",Diploma,Frontend developer,1.0,0.73,1.0,0.12,,,1.0,0.87,Poor
+Senior accounts assistant (fresher),"Help with entries, invoices and bank reconciliation. Requirements: Tally, MS Excel, Accounting. Good to have: GST. Experience: 4+ years. Education: B.Com.","Candidate
+Skills
+Tally, MS Office
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Accounting
+Projects
+Built a small project using GST
+Education
+Diploma in engineering 2023",Diploma,Accounts and finance,0.53,0.85,0.8,0.12,0.0,,0.49,0.48,Poor
+Senior online tutor (maths),"Teach students one to one over video. Requirements: Teaching, Communication skills, English. Good to have: Lesson planning. Experience: 5+ years.","Candidate
+Skills
+MS Office
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Lesson Planning
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Teaching,0.67,1.0,0.5,0.1,,,0.29,0.53,Poor
+Flutter developer,"Ship one codebase to Android and iOS. Requirements: Flutter, Dart, REST APIs, Git. Good to have: Android, iOS. Experience: 1-2 years.","Candidate
+Skills
+Flutter
+Projects
+Built a small project using Java
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Mobile app developer,0.1,,0.8,0.0,,,0.39,0.29,Okay
+Full-stack developer (MERN),"Own features end to end, from database to screen. Requirements: MongoDB, Express, React, Node.js, JavaScript. Good to have: TypeScript, AWS, Docker. Experience: 1-3 years.","Candidate
+Skills
+Video Editing
+Experience
+Digital marketing executive, Acme Pvt Ltd  Jan 2024 - present
+Worked with Video Editing, Canva, Content Writing, Digital Marketing
+Education
+Diploma in engineering 2023",Diploma,Marketing,0.0,0.0,0.0,1.0,,,0.0,0.12,Poor
+MIS executive,"Prepare daily and monthly MIS reports. Requirements: Advanced Excel, MS Office, Data entry. Good to have: SQL, Power BI. Experience: 0-2 years. Education: Graduate in any stream.","Candidate
+Skills
+Data Analysis
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Data Analysis, Tableau, SQL, Power BI, Python
+Projects
+Built a small project using Statistics, Excel
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Data analyst,0.33,1.0,0.8,1.0,,,0.53,0.57,Okay
+Data scientist,"Build models that predict demand and reduce costs. Requirements: Python, Pandas, Machine learning, SQL, Statistics. Good to have: scikit-learn, Deep learning, Spark. Experience: 1-3 years. Education: Bachelor's or master's degree in a quantitative field.","Candidate
+Skills
+CSS, Illustrator, HTML
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Canva, UI/UX Design
+Education
+Diploma in engineering 2023",Diploma,UI/UX or graphic designer,0.0,0.0,0.0,0.5,0.0,,0.0,0.05,Poor
+Senior full-stack developer (Python + React),"Build internal tools for operations teams. Requirements: Python, Django, React, SQL, Git. Good to have: Docker, CI/CD. Experience: 4+ years. Education: Bachelor's degree in computer science.","Candidate
+Skills
+Express
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Express
+Projects
+Built a small project using React, SQL
+Education
+Diploma in engineering 2023",Diploma,Full-stack developer,0.34,0.0,1.0,0.12,0.0,,0.36,0.39,Poor
+Senior systems administrator,"Keep servers and office networks running. Requirements: Linux, Networking, Bash. Good to have: Docker, Cybersecurity. Experience: 5+ years.","Candidate
+Skills
+AWS
+Projects
+Built a small project using AWS, CI/CD
+Education
+Diploma in engineering 2023",Diploma,DevOps / cloud,0.28,0.0,0.8,0.0,,,0.0,0.3,Poor
+Business analyst,"Gather requirements and measure business results. Requirements: Excel, SQL, Communication skills, Data analysis. Good to have: Power BI, Agile. Experience: 1-3 years. Education: Bachelor's degree; MBA is a plus.","Candidate
+Skills
+Auditing
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Auditing
+Education
+Class 12th, 2022",12th,Accounts and finance,0.0,0.0,0.0,0.5,0.0,,0.0,0.05,Poor
+Senior devOps engineer,"Automate builds, deployments and monitoring. Requirements: Linux, Docker, Kubernetes, CI/CD, AWS. Good to have: Terraform, Bash, Python. Experience: 3+ years. Education: Bachelor's degree.","Candidate
+Skills
+Python
+Experience
+DevOps engineer, Acme Pvt Ltd  Jan 2024 - present
+Worked with Linux
+Projects
+Built a small project using AWS, Git, Bash
+Education
+MBA / M.Tech 2024",Postgraduate,DevOps / cloud,0.37,0.48,0.8,0.7,1.0,,0.92,0.6,Okay
+Go backend developer,"Design reliable services for a logistics platform. Requirements: Go, PostgreSQL, REST APIs, Docker. Good to have: Kubernetes, Kafka, Redis. Experience: 2-4 years. Education: Bachelor's degree.","Candidate
+Skills
+Git
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Git
+Projects
+Built a small project using FastAPI
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Backend developer,0.0,0.0,1.0,0.25,1.0,,0.0,0.34,Okay
+Technical support associate,"Solve customers' technical problems by phone and chat. Requirements: Customer service, Communication skills, Networking. Good to have: Linux, English. Experience: 0-1 years.","Candidate
+Skills
+Git
+Experience
+Full-stack developer, Acme Pvt Ltd  Jan 2023 - present
+Worked with Git, TypeScript
+Projects
+Built a small project using Node.js, MongoDB
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Full-stack developer,0.0,0.0,0.0,1.0,,,0.0,0.11,Poor
+QA engineer (manual and automation),"Test web and mobile releases before launch. Requirements: Testing, Selenium, SQL. Good to have: Python, Java, CI/CD. Experience: 0-2 years.","Candidate
+Skills
+Python, Java
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,QA / test engineer,0.0,0.4,0.8,1.0,,,0.58,0.33,Okay
+Accounts assistant (fresher),"Help with entries, invoices and bank reconciliation. Requirements: Tally, MS Excel, Accounting. Good to have: GST. Experience: Freshers welcome. Education: B.Com.","Candidate
+Skills
+CRM
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Communication
+Projects
+Built a small project using CRM, English
+Education
+MBA / M.Tech 2024",Postgraduate,Customer support,0.0,0.0,0.0,1.0,1.0,,0.0,0.19,Poor
+Video editor,"Edit short videos for YouTube and Instagram. Requirements: Video editing, Premiere Pro. Good to have: After Effects, Photoshop. Experience: 0-2 years.","Candidate
+Skills
+Communication, Marketing
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Canva, Content Writing
+Education
+Diploma in engineering 2023",Diploma,Content writer,0.5,0.0,0.8,1.0,,,0.0,0.42,Okay
+Graphic designer,"Create social media posts and print material. Requirements: Photoshop, Illustrator, Canva. Good to have: Video editing. Experience: 0-2 years.","Candidate
+Skills
+Illustrator
+Experience
+UI/UX designer, Acme Pvt Ltd  Jan 2025 - present
+Worked with HTML, Canva
+Projects
+Built a small project using Photoshop
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,UI/UX or graphic designer,0.82,0.0,0.8,1.0,,,0.66,0.67,Good
+Senior business development executive,"Find new business clients and close deals. Requirements: Sales, Negotiation, Communication skills, CRM. Good to have: Digital marketing. Experience: 6+ years. Education: Bachelor's degree; MBA is a plus.","Candidate
+Skills
+Hindi
+Projects
+Built a small project using Negotiation
+Education
+MBA / M.Tech 2024",Postgraduate,Sales and business development,0.42,0.0,0.8,0.0,1.0,,0.43,0.48,Poor
+Warehouse and inventory associate,"Track stock and dispatch orders. Requirements: Inventory management, MS Excel. Good to have: Data entry. Experience: Freshers welcome. Education: 12th pass or diploma.","Candidate
+Skills
+UI/UX Design
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with UI/UX Design
+Education
+Diploma in engineering 2023",Diploma,UI/UX or graphic designer,0.0,0.0,0.0,1.0,1.0,,0.15,0.19,Poor
+Senior java backend engineer,"Work on high-traffic services for payments and orders. Requirements: Java, Spring Boot, MySQL, REST APIs, Git. Good to have: Microservices, Kafka, Docker. Experience: 4+ years. Education: Bachelor's degree in engineering.","Candidate
+Skills
+Spring Boot
+Experience
+Node.js backend engineer, Acme Pvt Ltd  Jan 2021 - present
+Worked with Spring Boot, SQL
+Projects
+Built a small project using Git, REST APIs, MySQL
+Education
+Diploma in engineering 2023",Diploma,Backend developer,0.91,0.0,0.8,1.0,0.0,,1.0,0.71,Poor
+Senior react Native developer,"Build a cross-platform shopping app. Requirements: React Native, JavaScript, REST APIs. Good to have: TypeScript, Redux. Experience: 6+ years.","Candidate
+Skills
+Dart
+Projects
+Built a small project using Dart
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Mobile app developer,0.0,0.0,0.8,0.0,,,0.0,0.17,Poor
+Node.js developer,"Build real-time features for a consumer app. Requirements: JavaScript, Node.js, Express, MongoDB, REST APIs. Good to have: TypeScript, Redis, AWS. Experience: 0-2 years.","Candidate
+Skills
+Docker, Git
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Python, Spring Boot
+Projects
+Built a small project using Data Structures, MySQL
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Backend developer,0.0,0.0,0.8,1.0,,,0.0,0.31,Okay
+Senior staff nurse,"Care for patients in a general ward. Requirements: Nursing, Patient care, Communication skills. Good to have: Hindi, English. Experience: 5+ years. Education: B.Sc Nursing or GNM diploma.","Candidate
+Skills
+English, Nursing
+Projects
+Built a small project using Communication
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Healthcare,0.2,0.3,0.8,0.0,1.0,,0.9,0.4,Poor
+Android developer,"Build and publish features on our Android app. Requirements: Kotlin, Android, REST APIs, Git. Good to have: Java, Firebase, Testing. Experience: 0-2 years.","Candidate
+Skills
+REST APIs
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Git
+Projects
+Built a small project using Android, Dart, Flutter
+Education
+Diploma in engineering 2023",Diploma,Mobile app developer,0.82,0.0,0.8,1.0,,,0.76,0.74,Good
+Senior sales executive,"Meet shop owners and grow sales in your area. Requirements: Sales, Communication skills, Negotiation. Good to have: CRM, English, Hindi. Experience: 3+ years. Education: Graduate in any stream.","Candidate
+Skills
+English
+Projects
+Built a small project using English
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Sales and business development,0.0,0.28,0.8,0.0,,,0.32,0.22,Poor
+Senior junior design engineer (mechanical),"Create part drawings and 3D models. Requirements: AutoCAD, SolidWorks. Good to have: MATLAB, MS Office. Experience: 5+ years. Education: B.E. or diploma in mechanical engineering.","Candidate
+Skills
+Operations, Communication, MS Office
+Education
+MBA / M.Tech 2024",Postgraduate,Operations and logistics,0.0,0.3,0.0,0.0,1.0,,0.27,0.13,Poor
+Node.js developer,"Build real-time features for a consumer app. Requirements: JavaScript, Node.js, Express, MongoDB, REST APIs. Good to have: TypeScript, Redis, AWS. Experience: 0-2 years.","Candidate
+Skills
+Django
+Projects
+Built a small project using REST APIs
+Education
+Diploma in engineering 2023",Diploma,Backend developer,0.21,0.0,0.8,1.0,,,0.41,0.43,Okay
+Technical support associate,"Solve customers' technical problems by phone and chat. Requirements: Customer service, Communication skills, Networking. Good to have: Linux, English. Experience: 0-1 years.","Candidate
+Skills
+Git
+Experience
+MERN stack developer, Acme Pvt Ltd  Jan 2023 - present
+Worked with Express, JavaScript, React, Node.js
+Projects
+Built a small project using SQL
+Education
+Diploma in engineering 2023",Diploma,Full-stack developer,0.0,0.0,0.0,1.0,,,0.0,0.11,Poor
+Video editor,"Edit short videos for YouTube and Instagram. Requirements: Video editing, Premiere Pro. Good to have: After Effects, Photoshop. Experience: 0-2 years.","Candidate
+Skills
+English
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Communication, Content Writing
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Content writer,0.5,0.0,0.8,1.0,,,0.0,0.42,Okay
+DevOps engineer,"Automate builds, deployments and monitoring. Requirements: Linux, Docker, Kubernetes, CI/CD, AWS. Good to have: Terraform, Bash, Python. Experience: 1-3 years. Education: Bachelor's degree.","Candidate
+Skills
+English
+Projects
+Built a small project using English
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Content writer,0.0,0.0,0.0,0.0,1.0,,0.0,0.11,Poor
+Graphic designer,"Create social media posts and print material. Requirements: Photoshop, Illustrator, Canva. Good to have: Video editing. Experience: 0-2 years.","Candidate
+Skills
+Communication, Lesson Planning, English
+Experience
+Online tutor, Acme Pvt Ltd  Jan 2023 - present
+Worked with Hindi, Teaching
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Teaching,0.0,0.0,0.0,1.0,,,0.0,0.11,Poor
+Senior frontend developer (React),"Build fast, accessible pages for a growing product. Requirements: HTML, CSS, JavaScript, React, Git. Good to have: TypeScript, Tailwind CSS, Next.js. Experience: 5+ years.","Candidate
+Skills
+React
+Experience
+UI developer, Acme Pvt Ltd  Jan 2024 - present
+Worked with Figma, CSS, JavaScript
+Projects
+Built a small project using Git, HTML, Next.js
+Education
+MBA / M.Tech 2024",Postgraduate,Frontend developer,0.94,0.28,1.0,0.56,,,1.0,0.84,Okay
+Sales executive,"Meet shop owners and grow sales in your area. Requirements: Sales, Communication skills, Negotiation. Good to have: CRM, English, Hindi. Experience: 0-2 years. Education: Graduate in any stream.","Candidate
+Skills
+CRM, Sales
+Projects
+Built a small project using English
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Sales and business development,0.2,0.48,0.8,1.0,,,0.86,0.47,Okay
+Senior aI intern,"Help build a chatbot for citizen services. Requirements: Python, NumPy, Pandas. Good to have: Machine learning, NLP. Experience: 4+ years.","Candidate
+Skills
+MS Office
+Experience
+Operations executive, Acme Pvt Ltd  Jan 2023 - present
+Worked with Negotiation, Inventory Management
+Education
+Diploma in engineering 2023",Diploma,Operations and logistics,0.0,0.0,0.0,0.95,,,0.0,0.1,Poor
+Software engineer (fresher),"Join a training programme, then a product team. Requirements: Data structures, algorithms, Java or Python, SQL. Good to have: Git, Linux. Experience: Freshers welcome. Education: B.Tech or B.E. in any branch.","Candidate
+Skills
+System Design
+Projects
+Built a small project using System Design, C++
+Education
+MBA / M.Tech 2024",Postgraduate,Software engineer,0.21,0.0,1.0,1.0,1.0,,0.0,0.51,Okay
+Video editor,"Edit short videos for YouTube and Instagram. Requirements: Video editing, Premiere Pro. Good to have: After Effects, Photoshop. Experience: 0-2 years.","Candidate
+Skills
+Communication
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with CRM
+Projects
+Built a small project using Communication, Hindi, MS Office
+Education
+MBA / M.Tech 2024",Postgraduate,Customer support,0.0,0.0,0.0,1.0,,,0.0,0.09,Poor
+QA engineer (manual and automation),"Test web and mobile releases before launch. Requirements: Testing, Selenium, SQL. Good to have: Python, Java, CI/CD. Experience: 0-2 years.","Candidate
+Skills
+Python
+Experience
+Test automation engineer, Acme Pvt Ltd  Jan 2024 - present
+Worked with Python, Agile, Git
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,QA / test engineer,0.5,0.33,0.8,1.0,,,0.83,0.53,Okay
+Senior financial analyst,"Build budgets, forecasts and monthly reports. Requirements: Excel, Financial analysis, Accounting. Good to have: Power BI, SQL. Experience: 4+ years. Education: Bachelor's degree in commerce or finance; MBA preferred.","Candidate
+Skills
+GST
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with GST, Tally
+Projects
+Built a small project using MS Office
+Education
+Diploma in engineering 2023",Diploma,Accounts and finance,0.33,0.0,0.8,0.12,0.0,,0.0,0.3,Poor
+Graphic designer,"Create social media posts and print material. Requirements: Photoshop, Illustrator, Canva. Good to have: Video editing. Experience: 0-2 years.","Candidate
+Skills
+Illustrator
+Experience
+Graphic designer, Acme Pvt Ltd  Jan 2021 - present
+Worked with Photoshop, CSS
+Education
+MBA / M.Tech 2024",Postgraduate,UI/UX or graphic designer,0.53,0.0,0.8,1.0,,,0.82,0.56,Okay
+Senior devOps engineer,"Automate builds, deployments and monitoring. Requirements: Linux, Docker, Kubernetes, CI/CD, AWS. Good to have: Terraform, Bash, Python. Experience: 6+ years. Education: Bachelor's degree.","Candidate
+Skills
+Kubernetes
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Docker
+Projects
+Built a small project using Linux, Bash, Git, Python
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,DevOps / cloud,0.52,0.57,0.8,0.08,1.0,,0.67,0.6,Poor
+Sales executive,"Meet shop owners and grow sales in your area. Requirements: Sales, Communication skills, Negotiation. Good to have: CRM, English, Hindi. Experience: 0-2 years. Education: Graduate in any stream.","Candidate
+Skills
+Sales
+Experience
+Sales executive, Acme Pvt Ltd  Jan 2021 - present
+Worked with English
+Projects
+Built a small project using Sales, CRM, Communication
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Sales and business development,0.67,0.62,0.8,1.0,,,1.0,0.69,Okay
+Senior video editor,"Edit short videos for YouTube and Instagram. Requirements: Video editing, Premiere Pro. Good to have: After Effects, Photoshop. Experience: 3+ years.","Candidate
+Skills
+Accounting
+Experience
+Accountant, Acme Pvt Ltd  Jan 2025 - present
+Worked with Accounting, Taxation
+Education
+Diploma in engineering 2023",Diploma,Accounts and finance,0.0,0.0,0.0,0.45,,,0.0,0.04,Poor
+AI intern,"Help build a chatbot for citizen services. Requirements: Python, NumPy, Pandas. Good to have: Machine learning, NLP. Experience: Freshers welcome.","Candidate
+Skills
+Python
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Python, MySQL, Data Structures, Git
+Projects
+Built a small project using Spring Boot
+Education
+Diploma in engineering 2023",Diploma,Backend developer,0.25,0.0,0.0,1.0,,,0.43,0.26,Poor
+Office assistant,"Manage files, schedules and visitors. Requirements: MS Office, Communication skills, English. Good to have: Excel. Experience: Freshers welcome. Education: Graduate in any stream.","Candidate
+Skills
+MS Office
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with MS Office, Communication
+Projects
+Built a small project using Data Entry
+Education
+Diploma in engineering 2023",Diploma,Office and data entry,0.33,0.0,0.8,1.0,,,0.69,0.47,Okay
+Data scientist,"Build models that predict demand and reduce costs. Requirements: Python, Pandas, Machine learning, SQL, Statistics. Good to have: scikit-learn, Deep learning, Spark. Experience: 1-3 years. Education: Bachelor's or master's degree in a quantitative field.","Candidate
+Skills
+Statistics
+Projects
+Built a small project using SQL, scikit-learn
+Education
+Diploma in engineering 2023",Diploma,Data scientist / ML,0.63,0.28,0.8,0.0,0.0,,0.68,0.5,Poor
+Business development executive,"Find new business clients and close deals. Requirements: Sales, Negotiation, Communication skills, CRM. Good to have: Digital marketing. Experience: 1-3 years. Education: Bachelor's degree; MBA is a plus.","Candidate
+Skills
+English
+Experience
+Primary school teacher, Acme Pvt Ltd  Jan 2021 - present
+Worked with English
+Projects
+Built a small project using MS Office
+Education
+MBA / M.Tech 2024",Postgraduate,Teaching,0.0,0.0,0.0,1.0,1.0,,0.14,0.22,Poor
+MIS executive,"Prepare daily and monthly MIS reports. Requirements: Advanced Excel, MS Office, Data entry. Good to have: SQL, Power BI. Experience: 0-2 years. Education: Graduate in any stream.","Candidate
+Skills
+Statistics
+Projects
+Built a small project using Statistics, Excel, SQL
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Data analyst,0.28,0.42,0.8,1.0,,,0.34,0.47,Okay
+Data analyst,"Turn sales and operations data into weekly dashboards. Requirements: Excel, SQL, Power BI or Tableau, Data analysis. Good to have: Python, Statistics. Experience: 0-2 years. Education: Bachelor's degree in any discipline.","Candidate
+Skills
+Tally
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Auditing, GST, MS Office
+Projects
+Built a small project using Excel, Accounting
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Accounts and finance,0.17,0.0,0.0,1.0,1.0,,0.1,0.29,Poor
+Digital marketing executive,"Run campaigns and grow our online audience. Requirements: Digital marketing, SEO, Social media marketing. Good to have: Canva, Content writing, Google Ads. Experience: 0-2 years.","Candidate
+Skills
+Digital Marketing
+Projects
+Built a small project using Video Editing, Communication
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Marketing,0.6,0.0,1.0,1.0,,,0.73,0.58,Okay
+Flutter developer,"Ship one codebase to Android and iOS. Requirements: Flutter, Dart, REST APIs, Git. Good to have: Android, iOS. Experience: 1-2 years.","Candidate
+Skills
+JavaScript
+Experience
+SDE 1, Acme Pvt Ltd  Jan 2025 - present
+Worked with Python
+Education
+Diploma in engineering 2023",Diploma,Software engineer,0.0,,0.6,1.0,,,0.0,0.29,Poor
+Frontend developer (React),"Build fast, accessible pages for a growing product. Requirements: HTML, CSS, JavaScript, React, Git. Good to have: TypeScript, Tailwind CSS, Next.js. Experience: 0-2 years.","Candidate
+Skills
+TypeScript
+Experience
+React developer, Acme Pvt Ltd  Jan 2021 - present
+Worked with HTML, JavaScript
+Projects
+Built a small project using Next.js, React
+Education
+MBA / M.Tech 2024",Postgraduate,Frontend developer,0.8,0.48,1.0,1.0,,,1.0,0.85,Good
+React Native developer,"Build a cross-platform shopping app. Requirements: React Native, JavaScript, REST APIs. Good to have: TypeScript, Redux. Experience: 1-3 years.","Candidate
+Skills
+Flutter, REST APIs
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Kotlin
+Projects
+Built a small project using Android
+Education
+MBA / M.Tech 2024",Postgraduate,Mobile app developer,0.2,0.0,0.8,0.5,,,0.27,0.33,Okay
+Warehouse and inventory associate,"Track stock and dispatch orders. Requirements: Inventory management, MS Excel. Good to have: Data entry. Experience: Freshers welcome. Education: 12th pass or diploma.","Candidate
+Skills
+Communication
+Experience
+Operations executive, Acme Pvt Ltd  Jan 2024 - present
+Worked with Excel
+Projects
+Built a small project using Operations
+Education
+MBA / M.Tech 2024",Postgraduate,Operations and logistics,0.25,0.0,0.8,1.0,1.0,,0.14,0.42,Okay
+Senior junior data analyst (fresher),"Clean data and prepare reports for managers. Requirements: Excel, SQL, Communication skills. Good to have: Power BI, Python. Experience: 6+ years. Education: Graduate in any stream.","Candidate
+Skills
+Python, Excel
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Statistics
+Education
+Diploma in engineering 2023",Diploma,Data analyst,0.2,0.3,1.0,0.08,,,0.31,0.36,Poor
+Android developer,"Build and publish features on our Android app. Requirements: Kotlin, Android, REST APIs, Git. Good to have: Java, Firebase, Testing. Experience: 0-2 years.","Candidate
+Skills
+Flutter
+Projects
+Built a small project using Java, Kotlin
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Mobile app developer,0.21,0.85,0.8,1.0,,,0.36,0.53,Okay
+Inside sales associate,"Call interested customers and book demos. Requirements: Communication skills, Sales, English. Good to have: CRM, MS Office. Experience: Freshers welcome.","Candidate
+Skills
+Communication, English
+Experience
+Data entry operator, Acme Pvt Ltd  Jan 2021 - present
+Worked with MS Office
+Projects
+Built a small project using Hindi
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Office and data entry,0.2,0.5,0.0,1.0,,,0.42,0.27,Poor
+HR executive,"Hire people, onboard them and keep records. Requirements: Human resources, Recruitment, Communication skills, MS Office. Good to have: Excel. Experience: 0-2 years. Education: Bachelor's degree; MBA in HR is a plus.","Candidate
+Skills
+MS Office
+Experience
+HR executive, Acme Pvt Ltd  Jan 2023 - present
+Worked with Excel
+Projects
+Built a small project using English, HR
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Human resources,0.2,1.0,0.8,1.0,1.0,,0.49,0.55,Okay
+Technical support associate,"Solve customers' technical problems by phone and chat. Requirements: Customer service, Communication skills, Networking. Good to have: Linux, English. Experience: 0-1 years.","Candidate
+Skills
+HR
+Experience
+Talent acquisition associate, Acme Pvt Ltd  Jan 2025 - present
+Worked with Negotiation
+Projects
+Built a small project using HR, English
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Human resources,0.33,0.42,0.0,1.0,,,0.29,0.32,Poor
+Tax associate,"Prepare income tax and GST filings for clients. Requirements: Taxation, GST, Excel, Accounting. Good to have: Auditing. Experience: 0-2 years. Education: B.Com; CA Inter is a plus.","Candidate
+Skills
+Accounting
+Projects
+Built a small project using Accounting, Tally, GST
+Education
+Diploma in engineering 2023",Diploma,Accounts and finance,0.42,0.0,0.8,1.0,0.0,,0.73,0.49,Poor
+Tax associate,"Prepare income tax and GST filings for clients. Requirements: Taxation, GST, Excel, Accounting. Good to have: Auditing. Experience: 0-2 years. Education: B.Com; CA Inter is a plus.","Candidate
+Skills
+Taxation
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Auditing
+Projects
+Built a small project using Taxation
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Accounts and finance,0.46,1.0,0.8,1.0,1.0,,0.49,0.7,Okay
+Senior systems administrator,"Keep servers and office networks running. Requirements: Linux, Networking, Bash. Good to have: Docker, Cybersecurity. Experience: 4+ years.","Candidate
+Skills
+CI/CD
+Projects
+Built a small project using CI/CD, Bash
+Education
+MBA / M.Tech 2024",Postgraduate,DevOps / cloud,0.57,0.0,0.8,0.0,,,0.28,0.44,Poor
+AI intern,"Help build a chatbot for citizen services. Requirements: Python, NumPy, Pandas. Good to have: Machine learning, NLP. Experience: Freshers welcome.","Candidate
+Skills
+Machine Learning
+Experience
+Machine learning engineer, Acme Pvt Ltd  Jan 2023 - present
+Worked with Python, Deep Learning, TensorFlow
+Projects
+Built a small project using NumPy
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Data scientist / ML,0.46,0.5,0.8,1.0,,,0.92,0.64,Okay
+Flutter developer,"Ship one codebase to Android and iOS. Requirements: Flutter, Dart, REST APIs, Git. Good to have: Android, iOS. Experience: 1-2 years.","Candidate
+Skills
+Flutter
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Flutter
+Education
+MBA / M.Tech 2024",Postgraduate,Mobile app developer,0.33,,0.8,0.5,,,0.6,0.5,Okay
+React Native developer,"Build a cross-platform shopping app. Requirements: React Native, JavaScript, REST APIs. Good to have: TypeScript, Redux. Experience: 1-3 years.","Candidate
+Skills
+Communication
+Projects
+Built a small project using Communication
+Education
+Diploma in engineering 2023",Diploma,Sales and business development,0.0,0.0,0.0,0.0,,,0.0,0.0,Poor
+Cloud support associate,"Help customers solve cloud problems. Requirements: Linux, Networking, Communication skills. Good to have: AWS, Azure. Experience: Freshers welcome. Education: B.Tech, B.E., BCA or B.Sc.","Candidate
+Skills
+AWS
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with AWS
+Projects
+Built a small project using Docker
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,DevOps / cloud,0.33,0.5,0.8,1.0,1.0,,0.46,0.55,Okay
+Data analyst,"Turn sales and operations data into weekly dashboards. Requirements: Excel, SQL, Power BI or Tableau, Data analysis. Good to have: Python, Statistics. Experience: 0-2 years. Education: Bachelor's degree in any discipline.","Candidate
+Skills
+Statistics
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Python, Excel, MS Office
+Projects
+Built a small project using Tableau, SQL
+Education
+MBA / M.Tech 2024",Postgraduate,Data analyst,0.54,0.8,1.0,1.0,1.0,,0.58,0.76,Okay
+Machine learning engineer,"Train, deploy and monitor ML models in production. Requirements: Python, Machine learning, PyTorch or TensorFlow, Docker. Good to have: NLP, Computer vision, AWS. Experience: 2-4 years. Education: Bachelor's degree in computer science.","Candidate
+Skills
+Statistics
+Projects
+Built a small project using Statistics, NLP
+Education
+Class 12th, 2022",12th,Data scientist / ML,0.42,0.28,0.8,0.0,0.0,,0.16,0.39,Poor
+Android developer,"Build and publish features on our Android app. Requirements: Kotlin, Android, REST APIs, Git. Good to have: Java, Firebase, Testing. Experience: 0-2 years.","Candidate
+Skills
+MATLAB, Excel
+Projects
+Built a small project using Project Management, SolidWorks
+Education
+Diploma in engineering 2023",Diploma,Core engineering,0.0,0.0,0.0,1.0,,,0.0,0.12,Poor
+Junior data analyst (fresher),"Clean data and prepare reports for managers. Requirements: Excel, SQL, Communication skills. Good to have: Power BI, Python. Experience: Freshers welcome. Education: Graduate in any stream.","Candidate
+Skills
+Tableau
+Projects
+Built a small project using Tableau, Power BI
+Education
+Diploma in engineering 2023",Diploma,Data analyst,0.28,0.42,1.0,1.0,,,0.18,0.51,Okay
+Machine learning engineer,"Train, deploy and monitor ML models in production. Requirements: Python, Machine learning, PyTorch or TensorFlow, Docker. Good to have: NLP, Computer vision, AWS. Experience: 2-4 years. Education: Bachelor's degree in computer science.","Candidate
+Skills
+TensorFlow
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with NumPy, Machine Learning, Deep Learning
+Projects
+Built a small project using TensorFlow, scikit-learn
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Data scientist / ML,0.71,0.0,0.8,0.25,1.0,,0.72,0.64,Okay
+Senior frontend developer (React),"Build fast, accessible pages for a growing product. Requirements: HTML, CSS, JavaScript, React, Git. Good to have: TypeScript, Tailwind CSS, Next.js. Experience: 3+ years.","Candidate
+Skills
+CI/CD
+Projects
+Built a small project using Linux
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,DevOps / cloud,0.0,0.0,0.0,0.0,,,0.0,0.0,Poor
+React Native developer,"Build a cross-platform shopping app. Requirements: React Native, JavaScript, REST APIs. Good to have: TypeScript, Redux. Experience: 1-3 years.","Candidate
+Skills
+Communication
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Hindi, MS Office
+Projects
+Built a small project using Communication
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Teaching,0.0,0.0,0.0,0.5,,,0.0,0.05,Poor
+Technical support associate,"Solve customers' technical problems by phone and chat. Requirements: Customer service, Communication skills, Networking. Good to have: Linux, English. Experience: 0-1 years.","Candidate
+Skills
+REST APIs
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Dart, Java
+Projects
+Built a small project using Android
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Mobile app developer,0.0,0.0,0.0,1.0,,,0.0,0.11,Poor
+React Native developer,"Build a cross-platform shopping app. Requirements: React Native, JavaScript, REST APIs. Good to have: TypeScript, Redux. Experience: 1-3 years.","Candidate
+Skills
+Canva
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Canva
+Education
+MBA / M.Tech 2024",Postgraduate,Content writer,0.0,0.0,0.0,0.5,,,0.0,0.05,Poor
+Full-stack developer (MERN),"Own features end to end, from database to screen. Requirements: MongoDB, Express, React, Node.js, JavaScript. Good to have: TypeScript, AWS, Docker. Experience: 1-3 years.","Candidate
+Skills
+Hindi, CRM
+Experience
+Technical support, Acme Pvt Ltd  Jan 2023 - present
+Worked with MS Office
+Projects
+Built a small project using English, Communication
+Education
+Diploma in engineering 2023",Diploma,Customer support,0.0,0.0,0.0,1.0,,,0.0,0.12,Poor
+Hindi content writer,"Write and translate content for Hindi readers. Requirements: Content writing, Hindi. Good to have: English, SEO. Experience: 0-2 years.","Candidate
+Skills
+Marketing
+Experience
+Copywriter, Acme Pvt Ltd  Jan 2023 - present
+Worked with Marketing
+Projects
+Built a small project using Communication
+Education
+MBA / M.Tech 2024",Postgraduate,Content writer,0.0,0.0,1.0,1.0,,,0.0,0.3,Okay
+Operations executive,"Make sure orders are delivered on time. Requirements: Operations management, Excel, Communication skills. Good to have: Inventory management, SQL. Experience: 0-2 years. Education: Graduate in any stream.","Candidate
+Skills
+Inventory Management
+Projects
+Built a small project using Inventory Management
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Operations and logistics,0.28,0.42,0.8,1.0,,,0.91,0.5,Okay
+Senior android developer,"Build and publish features on our Android app. Requirements: Kotlin, Android, REST APIs, Git. Good to have: Java, Firebase, Testing. Experience: 3+ years.","Candidate
+Skills
+Dart
+Experience
+Mobile app developer, Acme Pvt Ltd  Jan 2025 - present
+Worked with Dart
+Projects
+Built a small project using Java
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Mobile app developer,0.0,0.85,0.8,0.45,,,0.36,0.36,Okay
+Software engineer (fresher),"Join a training programme, then a product team. Requirements: Data structures, algorithms, Java or Python, SQL. Good to have: Git, Linux. Experience: Freshers welcome. Education: B.Tech or B.E. in any branch.","Candidate
+Skills
+Python
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Python, SQL, Linux
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Software engineer,0.5,0.5,1.0,1.0,1.0,,0.6,0.72,Okay
+React Native developer,"Build a cross-platform shopping app. Requirements: React Native, JavaScript, REST APIs. Good to have: TypeScript, Redux. Experience: 1-3 years.","Candidate
+Skills
+Android
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with REST APIs, Dart, Flutter
+Education
+MBA / M.Tech 2024",Postgraduate,Mobile app developer,0.33,0.0,0.8,0.5,,,0.3,0.39,Okay
+UI/UX designer,"Design simple flows for first-time internet users. Requirements: Figma, UI/UX design. Good to have: Illustrator, HTML, CSS. Experience: 0-2 years.","Candidate
+Skills
+UI/UX Design
+Projects
+Built a small project using UI/UX Design, Figma
+Education
+MBA / M.Tech 2024",Postgraduate,UI/UX or graphic designer,0.42,0.0,0.8,1.0,,,1.0,0.48,Good
+Data scientist,"Build models that predict demand and reduce costs. Requirements: Python, Pandas, Machine learning, SQL, Statistics. Good to have: scikit-learn, Deep learning, Spark. Experience: 1-3 years. Education: Bachelor's or master's degree in a quantitative field.","Candidate
+Skills
+SQL
+Experience
+Machine learning engineer, Acme Pvt Ltd  Jan 2025 - present
+Worked with Deep Learning
+Projects
+Built a small project using SQL
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Data scientist / ML,0.77,0.33,0.8,1.0,1.0,,0.83,0.78,Good
+Customer support associate,"Help customers on calls and chat. Requirements: Customer service, Communication skills, English. Good to have: Hindi, MS Office, CRM. Experience: Freshers welcome. Education: 12th pass or graduate.","Candidate
+Skills
+Hindi
+Experience
+Technical support, Acme Pvt Ltd  Jan 2024 - present
+Worked with Customer Service
+Projects
+Built a small project using CRM
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Customer support,0.67,0.48,1.0,1.0,1.0,,0.8,0.74,Okay
+School teacher (science),"Teach classes 6 to 10 and run lab sessions. Requirements: Teaching, Lesson planning, Communication skills, English. Good to have: MS Office. Experience: 0-2 years. Education: B.Sc and B.Ed.","Candidate
+Skills
+Teaching
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with English
+Education
+MBA / M.Tech 2024",Postgraduate,Teaching,0.4,0.0,0.5,1.0,1.0,,0.36,0.5,Okay
+Senior video editor,"Edit short videos for YouTube and Instagram. Requirements: Video editing, Premiere Pro. Good to have: After Effects, Photoshop. Experience: 4+ years.","Candidate
+Skills
+English
+Experience
+Copywriter, Acme Pvt Ltd  Jan 2023 - present
+Worked with English
+Projects
+Built a small project using Communication, Canva
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Content writer,0.25,0.0,0.8,0.95,,,0.0,0.32,Okay
+Operations executive,"Make sure orders are delivered on time. Requirements: Operations management, Excel, Communication skills. Good to have: Inventory management, SQL. Experience: 0-2 years. Education: Graduate in any stream.","Candidate
+Skills
+Inventory Management
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Excel
+Projects
+Built a small project using MS Office
+Education
+MBA / M.Tech 2024",Postgraduate,Operations and logistics,0.33,0.3,0.8,1.0,,,0.53,0.49,Okay
+React Native developer,"Build a cross-platform shopping app. Requirements: React Native, JavaScript, REST APIs. Good to have: TypeScript, Redux. Experience: 1-3 years.","Candidate
+Skills
+Flutter, REST APIs
+Projects
+Built a small project using Java
+Education
+Diploma in engineering 2023",Diploma,Mobile app developer,0.2,0.0,0.8,0.0,,,0.4,0.28,Okay
+Content writer,"Write clear articles and guides. Requirements: Content writing, English. Good to have: SEO, Digital marketing. Experience: 0-2 years.","Candidate
+Skills
+Marketing
+Projects
+Built a small project using Marketing, Communication
+Education
+MBA / M.Tech 2024",Postgraduate,Content writer,0.0,0.42,1.0,1.0,,,0.44,0.36,Okay
+Financial analyst,"Build budgets, forecasts and monthly reports. Requirements: Excel, Financial analysis, Accounting. Good to have: Power BI, SQL. Experience: 1-3 years. Education: Bachelor's degree in commerce or finance; MBA preferred.","Candidate
+Skills
+Excel, Tally
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Auditing
+Projects
+Built a small project using MS Office
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Accounts and finance,0.53,0.0,0.8,0.5,1.0,,0.12,0.52,Okay
+Social media coordinator,"Plan posts and reply to followers. Requirements: Social media marketing, Canva, Content writing. Good to have: Video editing. Experience: Freshers welcome.","Candidate
+Skills
+Video Editing
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Canva, Communication
+Projects
+Built a small project using Video Editing
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Marketing,0.25,0.85,0.8,1.0,,,0.53,0.55,Okay
+Data entry operator,"Enter and check records accurately. Requirements: Data entry, MS Office, Typing. Good to have: Excel, English. Experience: Freshers welcome. Education: 12th pass.","Candidate
+Skills
+Data Entry
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Excel, English, Hindi, MS Office
+Education
+MBA / M.Tech 2024",Postgraduate,Office and data entry,0.8,1.0,0.8,1.0,1.0,,0.98,0.74,Good
+Operations executive,"Make sure orders are delivered on time. Requirements: Operations management, Excel, Communication skills. Good to have: Inventory management, SQL. Experience: 0-2 years. Education: Graduate in any stream.","Candidate
+Skills
+Communication
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Excel, Inventory Management
+Education
+MBA / M.Tech 2024",Postgraduate,Operations and logistics,0.33,0.5,0.8,1.0,,,0.73,0.52,Okay
+Sales executive,"Meet shop owners and grow sales in your area. Requirements: Sales, Communication skills, Negotiation. Good to have: CRM, English, Hindi. Experience: 0-2 years. Education: Graduate in any stream.","Candidate
+Skills
+Communication, Sales, English, Hindi
+Experience
+Field sales officer, Acme Pvt Ltd  Jan 2023 - present
+Worked with Negotiation, MS Office
+Education
+MBA / M.Tech 2024",Postgraduate,Sales and business development,1.0,0.4,0.8,1.0,,,1.0,0.82,Good
+Technical support associate,"Solve customers' technical problems by phone and chat. Requirements: Customer service, Communication skills, Networking. Good to have: Linux, English. Experience: 0-1 years.","Candidate
+Skills
+CRM
+Projects
+Built a small project using CRM
+Education
+MBA / M.Tech 2024",Postgraduate,Customer support,0.0,0.0,0.8,1.0,,,0.0,0.28,Okay
+Data scientist,"Build models that predict demand and reduce costs. Requirements: Python, Pandas, Machine learning, SQL, Statistics. Good to have: scikit-learn, Deep learning, Spark. Experience: 1-3 years. Education: Bachelor's or master's degree in a quantitative field.","Candidate
+Skills
+scikit-learn
+Experience
+Data scientist, Acme Pvt Ltd  Jan 2021 - present
+Worked with scikit-learn, Python
+Projects
+Built a small project using SQL, Statistics, Deep Learning
+Education
+MBA / M.Tech 2024",Postgraduate,Data scientist / ML,0.91,0.62,0.8,1.0,1.0,,1.0,0.88,Good
+Financial analyst,"Build budgets, forecasts and monthly reports. Requirements: Excel, Financial analysis, Accounting. Good to have: Power BI, SQL. Experience: 1-3 years. Education: Bachelor's degree in commerce or finance; MBA preferred.","Candidate
+Skills
+Taxation, GST
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with MS Office, Tally, Accounting
+Education
+MBA / M.Tech 2024",Postgraduate,Accounts and finance,0.33,0.0,0.8,0.5,1.0,,0.29,0.45,Okay
+Warehouse and inventory associate,"Track stock and dispatch orders. Requirements: Inventory management, MS Excel. Good to have: Data entry. Experience: Freshers welcome. Education: 12th pass or diploma.","Candidate
+Skills
+Negotiation
+Education
+MBA / M.Tech 2024",Postgraduate,Operations and logistics,0.0,0.0,0.8,1.0,1.0,,0.0,0.32,Okay
+Junior design engineer (mechanical),"Create part drawings and 3D models. Requirements: AutoCAD, SolidWorks. Good to have: MATLAB, MS Office. Experience: 0-2 years. Education: B.E. or diploma in mechanical engineering.","Candidate
+Skills
+AutoCAD, Project Management
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Core engineering,0.3,0.0,0.0,1.0,1.0,,0.24,0.3,Okay
+UI/UX designer,"Design simple flows for first-time internet users. Requirements: Figma, UI/UX design. Good to have: Illustrator, HTML, CSS. Experience: 0-2 years.","Candidate
+Skills
+UI/UX Design
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Illustrator, Photoshop
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,UI/UX or graphic designer,0.4,0.33,0.8,1.0,,,0.46,0.48,Okay
+UI/UX designer,"Design simple flows for first-time internet users. Requirements: Figma, UI/UX design. Good to have: Illustrator, HTML, CSS. Experience: 0-2 years.","Candidate
+Skills
+Canva
+Experience
+Product designer, Acme Pvt Ltd  Jan 2023 - present
+Worked with Canva, Photoshop
+Projects
+Built a small project using Figma, Illustrator, HTML
+Education
+Diploma in engineering 2023",Diploma,UI/UX or graphic designer,0.71,0.57,0.8,1.0,,,0.58,0.63,Okay
+Warehouse and inventory associate,"Track stock and dispatch orders. Requirements: Inventory management, MS Excel. Good to have: Data entry. Experience: Freshers welcome. Education: 12th pass or diploma.","Candidate
+Skills
+Communication
+Experience
+Warehouse supervisor, Acme Pvt Ltd  Jan 2023 - present
+Worked with Communication, Excel
+Education
+MBA / M.Tech 2024",Postgraduate,Operations and logistics,0.25,0.0,0.8,1.0,1.0,,0.32,0.43,Okay
+Full-stack developer (Python + React),"Build internal tools for operations teams. Requirements: Python, Django, React, SQL, Git. Good to have: Docker, CI/CD. Experience: 0-2 years. Education: Bachelor's degree in computer science.","Candidate
+Skills
+SQL
+Projects
+Built a small project using Git
+Education
+MBA / M.Tech 2024",Postgraduate,Full-stack developer,0.29,0.0,1.0,1.0,1.0,,0.4,0.56,Okay
+Senior react Native developer,"Build a cross-platform shopping app. Requirements: React Native, JavaScript, REST APIs. Good to have: TypeScript, Redux. Experience: 3+ years.","Candidate
+Skills
+Android
+Experience
+Mobile app developer, Acme Pvt Ltd  Jan 2023 - present
+Worked with Java
+Projects
+Built a small project using Android, REST APIs, Git
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Mobile app developer,0.28,0.0,0.8,0.95,,,0.49,0.43,Okay
+Senior software engineer (fresher),"Join a training programme, then a product team. Requirements: Data structures, algorithms, Java or Python, SQL. Good to have: Git, Linux. Experience: 3+ years. Education: B.Tech or B.E. in any branch.","Candidate
+Skills
+Java, Linux
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with JavaScript, Algorithms, Python
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Software engineer,0.75,0.3,1.0,0.17,1.0,,0.62,0.71,Okay
+QA engineer (manual and automation),"Test web and mobile releases before launch. Requirements: Testing, Selenium, SQL. Good to have: Python, Java, CI/CD. Experience: 0-2 years.","Candidate
+Skills
+Python
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with SQL, Git
+Projects
+Built a small project using Testing
+Education
+Diploma in engineering 2023",Diploma,QA / test engineer,0.5,0.2,0.8,1.0,,,0.49,0.5,Okay
+Online tutor (maths),"Teach students one to one over video. Requirements: Teaching, Communication skills, English. Good to have: Lesson planning. Experience: Freshers welcome.","Candidate
+Skills
+Teaching
+Experience
+Primary school teacher, Acme Pvt Ltd  Jan 2024 - present
+Worked with Communication, English, Lesson Planning, Hindi
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Teaching,1.0,1.0,0.5,1.0,,,0.73,0.8,Okay
+UI/UX designer,"Design simple flows for first-time internet users. Requirements: Figma, UI/UX design. Good to have: Illustrator, HTML, CSS. Experience: 0-2 years.","Candidate
+Skills
+Photoshop
+Projects
+Built a small project using Photoshop, Illustrator, CSS
+Education
+MBA / M.Tech 2024",Postgraduate,UI/UX or graphic designer,0.21,0.85,0.8,1.0,,,0.41,0.45,Okay
+Junior data analyst (fresher),"Clean data and prepare reports for managers. Requirements: Excel, SQL, Communication skills. Good to have: Power BI, Python. Experience: Freshers welcome. Education: Graduate in any stream.","Candidate
+Skills
+MS Office
+Projects
+Built a small project using MS Office, SQL
+Education
+MBA / M.Tech 2024",Postgraduate,Data analyst,0.28,0.0,1.0,1.0,,,0.18,0.46,Okay
+Junior web developer,"Create and update websites for small business clients. Requirements: HTML, CSS, JavaScript. Good to have: React, PHP, MySQL. Experience: Freshers welcome.","Candidate
+Skills
+Figma, Next.js, Tailwind CSS
+Experience
+React developer, Acme Pvt Ltd  Jan 2021 - present
+Worked with CSS
+Projects
+Built a small project using HTML, JavaScript, Git
+Education
+Diploma in engineering 2023",Diploma,Frontend developer,1.0,0.33,0.8,1.0,,,0.95,0.81,Good
+Software engineer (fresher),"Join a training programme, then a product team. Requirements: Data structures, algorithms, Java or Python, SQL. Good to have: Git, Linux. Experience: Freshers welcome. Education: B.Tech or B.E. in any branch.","Candidate
+Skills
+Data Structures
+Experience
+Software developer, Acme Pvt Ltd  Jan 2025 - present
+Worked with Java
+Projects
+Built a small project using Data Structures, Algorithms, Linux
+Education
+MBA / M.Tech 2024",Postgraduate,Software engineer,0.68,0.42,1.0,1.0,1.0,,0.94,0.8,Good
+Tax associate,"Prepare income tax and GST filings for clients. Requirements: Taxation, GST, Excel, Accounting. Good to have: Auditing. Experience: 0-2 years. Education: B.Com; CA Inter is a plus.","Candidate
+Skills
+Tally
+Experience
+Audit assistant, Acme Pvt Ltd  Jan 2023 - present
+Worked with MS Office, Auditing
+Projects
+Built a small project using Excel
+Education
+MBA / M.Tech 2024",Postgraduate,Accounts and finance,0.46,1.0,0.8,1.0,1.0,,0.29,0.69,Okay
+Junior design engineer (mechanical),"Create part drawings and 3D models. Requirements: AutoCAD, SolidWorks. Good to have: MATLAB, MS Office. Experience: 0-2 years. Education: B.E. or diploma in mechanical engineering.","Candidate
+Skills
+SolidWorks
+Projects
+Built a small project using MATLAB
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Core engineering,0.3,0.42,0.0,1.0,1.0,,0.41,0.34,Okay
+Social media coordinator,"Plan posts and reply to followers. Requirements: Social media marketing, Canva, Content writing. Good to have: Video editing. Experience: Freshers welcome.","Candidate
+Skills
+Marketing
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Marketing, Communication
+Projects
+Built a small project using Content Writing, Video Editing
+Education
+MBA / M.Tech 2024",Postgraduate,Marketing,0.46,0.85,0.8,1.0,,,0.72,0.67,Okay
+Content writer,"Write clear articles and guides. Requirements: Content writing, English. Good to have: SEO, Digital marketing. Experience: 0-2 years.","Candidate
+Skills
+Canva
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with English, Communication
+Education
+MBA / M.Tech 2024",Postgraduate,Content writer,0.33,0.0,1.0,1.0,,,0.19,0.44,Okay
+Junior design engineer (mechanical),"Create part drawings and 3D models. Requirements: AutoCAD, SolidWorks. Good to have: MATLAB, MS Office. Experience: 0-2 years. Education: B.E. or diploma in mechanical engineering.","Candidate
+Skills
+MATLAB
+Experience
+Civil engineer, Acme Pvt Ltd  Jan 2025 - present
+Worked with MATLAB, SolidWorks
+Projects
+Built a small project using Project Management, AutoCAD, MS Office
+Education
+Diploma in engineering 2023",Diploma,Core engineering,0.93,0.93,0.0,1.0,1.0,,1.0,0.64,Okay
+Social media coordinator,"Plan posts and reply to followers. Requirements: Social media marketing, Canva, Content writing. Good to have: Video editing. Experience: Freshers welcome.","Candidate
+Skills
+Communication
+Projects
+Built a small project using Marketing
+Education
+MBA / M.Tech 2024",Postgraduate,Marketing,0.21,0.0,0.8,1.0,,,0.21,0.42,Okay
+Graphic designer,"Create social media posts and print material. Requirements: Photoshop, Illustrator, Canva. Good to have: Video editing. Experience: 0-2 years.","Candidate
+Skills
+UI/UX Design, Canva
+Experience
+Visual designer, Acme Pvt Ltd  Jan 2024 - present
+Worked with Illustrator, HTML, Figma, CSS
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,UI/UX or graphic designer,0.53,0.0,0.8,1.0,,,0.53,0.54,Okay
+School teacher (science),"Teach classes 6 to 10 and run lab sessions. Requirements: Teaching, Lesson planning, Communication skills, English. Good to have: MS Office. Experience: 0-2 years. Education: B.Sc and B.Ed.","Candidate
+Skills
+English
+Experience
+Maths teacher, Acme Pvt Ltd  Jan 2024 - present
+Worked with English, Lesson Planning
+Projects
+Built a small project using MS Office
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Teaching,1.0,0.85,0.5,1.0,1.0,,1.0,0.88,Okay
+Data analyst,"Turn sales and operations data into weekly dashboards. Requirements: Excel, SQL, Power BI or Tableau, Data analysis. Good to have: Python, Statistics. Experience: 0-2 years. Education: Bachelor's degree in any discipline.","Candidate
+Skills
+Data Analysis, SQL
+Experience
+Business analyst, Acme Pvt Ltd  Jan 2023 - present
+Worked with Tableau, MS Office
+Education
+MBA / M.Tech 2024",Postgraduate,Data analyst,0.64,0.0,1.0,1.0,1.0,,0.97,0.74,Good
+Angular developer,"Build dashboards for an enterprise product. Requirements: Angular, TypeScript, HTML, CSS. Good to have: REST APIs, Testing. Experience: 1-3 years. Education: Bachelor's degree.","Candidate
+Skills
+TypeScript
+Experience
+Web developer (frontend), Acme Pvt Ltd  Jan 2023 - present
+Worked with TypeScript, Tailwind CSS, JavaScript
+Projects
+Built a small project using Git
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Frontend developer,0.75,0.0,0.8,1.0,1.0,,0.55,0.72,Good
+Frontend developer (React),"Build fast, accessible pages for a growing product. Requirements: HTML, CSS, JavaScript, React, Git. Good to have: TypeScript, Tailwind CSS, Next.js. Experience: 0-2 years.","Candidate
+Skills
+HTML
+Experience
+Frontend developer, Acme Pvt Ltd  Jan 2023 - present
+Worked with CSS, Figma, Git
+Projects
+Built a small project using React
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Frontend developer,0.94,0.0,1.0,1.0,,,1.0,0.85,Good
+Warehouse and inventory associate,"Track stock and dispatch orders. Requirements: Inventory management, MS Excel. Good to have: Data entry. Experience: Freshers welcome. Education: 12th pass or diploma.","Candidate
+Skills
+Inventory Management
+Projects
+Built a small project using Inventory Management
+Education
+Diploma in engineering 2023",Diploma,Operations and logistics,0.42,0.0,0.8,1.0,1.0,,1.0,0.52,Good
+Senior aI intern,"Help build a chatbot for citizen services. Requirements: Python, NumPy, Pandas. Good to have: Machine learning, NLP. Experience: 6+ years.","Candidate
+Skills
+Python, Pandas, NLP
+Experience
+AI engineer, Acme Pvt Ltd  Jan 2021 - present
+Worked with Deep Learning, TensorFlow, SQL, Statistics, Machine Learning
+Projects
+Built a small project using NumPy
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Data scientist / ML,0.82,0.8,0.8,0.97,,,0.98,0.78,Good
+Accountant,"Maintain books, file GST returns and handle payments. Requirements: Accounting, Tally, GST, Excel. Good to have: Taxation, Auditing. Experience: 1-3 years. Education: B.Com or M.Com.","Candidate
+Skills
+Auditing
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with GST, Accounting, Taxation, MS Office
+Projects
+Built a small project using Excel
+Education
+MBA / M.Tech 2024",Postgraduate,Accounts and finance,0.71,0.8,0.8,0.5,1.0,,0.82,0.75,Good
+DevOps engineer,"Automate builds, deployments and monitoring. Requirements: Linux, Docker, Kubernetes, CI/CD, AWS. Good to have: Terraform, Bash, Python. Experience: 1-3 years. Education: Bachelor's degree.","Candidate
+Skills
+Git, CI/CD, Python
+Experience
+DevOps engineer, Acme Pvt Ltd  Jan 2023 - present
+Worked with Kubernetes, Bash, AWS, Linux, Docker
+Education
+MBA / M.Tech 2024",Postgraduate,DevOps / cloud,0.92,0.53,0.8,1.0,1.0,,1.0,0.88,Good
+Senior tax associate,"Prepare income tax and GST filings for clients. Requirements: Taxation, GST, Excel, Accounting. Good to have: Auditing. Experience: 4+ years. Education: B.Com; CA Inter is a plus.","Candidate
+Skills
+Accounting
+Experience
+Audit assistant, Acme Pvt Ltd  Jan 2021 - present
+Worked with GST, Excel, Auditing, MS Office
+Projects
+Built a small project using Tally
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Accounts and finance,0.75,1.0,0.8,1.0,1.0,,0.75,0.84,Good
+Data entry operator,"Enter and check records accurately. Requirements: Data entry, MS Office, Typing. Good to have: Excel, English. Experience: Freshers welcome. Education: 12th pass.","Candidate
+Skills
+Data Entry
+Experience
+Back office executive, Acme Pvt Ltd  Jan 2023 - present
+Worked with Data Entry, English, Communication
+Projects
+Built a small project using MS Office, Excel
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Office and data entry,1.0,0.93,0.8,1.0,1.0,,1.0,0.81,Good
+Junior web developer,"Create and update websites for small business clients. Requirements: HTML, CSS, JavaScript. Good to have: React, PHP, MySQL. Experience: Freshers welcome.","Candidate
+Skills
+CSS
+Projects
+Built a small project using JavaScript
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Frontend developer,0.77,0.0,0.8,1.0,,,0.63,0.65,Good
+Senior customer support associate,"Help customers on calls and chat. Requirements: Customer service, Communication skills, English. Good to have: Hindi, MS Office, CRM. Experience: 3+ years. Education: 12th pass or graduate.","Candidate
+Skills
+CRM
+Experience
+Customer support associate, Acme Pvt Ltd  Jan 2023 - present
+Worked with MS Office, Communication, English
+Projects
+Built a small project using Customer Service
+Education
+Diploma in engineering 2023",Diploma,Customer support,1.0,0.53,1.0,1.0,1.0,,1.0,0.88,Good
+Accounts assistant (fresher),"Help with entries, invoices and bank reconciliation. Requirements: Tally, MS Excel, Accounting. Good to have: GST. Experience: Freshers welcome. Education: B.Com.","Candidate
+Skills
+GST
+Experience
+Accountant, Acme Pvt Ltd  Jan 2025 - present
+Worked with Accounting, Tally
+Projects
+Built a small project using Excel, Auditing
+Education
+MBA / M.Tech 2024",Postgraduate,Accounts and finance,0.95,0.6,0.8,1.0,1.0,,0.66,0.81,Good
+DevOps engineer,"Automate builds, deployments and monitoring. Requirements: Linux, Docker, Kubernetes, CI/CD, AWS. Good to have: Terraform, Bash, Python. Experience: 1-3 years. Education: Bachelor's degree.","Candidate
+Skills
+Docker
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Docker, Terraform, Kubernetes, Python
+Projects
+Built a small project using AWS, Linux, Git, CI/CD
+Education
+MBA / M.Tech 2024",Postgraduate,DevOps / cloud,0.94,0.67,0.8,0.5,1.0,,1.0,0.84,Good
+UI/UX designer,"Design simple flows for first-time internet users. Requirements: Figma, UI/UX design. Good to have: Illustrator, HTML, CSS. Experience: 0-2 years.","Candidate
+Skills
+Figma
+Experience
+Visual designer, Acme Pvt Ltd  Jan 2023 - present
+Worked with UI/UX Design, Photoshop, Canva
+Projects
+Built a small project using CSS
+Education
+Diploma in engineering 2023",Diploma,UI/UX or graphic designer,0.9,0.57,0.8,1.0,,,0.77,0.72,Good
+Accounts assistant (fresher),"Help with entries, invoices and bank reconciliation. Requirements: Tally, MS Excel, Accounting. Good to have: GST. Experience: Freshers welcome. Education: B.Com.","Candidate
+Skills
+Excel, Accounting
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Tally, MS Office
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Accounts and finance,0.87,0.0,0.8,1.0,1.0,,0.6,0.72,Good
+Business development executive,"Find new business clients and close deals. Requirements: Sales, Negotiation, Communication skills, CRM. Good to have: Digital marketing. Experience: 1-3 years. Education: Bachelor's degree; MBA is a plus.","Candidate
+Skills
+Negotiation
+Experience
+Sales executive, Acme Pvt Ltd  Jan 2023 - present
+Worked with Negotiation, Sales
+Projects
+Built a small project using MS Office, Hindi
+Education
+MBA / M.Tech 2024",Postgraduate,Sales and business development,0.75,0.0,0.8,1.0,1.0,,0.79,0.74,Good
+HR executive,"Hire people, onboard them and keep records. Requirements: Human resources, Recruitment, Communication skills, MS Office. Good to have: Excel. Experience: 0-2 years. Education: Bachelor's degree; MBA in HR is a plus.","Candidate
+Skills
+MS Office
+Experience
+Recruiter, Acme Pvt Ltd  Jan 2024 - present
+Worked with English, Excel
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Human resources,0.87,1.0,0.8,1.0,1.0,,0.37,0.8,Good
+Business development executive,"Find new business clients and close deals. Requirements: Sales, Negotiation, Communication skills, CRM. Good to have: Digital marketing. Experience: 1-3 years. Education: Bachelor's degree; MBA is a plus.","Candidate
+Skills
+Hindi, CRM
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Communication, Sales
+Projects
+Built a small project using MS Office, English
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Sales and business development,0.65,0.0,0.8,0.5,1.0,,0.36,0.62,Good
+Junior web developer,"Create and update websites for small business clients. Requirements: HTML, CSS, JavaScript. Good to have: React, PHP, MySQL. Experience: Freshers welcome.","Candidate
+Skills
+TypeScript
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with React
+Projects
+Built a small project using Git, HTML, Next.js
+Education
+Diploma in engineering 2023",Diploma,Frontend developer,1.0,0.33,0.8,1.0,,,0.43,0.78,Good
+Junior web developer,"Create and update websites for small business clients. Requirements: HTML, CSS, JavaScript. Good to have: React, PHP, MySQL. Experience: Freshers welcome.","Candidate
+Skills
+Tailwind CSS, Git
+Projects
+Built a small project using HTML, TypeScript
+Education
+MBA / M.Tech 2024",Postgraduate,Frontend developer,0.77,0.0,0.8,1.0,,,0.6,0.65,Good
+Frontend developer (React),"Build fast, accessible pages for a growing product. Requirements: HTML, CSS, JavaScript, React, Git. Good to have: TypeScript, Tailwind CSS, Next.js. Experience: 0-2 years.","Candidate
+Skills
+Figma
+Experience
+Frontend developer, Acme Pvt Ltd  Jan 2021 - present
+Worked with Figma, Tailwind CSS, Git
+Projects
+Built a small project using Next.js, CSS
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Frontend developer,0.94,0.62,1.0,1.0,,,0.98,0.93,Good
+Junior web developer,"Create and update websites for small business clients. Requirements: HTML, CSS, JavaScript. Good to have: React, PHP, MySQL. Experience: Freshers welcome.","Candidate
+Skills
+Git
+Experience
+Frontend developer, Acme Pvt Ltd  Jan 2024 - present
+Worked with Git, HTML
+Projects
+Built a small project using Figma, Next.js
+Education
+MBA / M.Tech 2024",Postgraduate,Frontend developer,0.9,0.28,0.8,1.0,,,0.42,0.73,Good
+Senior social media coordinator,"Plan posts and reply to followers. Requirements: Social media marketing, Canva, Content writing. Good to have: Video editing. Experience: 3+ years.","Candidate
+Skills
+Digital Marketing
+Experience
+Marketing associate, Acme Pvt Ltd  Jan 2023 - present
+Worked with Digital Marketing, Canva, Video Editing
+Projects
+Built a small project using Communication
+Education
+Diploma in engineering 2023",Diploma,Marketing,0.75,1.0,0.8,0.95,,,0.66,0.81,Good
+Business development executive,"Find new business clients and close deals. Requirements: Sales, Negotiation, Communication skills, CRM. Good to have: Digital marketing. Experience: 1-3 years. Education: Bachelor's degree; MBA is a plus.","Candidate
+Skills
+Negotiation
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with CRM
+Projects
+Built a small project using Negotiation, Communication
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Sales and business development,0.68,0.0,0.8,0.5,1.0,,0.48,0.64,Good
+Full-stack developer (MERN),"Own features end to end, from database to screen. Requirements: MongoDB, Express, React, Node.js, JavaScript. Good to have: TypeScript, AWS, Docker. Experience: 1-3 years.","Candidate
+Skills
+Express
+Experience
+Web application developer, Acme Pvt Ltd  Jan 2024 - present
+Worked with Express, TypeScript, MongoDB, Docker, Git, React
+Projects
+Built a small project using SQL
+Education
+MBA / M.Tech 2024",Postgraduate,Full-stack developer,1.0,0.67,1.0,1.0,,,0.83,0.95,Good
+Graphic designer,"Create social media posts and print material. Requirements: Photoshop, Illustrator, Canva. Good to have: Video editing. Experience: 0-2 years.","Candidate
+Skills
+Photoshop
+Experience
+Graphic designer, Acme Pvt Ltd  Jan 2024 - present
+Worked with Photoshop, Canva, Illustrator
+Projects
+Built a small project using Figma, HTML
+Education
+MBA / M.Tech 2024",Postgraduate,UI/UX or graphic designer,1.0,0.0,0.8,1.0,,,0.93,0.77,Good
+UI/UX designer,"Design simple flows for first-time internet users. Requirements: Figma, UI/UX design. Good to have: Illustrator, HTML, CSS. Experience: 0-2 years.","Candidate
+Skills
+Figma
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Illustrator, CSS
+Projects
+Built a small project using UI/UX Design
+Education
+Diploma in engineering 2023",Diploma,UI/UX or graphic designer,0.36,1.0,0.8,1.0,,,0.79,0.54,Good
+DevOps engineer,"Automate builds, deployments and monitoring. Requirements: Linux, Docker, Kubernetes, CI/CD, AWS. Good to have: Terraform, Bash, Python. Experience: 1-3 years. Education: Bachelor's degree.","Candidate
+Skills
+AWS
+Experience
+DevOps engineer, Acme Pvt Ltd  Jan 2021 - present
+Worked with Linux, Kubernetes
+Projects
+Built a small project using AWS, Bash
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,DevOps / cloud,0.77,0.28,0.8,1.0,1.0,,1.0,0.79,Good
+AI intern,"Help build a chatbot for citizen services. Requirements: Python, NumPy, Pandas. Good to have: Machine learning, NLP. Experience: Freshers welcome.","Candidate
+Skills
+SQL, Machine Learning
+Experience
+AI engineer, Acme Pvt Ltd  Jan 2021 - present
+Worked with Python, Deep Learning, Pandas
+Projects
+Built a small project using Statistics
+Education
+MBA / M.Tech 2024",Postgraduate,Data scientist / ML,0.75,0.5,0.8,1.0,,,0.76,0.76,Good
+Tax associate,"Prepare income tax and GST filings for clients. Requirements: Taxation, GST, Excel, Accounting. Good to have: Auditing. Experience: 0-2 years. Education: B.Com; CA Inter is a plus.","Candidate
+Skills
+Excel, Accounting
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Tally
+Projects
+Built a small project using GST, Taxation
+Education
+MBA / M.Tech 2024",Postgraduate,Accounts and finance,0.82,0.0,0.8,1.0,1.0,,0.68,0.76,Good
+Data scientist,"Build models that predict demand and reduce costs. Requirements: Python, Pandas, Machine learning, SQL, Statistics. Good to have: scikit-learn, Deep learning, Spark. Experience: 1-3 years. Education: Bachelor's or master's degree in a quantitative field.","Candidate
+Skills
+Deep Learning
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Pandas, TensorFlow
+Projects
+Built a small project using Machine Learning
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Data scientist / ML,0.8,0.33,0.8,0.5,1.0,,0.69,0.73,Good
+Junior web developer,"Create and update websites for small business clients. Requirements: HTML, CSS, JavaScript. Good to have: React, PHP, MySQL. Experience: Freshers welcome.","Candidate
+Skills
+React, HTML
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Tailwind CSS, TypeScript, Git, Figma
+Projects
+Built a small project using Next.js
+Education
+Diploma in engineering 2023",Diploma,Frontend developer,1.0,0.28,0.8,1.0,,,0.54,0.78,Good
+Accounts assistant (fresher),"Help with entries, invoices and bank reconciliation. Requirements: Tally, MS Excel, Accounting. Good to have: GST. Experience: Freshers welcome. Education: B.Com.","Candidate
+Skills
+Tally
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Auditing
+Projects
+Built a small project using GST, Excel
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Accounts and finance,0.82,0.85,0.8,1.0,1.0,,0.56,0.78,Good
+Content writer,"Write clear articles and guides. Requirements: Content writing, English. Good to have: SEO, Digital marketing. Experience: 0-2 years.","Candidate
+Skills
+Content Writing
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Marketing
+Projects
+Built a small project using Content Writing, Communication
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Content writer,0.57,0.5,1.0,1.0,,,0.92,0.62,Good
+Backend developer (Python),"Build and maintain APIs used by our web and mobile apps. Requirements: Python, Django or FastAPI, SQL, REST APIs, Git. Good to have: Docker, Redis, AWS. Experience: 0-2 years. Education: Bachelor's degree in computer science or a related field.","Candidate
+Skills
+REST APIs, Git
+Experience
+Node.js backend engineer, Acme Pvt Ltd  Jan 2023 - present
+Worked with FastAPI
+Projects
+Built a small project using Python, MySQL, Spring Boot, Docker
+Education
+MBA / M.Tech 2024",Postgraduate,Backend developer,0.81,0.28,1.0,1.0,1.0,,0.95,0.84,Good
+Business development executive,"Find new business clients and close deals. Requirements: Sales, Negotiation, Communication skills, CRM. Good to have: Digital marketing. Experience: 1-3 years. Education: Bachelor's degree; MBA is a plus.","Candidate
+Skills
+CRM, Hindi
+Experience
+Field sales officer, Acme Pvt Ltd  Jan 2021 - present
+Worked with Communication
+Projects
+Built a small project using MS Office
+Education
+MBA / M.Tech 2024",Postgraduate,Sales and business development,0.65,0.0,0.8,1.0,1.0,,0.57,0.68,Good
+Digital marketing executive,"Run campaigns and grow our online audience. Requirements: Digital marketing, SEO, Social media marketing. Good to have: Canva, Content writing, Google Ads. Experience: 0-2 years.","Candidate
+Skills
+Content Writing
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Canva, Digital Marketing
+Projects
+Built a small project using Content Writing
+Education
+Diploma in engineering 2023",Diploma,Marketing,1.0,0.93,1.0,1.0,,,1.0,0.84,Good
+HR executive,"Hire people, onboard them and keep records. Requirements: Human resources, Recruitment, Communication skills, MS Office. Good to have: Excel. Experience: 0-2 years. Education: Bachelor's degree; MBA in HR is a plus.","Candidate
+Skills
+HR
+Experience
+Recruiter, Acme Pvt Ltd  Jan 2024 - present
+Worked with Negotiation, MS Office
+Education
+MBA / M.Tech 2024",Postgraduate,Human resources,1.0,0.0,0.8,1.0,1.0,,0.38,0.76,Good
+Angular developer,"Build dashboards for an enterprise product. Requirements: Angular, TypeScript, HTML, CSS. Good to have: REST APIs, Testing. Experience: 1-3 years. Education: Bachelor's degree.","Candidate
+Skills
+JavaScript, React, CSS, Next.js
+Experience
+Web developer (frontend), Acme Pvt Ltd  Jan 2024 - present
+Worked with Figma, Git, TypeScript
+Education
+MBA / M.Tech 2024",Postgraduate,Frontend developer,0.65,0.0,0.8,1.0,1.0,,0.46,0.68,Good
+Frontend developer (React),"Build fast, accessible pages for a growing product. Requirements: HTML, CSS, JavaScript, React, Git. Good to have: TypeScript, Tailwind CSS, Next.js. Experience: 0-2 years.","Candidate
+Skills
+CSS
+Experience
+UI developer, Acme Pvt Ltd  Jan 2025 - present
+Worked with CSS, Figma, Next.js, HTML, React, Tailwind CSS, JavaScript, TypeScript
+Projects
+Built a small project using Git
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Frontend developer,0.97,1.0,1.0,1.0,,,1.0,0.99,Good
+Inside sales associate,"Call interested customers and book demos. Requirements: Communication skills, Sales, English. Good to have: CRM, MS Office. Experience: Freshers welcome.","Candidate
+Skills
+English, CRM, MS Office, Communication
+Experience
+Inside sales associate, Acme Pvt Ltd  Jan 2023 - present
+Worked with Sales
+Education
+MBA / M.Tech 2024",Postgraduate,Sales and business development,0.87,0.6,0.8,1.0,,,1.0,0.78,Good
+Digital marketing executive,"Run campaigns and grow our online audience. Requirements: Digital marketing, SEO, Social media marketing. Good to have: Canva, Content writing, Google Ads. Experience: 0-2 years.","Candidate
+Skills
+Content Writing
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Content Writing, Marketing
+Projects
+Built a small project using Video Editing, Digital Marketing
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Marketing,0.93,0.5,1.0,1.0,,,1.0,0.77,Good
+Full-stack developer (MERN),"Own features end to end, from database to screen. Requirements: MongoDB, Express, React, Node.js, JavaScript. Good to have: TypeScript, AWS, Docker. Experience: 1-3 years.","Candidate
+Skills
+JavaScript, Git
+Experience
+Full stack engineer, Acme Pvt Ltd  Jan 2024 - present
+Worked with Express, Node.js, MongoDB, Docker
+Projects
+Built a small project using SQL, React
+Education
+Diploma in engineering 2023",Diploma,Full-stack developer,0.96,0.33,1.0,1.0,,,1.0,0.9,Good
+Angular developer,"Build dashboards for an enterprise product. Requirements: Angular, TypeScript, HTML, CSS. Good to have: REST APIs, Testing. Experience: 1-3 years. Education: Bachelor's degree.","Candidate
+Skills
+HTML, Next.js
+Experience
+Web developer (frontend), Acme Pvt Ltd  Jan 2023 - present
+Worked with JavaScript
+Projects
+Built a small project using CSS, TypeScript
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Frontend developer,0.68,0.0,0.8,1.0,1.0,,0.58,0.69,Good
+Junior web developer,"Create and update websites for small business clients. Requirements: HTML, CSS, JavaScript. Good to have: React, PHP, MySQL. Experience: Freshers welcome.","Candidate
+Skills
+CSS
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with HTML, React, Git
+Projects
+Built a small project using CSS, Tailwind CSS
+Education
+MBA / M.Tech 2024",Postgraduate,Frontend developer,1.0,0.33,0.8,1.0,,,0.75,0.8,Good
+Inside sales associate,"Call interested customers and book demos. Requirements: Communication skills, Sales, English. Good to have: CRM, MS Office. Experience: Freshers welcome.","Candidate
+Skills
+English
+Experience
+Sales executive, Acme Pvt Ltd  Jan 2023 - present
+Worked with Negotiation
+Projects
+Built a small project using English, Sales
+Education
+Diploma in engineering 2023",Diploma,Sales and business development,0.95,0.0,0.8,1.0,,,0.82,0.74,Good
+Accountant,"Maintain books, file GST returns and handle payments. Requirements: Accounting, Tally, GST, Excel. Good to have: Taxation, Auditing. Experience: 1-3 years. Education: B.Com or M.Com.","Candidate
+Skills
+Accounting
+Experience
+Accountant, Acme Pvt Ltd  Jan 2023 - present
+Worked with Accounting, MS Office, GST
+Projects
+Built a small project using Auditing, Tally
+Education
+MBA / M.Tech 2024",Postgraduate,Accounts and finance,0.71,0.42,0.8,1.0,1.0,,0.98,0.78,Good
+Backend developer (Python),"Build and maintain APIs used by our web and mobile apps. Requirements: Python, Django or FastAPI, SQL, REST APIs, Git. Good to have: Docker, Redis, AWS. Experience: 0-2 years. Education: Bachelor's degree in computer science or a related field.","Candidate
+Skills
+Django, Git
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with MySQL, REST APIs, Python, Data Structures, Spring Boot
+Projects
+Built a small project using Docker
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Backend developer,0.84,0.28,1.0,1.0,1.0,,0.73,0.84,Good
+Frontend developer (React),"Build fast, accessible pages for a growing product. Requirements: HTML, CSS, JavaScript, React, Git. Good to have: TypeScript, Tailwind CSS, Next.js. Experience: 0-2 years.","Candidate
+Skills
+Git
+Experience
+Frontend developer, Acme Pvt Ltd  Jan 2021 - present
+Worked with Figma, Next.js
+Projects
+Built a small project using JavaScript, CSS, React, TypeScript
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Frontend developer,0.92,0.62,1.0,1.0,,,1.0,0.92,Good
+Accounts assistant (fresher),"Help with entries, invoices and bank reconciliation. Requirements: Tally, MS Excel, Accounting. Good to have: GST. Experience: Freshers welcome. Education: B.Com.","Candidate
+Skills
+GST
+Experience
+Tax associate, Acme Pvt Ltd  Jan 2025 - present
+Worked with GST, Excel, Auditing
+Projects
+Built a small project using MS Office, Tally, Accounting
+Education
+MBA / M.Tech 2024",Postgraduate,Accounts and finance,0.95,1.0,0.8,1.0,1.0,,0.74,0.85,Good
+Social media coordinator,"Plan posts and reply to followers. Requirements: Social media marketing, Canva, Content writing. Good to have: Video editing. Experience: Freshers welcome.","Candidate
+Skills
+Canva
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Canva, Content Writing
+Projects
+Built a small project using Marketing
+Education
+Diploma in engineering 2023",Diploma,Marketing,0.71,0.0,0.8,1.0,,,0.62,0.68,Good
+UI/UX designer,"Design simple flows for first-time internet users. Requirements: Figma, UI/UX design. Good to have: Illustrator, HTML, CSS. Experience: 0-2 years.","Candidate
+Skills
+Photoshop
+Experience
+Product designer, Acme Pvt Ltd  Jan 2025 - present
+Worked with CSS, Figma, HTML, Illustrator, UI/UX Design
+Projects
+Built a small project using Photoshop
+Education
+MBA / M.Tech 2024",Postgraduate,UI/UX or graphic designer,0.71,1.0,0.8,1.0,,,1.0,0.69,Good
+Node.js developer,"Build real-time features for a consumer app. Requirements: JavaScript, Node.js, Express, MongoDB, REST APIs. Good to have: TypeScript, Redis, AWS. Experience: 0-2 years.","Candidate
+Skills
+Spring Boot, REST APIs, SQL
+Experience
+Node.js backend engineer, Acme Pvt Ltd  Jan 2024 - present
+Worked with MySQL, Git, Data Structures, Docker, Python, FastAPI
+Education
+MBA / M.Tech 2024",Postgraduate,Backend developer,0.65,0.0,0.8,1.0,,,0.5,0.64,Good
+Business development executive,"Find new business clients and close deals. Requirements: Sales, Negotiation, Communication skills, CRM. Good to have: Digital marketing. Experience: 1-3 years. Education: Bachelor's degree; MBA is a plus.","Candidate
+Skills
+MS Office, CRM
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Sales, English, Hindi
+Projects
+Built a small project using Communication
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Sales and business development,0.65,0.0,0.8,0.5,1.0,,0.36,0.62,Good
+Sales executive,"Meet shop owners and grow sales in your area. Requirements: Sales, Communication skills, Negotiation. Good to have: CRM, English, Hindi. Experience: 0-2 years. Education: Graduate in any stream.","Candidate
+Skills
+Negotiation, Communication
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Hindi
+Projects
+Built a small project using Sales, English
+Education
+Diploma in engineering 2023",Diploma,Sales and business development,0.77,0.62,0.8,1.0,,,0.87,0.73,Good
+Accountant,"Maintain books, file GST returns and handle payments. Requirements: Accounting, Tally, GST, Excel. Good to have: Taxation, Auditing. Experience: 1-3 years. Education: B.Com or M.Com.","Candidate
+Skills
+Excel
+Experience
+Accounts executive, Acme Pvt Ltd  Jan 2024 - present
+Worked with Tally
+Projects
+Built a small project using Auditing
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Accounts and finance,0.65,0.42,0.8,1.0,1.0,,0.59,0.73,Good
+Angular developer,"Build dashboards for an enterprise product. Requirements: Angular, TypeScript, HTML, CSS. Good to have: REST APIs, Testing. Experience: 1-3 years. Education: Bachelor's degree.","Candidate
+Skills
+HTML
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with HTML, TypeScript, CSS
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Frontend developer,0.75,0.0,0.8,0.5,1.0,,0.56,0.67,Good
+AI intern,"Help build a chatbot for citizen services. Requirements: Python, NumPy, Pandas. Good to have: Machine learning, NLP. Experience: Freshers welcome.","Candidate
+Skills
+NumPy
+Experience
+NLP engineer, Acme Pvt Ltd  Jan 2025 - present
+Worked with NumPy, scikit-learn, Python, Statistics, NLP
+Projects
+Built a small project using Deep Learning
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Data scientist / ML,0.75,1.0,0.8,1.0,,,0.8,0.82,Good
+Software engineer (fresher),"Join a training programme, then a product team. Requirements: Data structures, algorithms, Java or Python, SQL. Good to have: Git, Linux. Experience: Freshers welcome. Education: B.Tech or B.E. in any branch.","Candidate
+Skills
+Python
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Git, SQL, System Design
+Projects
+Built a small project using Python, Data Structures, Java, JavaScript
+Education
+MBA / M.Tech 2024",Postgraduate,Software engineer,0.71,0.5,1.0,1.0,1.0,,0.78,0.81,Good
+Android developer,"Build and publish features on our Android app. Requirements: Kotlin, Android, REST APIs, Git. Good to have: Java, Firebase, Testing. Experience: 0-2 years.","Candidate
+Skills
+Kotlin
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Git, REST APIs
+Projects
+Built a small project using Kotlin
+Education
+MBA / M.Tech 2024",Postgraduate,Mobile app developer,0.71,0.0,0.8,1.0,,,0.62,0.68,Good
+DevOps engineer,"Automate builds, deployments and monitoring. Requirements: Linux, Docker, Kubernetes, CI/CD, AWS. Good to have: Terraform, Bash, Python. Experience: 1-3 years. Education: Bachelor's degree.","Candidate
+Skills
+Kubernetes, Docker
+Experience
+Cloud engineer, Acme Pvt Ltd  Jan 2021 - present
+Worked with Git
+Projects
+Built a small project using Python, AWS
+Education
+MBA / M.Tech 2024",Postgraduate,DevOps / cloud,0.58,0.28,0.8,1.0,1.0,,0.83,0.7,Good
+AI intern,"Help build a chatbot for citizen services. Requirements: Python, NumPy, Pandas. Good to have: Machine learning, NLP. Experience: Freshers welcome.","Candidate
+Skills
+SQL, Python
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with TensorFlow, Statistics, NLP
+Projects
+Built a small project using scikit-learn
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Data scientist / ML,0.68,1.0,0.8,1.0,,,0.41,0.77,Good
+Frontend developer (React),"Build fast, accessible pages for a growing product. Requirements: HTML, CSS, JavaScript, React, Git. Good to have: TypeScript, Tailwind CSS, Next.js. Experience: 0-2 years.","Candidate
+Skills
+HTML, TypeScript
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with JavaScript, CSS
+Projects
+Built a small project using Next.js
+Education
+MBA / M.Tech 2024",Postgraduate,Frontend developer,0.77,0.48,1.0,1.0,,,0.76,0.82,Good
+Data scientist,"Build models that predict demand and reduce costs. Requirements: Python, Pandas, Machine learning, SQL, Statistics. Good to have: scikit-learn, Deep learning, Spark. Experience: 1-3 years. Education: Bachelor's or master's degree in a quantitative field.","Candidate
+Skills
+TensorFlow, Machine Learning
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Pandas
+Projects
+Built a small project using Deep Learning, NumPy
+Education
+MBA / M.Tech 2024",Postgraduate,Data scientist / ML,0.74,0.28,0.8,0.5,1.0,,0.75,0.71,Good
+AI intern,"Help build a chatbot for citizen services. Requirements: Python, NumPy, Pandas. Good to have: Machine learning, NLP. Experience: Freshers welcome.","Candidate
+Skills
+scikit-learn
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Deep Learning
+Projects
+Built a small project using scikit-learn, Pandas
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Data scientist / ML,0.68,0.5,0.8,1.0,,,0.39,0.71,Good
+HR executive,"Hire people, onboard them and keep records. Requirements: Human resources, Recruitment, Communication skills, MS Office. Good to have: Excel. Experience: 0-2 years. Education: Bachelor's degree; MBA in HR is a plus.","Candidate
+Skills
+Communication
+Experience
+Recruiter, Acme Pvt Ltd  Jan 2025 - present
+Worked with Excel
+Projects
+Built a small project using MS Office, HR, English
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Human resources,0.95,1.0,0.8,1.0,1.0,,0.46,0.84,Good
+Social media coordinator,"Plan posts and reply to followers. Requirements: Social media marketing, Canva, Content writing. Good to have: Video editing. Experience: Freshers welcome.","Candidate
+Skills
+Marketing
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Marketing, Canva, Content Writing, Video Editing, Communication
+Projects
+Built a small project using Digital Marketing
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,Marketing,0.96,1.0,0.8,1.0,,,0.79,0.92,Good
+DevOps engineer,"Automate builds, deployments and monitoring. Requirements: Linux, Docker, Kubernetes, CI/CD, AWS. Good to have: Terraform, Bash, Python. Experience: 1-3 years. Education: Bachelor's degree.","Candidate
+Skills
+Bash, Python
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with Linux, CI/CD, Docker, Terraform, Git
+Projects
+Built a small project using Kubernetes
+Education
+B.Tech / B.Com / B.Sc 2021-2025",Undergraduate,DevOps / cloud,0.77,0.73,0.8,0.5,1.0,,0.82,0.77,Good
+Senior full-stack developer (MERN),"Own features end to end, from database to screen. Requirements: MongoDB, Express, React, Node.js, JavaScript. Good to have: TypeScript, AWS, Docker. Experience: 4+ years.","Candidate
+Skills
+SQL
+Experience
+Web application developer, Acme Pvt Ltd  Jan 2023 - present
+Worked with Git, React, Docker, JavaScript, Express
+Education
+Diploma in engineering 2023",Diploma,Full-stack developer,0.75,0.33,1.0,0.95,,,0.68,0.78,Good
+Angular developer,"Build dashboards for an enterprise product. Requirements: Angular, TypeScript, HTML, CSS. Good to have: REST APIs, Testing. Experience: 1-3 years. Education: Bachelor's degree.","Candidate
+Skills
+CSS
+Experience
+Intern, Acme Pvt Ltd  Jun 2025 - Aug 2025
+Worked with CSS, Tailwind CSS, TypeScript, Next.js, React
+Education
+MBA / M.Tech 2024",Postgraduate,Frontend developer,0.75,0.0,0.8,0.5,1.0,,0.55,0.67,Good

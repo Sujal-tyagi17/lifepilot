@@ -15,8 +15,10 @@ Proof factor for a skill: used at work 1.0, in a project or course 0.85, only
 listed 0.6. Signals with no data are left out and the remaining weights are
 re-normalised, so missing data neither helps nor hurts.
 
-Phase 3 swaps the hand-set weights for weights learned from labelled pairs;
-the breakdown format stays the same.
+These are the hand-set starting weights. Once `python -m app.ml.train` has
+run, the weights learned by logistic regression from labelled resume–job
+pairs (app/ml/models/fit_weights.json) are used instead; the breakdown format
+stays the same.
 """
 from __future__ import annotations
 
@@ -42,8 +44,16 @@ RELATED = {
     "devops": ("software", "backend"),
 }
 
-WEIGHTS = {"must": 0.40, "nice": 0.10, "role": 0.20, "experience": 0.10,
-           "education": 0.10, "field": 0.05, "text": 0.05}
+HAND_WEIGHTS = {"must": 0.40, "nice": 0.10, "role": 0.20, "experience": 0.10,
+                "education": 0.10, "field": 0.05, "text": 0.05}
+WEIGHTS = HAND_WEIGHTS   # kept for older imports
+
+
+def weights() -> dict[str, float]:
+    """Weights learned by the job fit scorer (app/ml), or the hand-set ones if it is not trained."""
+    from app.ml.predict import fit_weights
+    learned = fit_weights()
+    return learned["weights"] if learned else HAND_WEIGHTS
 PROOF = {3: 1.0, 2: 0.85, 1: 0.6}
 
 _LEVELS = {"9th": 0, "10th": 1, "11th": 2, "12th": 3, "diploma": 4, "undergraduate": 5, "postgraduate": 6, "phd": 7}
@@ -255,15 +265,16 @@ def score_with(job: dict, cand: dict, parsed: dict | None = None) -> dict:
     # Wording of resume vs job post
     signals["text"] = min(1.0, _cosine(cand["bag"], _bag(job_text)) / 0.35) if cand["has_resume"] else None
 
+    W = weights()
     known = {k: v for k, v in signals.items() if v is not None}
-    total_weight = sum(WEIGHTS[k] for k in known)
+    total_weight = sum(W[k] for k in known)
     # A short post that names only one or two skills tells us little, so its
     # score is held back (up to 30%) until it names four or more.
     detail = 0.7 + 0.3 * min(1.0, a["post_skills"] / 4)   # skills the post itself names
-    fit = detail * sum(WEIGHTS[k] * v for k, v in known.items()) / total_weight if total_weight else 0.0
+    fit = detail * sum(W[k] * v for k, v in known.items()) / total_weight if total_weight else 0.0
     breakdown = [
-        {"signal": k, "value": round(v, 2), "weight": round(WEIGHTS[k] / total_weight, 2),
-         "points": round(100 * detail * WEIGHTS[k] * v / total_weight, 1)}
+        {"signal": k, "value": round(v, 2), "weight": round(W[k] / total_weight, 2),
+         "points": round(100 * detail * W[k] * v / total_weight, 1)}
         for k, v in known.items()
     ]
 

@@ -195,3 +195,48 @@ def normalise_user_skills(skills: list[str] | None) -> list[str]:
         if c and c.lower() not in {o.lower() for o in out}:
             out.append(c)
     return out
+
+
+# ── Fuzzy matching for typos ("Pyhton", "Javascrpt", "Kubernets") ──
+
+@lru_cache(maxsize=1)
+def _fuzzy_aliases() -> list[tuple[str, str]]:
+    """(alias, skill) pairs long enough to fuzzy-match safely: single words of 6+ letters."""
+    out = []
+    for name, aliases in SKILLS.items():
+        for a in [name, *aliases]:
+            a = a.lstrip("=").lower()
+            if len(a) >= 6 and a.isalpha():
+                out.append((a, name))
+    return out
+
+
+def fuzzy_skills(text: str | None, already: list[str] | None = None, threshold: float = 0.8) -> list[str]:
+    """Skills written with a small typo. Each word of 6+ letters is compared with
+    every alias; a match needs the same first letter, a length within 2, and a
+    similarity of at least `threshold` (difflib ratio)."""
+    from difflib import SequenceMatcher
+
+    if not text:
+        return []
+    have = set(already or [])
+    found: list[str] = []
+    for word in dict.fromkeys(re.findall(r"[A-Za-z]{6,}", text)):
+        w = word.lower()
+        best, best_score = None, threshold
+        for alias, name in _fuzzy_aliases():
+            # skip inflections of ordinary words: "expressed" is not Express
+            if alias[0] != w[0] or abs(len(alias) - len(w)) > 2 or alias == w or w.startswith(alias):
+                continue
+            score = SequenceMatcher(None, w, alias).ratio()
+            if score >= best_score:
+                best, best_score = name, score
+        if best and best not in have and best not in found:
+            found.append(best)
+    return found
+
+
+def extract_skills_fuzzy(text: str | None) -> list[str]:
+    """Exact matches first, then typo matches."""
+    exact = extract_skills(text)
+    return exact + fuzzy_skills(text, exact)

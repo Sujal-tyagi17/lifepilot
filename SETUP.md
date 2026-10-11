@@ -225,6 +225,20 @@ Want a feature overview instead? See [README.md](README.md).
 
 ---
 
+## 8b. Machine learning (Phase 3)
+
+The trained models are in `backend/app/ml/models/` and load automatically. To rebuild the
+datasets or retrain (about 20 seconds), from the `backend` folder with the virtual environment active:
+
+```powershell
+python -m app.ml.make_data   # rebuild the seed datasets in app/ml/data/
+python -m app.ml.train       # train and evaluate every model; writes app/ml/models/metrics.json
+```
+
+Open **ML Lab** from the account menu (or How it works) to see each model's data, accuracy,
+confusion matrix and a box to try it. The labelling rules for the data are in
+`backend/app/ml/data/LABELLING.md`.
+
 ## 9. Troubleshooting
 
 | Problem | Fix |

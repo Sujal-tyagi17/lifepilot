@@ -71,10 +71,10 @@ def test_proof_raises_fit():
 
 
 def test_either_alternative_satisfies_a_requirement():
-    job = {"title": "Dev", "description": "Requirements: Django or FastAPI."}
-    r = score_with(job, candidate({}, "", user_skills=["FastAPI"]))
-    assert r["skills_missing"] == [] and r["skills_matched"] == ["FastAPI"]
-    r = score_with(job, candidate({}, "", user_skills=["Java"]))
+    job = {"title": "Dev", "description": "Requirements: Django or FastAPI, SQL, Git."}
+    r = score_with(job, candidate({}, "", user_skills=["FastAPI", "SQL", "Git"]))
+    assert r["skills_missing"] == [] and r["skills_matched"] == ["FastAPI", "SQL", "Git"]
+    r = score_with(job, candidate({}, "", user_skills=["Java", "SQL", "Git"]))
     assert r["skills_missing"] == ["FastAPI"] and r["alternatives"] == {"FastAPI": ["Django"]}  # fewer weeks to learn
 
 

@@ -22,6 +22,7 @@ export const how = {
     const logs = state.run?.logs || [];
     el.innerHTML = `
       <p class="notice">${icon('info')}<span>${esc(t('how.rules', 'Eligibility is decided by rules, not by AI. Every verdict shows its reasons.'))}</span></p>
+      <a class="card card-lift panel-pad ml-link" href="#/ml-lab">${icon('bot')}<span><b>${esc(t('ml.title', 'ML Lab'))}</b><br><span class="small quiet">${esc(t('how.mlLink', 'The six machine learning models: their data, accuracy, and a box to try each one.'))}</span></span>${icon('arrow-right')}</a>
       ${logs.length ? `<section class="card section" style="margin-top:18px"><ol class="trace">${logs.map((l, i) => `
         <li>
           <span class="trace-step num" aria-hidden="true">${i + 1}</span>

@@ -1,0 +1,174 @@
+[
+ {
+  "text": "Skills: Pyhton, SQL, MS Excel. Built dashboards in Power BI.",
+  "skills": [
+   "Python",
+   "SQL",
+   "Excel",
+   "Power BI"
+  ]
+ },
+ {
+  "text": "Projects: E-commerce site with React js, Node, MongoDB and Express",
+  "skills": [
+   "React",
+   "Node.js",
+   "MongoDB",
+   "Express"
+  ]
+ },
+ {
+  "text": "Experience: Accountant at XYZ. Tally ERP, GST filing, MS Office.",
+  "skills": [
+   "Tally",
+   "GST",
+   "MS Office",
+   "Accounting"
+  ]
+ },
+ {
+  "text": "Technical skills - Java, Springboot, MySQL, Git, Docker",
+  "skills": [
+   "Java",
+   "Spring Boot",
+   "MySQL",
+   "Git",
+   "Docker"
+  ]
+ },
+ {
+  "text": "Tools: Figma, Adobe Photoshop, Canva. UI/UX design of a food app.",
+  "skills": [
+   "Figma",
+   "Photoshop",
+   "Canva",
+   "UI/UX Design"
+  ]
+ },
+ {
+  "text": "Machine Learning project with scikit learn, pandas and numpy in Python",
+  "skills": [
+   "Machine Learning",
+   "scikit-learn",
+   "Pandas",
+   "NumPy",
+   "Python"
+  ]
+ },
+ {
+  "text": "Linux, Bash scripting, AWS EC2, Kubernets, CI/CD with Jenkins",
+  "skills": [
+   "Linux",
+   "Bash",
+   "AWS",
+   "Kubernetes",
+   "CI/CD"
+  ]
+ },
+ {
+  "text": "Javascrpt, HTML5, CSS3, Tailwind",
+  "skills": [
+   "JavaScript",
+   "HTML",
+   "CSS",
+   "Tailwind CSS"
+  ]
+ },
+ {
+  "text": "Communication, Sales, CRM software, negotiation with dealers",
+  "skills": [
+   "Communication",
+   "Sales",
+   "CRM",
+   "Negotiation"
+  ]
+ },
+ {
+  "text": "Android app in Kotlin with REST APIs and Firebase",
+  "skills": [
+   "Android",
+   "Kotlin",
+   "REST APIs"
+  ]
+ },
+ {
+  "text": "Taught maths to class 8 students; lesson planning and English",
+  "skills": [
+   "Teaching",
+   "Lesson Planning",
+   "English"
+  ]
+ },
+ {
+  "text": "Data analysis in Excel, statistics, Tableau dashboards",
+  "skills": [
+   "Data Analysis",
+   "Excel",
+   "Statistics",
+   "Tableau"
+  ]
+ },
+ {
+  "text": "Flutter and Dart mobile app; Git for version control",
+  "skills": [
+   "Flutter",
+   "Dart",
+   "Git"
+  ]
+ },
+ {
+  "text": "Content writing, SEO blogs, digital marketing campaigns",
+  "skills": [
+   "Content Writing",
+   "Digital Marketing"
+  ]
+ },
+ {
+  "text": "C++ data structures and algorithms practice on LeetCode",
+  "skills": [
+   "C++",
+   "Data Structures",
+   "Algorithms"
+  ]
+ },
+ {
+  "text": "Django REST framework backend with PostgreSQL",
+  "skills": [
+   "Django",
+   "PostgreSQL"
+  ]
+ },
+ {
+  "text": "Selenium testing, manual testing, Agile scrum",
+  "skills": [
+   "Testing",
+   "Agile"
+  ]
+ },
+ {
+  "text": "AutoCAD drawings, MATLAB simulations, SolidWorks models",
+  "skills": [
+   "AutoCAD",
+   "MATLAB",
+   "SolidWorks"
+  ]
+ },
+ {
+  "text": "Patient care and nursing in ICU, Hindi and English",
+  "skills": [
+   "Patient Care",
+   "Nursing",
+   "Hindi",
+   "English"
+  ]
+ },
+ {
+  "text": "Typescipt, Angular, Next.js and GraphQL",
+  "skills": [
+   "TypeScript",
+   "Angular",
+   "Next.js",
+   "GraphQL"
+  ]
+ }
+]
