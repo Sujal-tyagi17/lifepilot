@@ -7,6 +7,7 @@ import { genderOptions, eduOptions, matchState } from './start.js';
 import { state, hasDoc } from '../state.js';
 import { simulate } from '../run.js';
 import { STATES, CATEGORIES } from '../profileFields.js';
+import { counterfactuals } from '../features.js';
 
 const FILTERS = [
   ['all', 'f.all', 'All', () => true],
@@ -73,10 +74,61 @@ export function slip(m) {
   </details></li>`;
 }
 
-const tabs = (active) => `<div class="segmented" role="tablist" aria-label="${esc(t('nav.schemes', 'Schemes'))}" style="margin-bottom:20px">
+export const schemesTabs = (active) => `<div class="segmented" role="tablist" aria-label="${esc(t('nav.schemes', 'Schemes'))}" style="margin-bottom:20px">
   <button type="button" role="tab" aria-pressed="${active === 'matches'}" aria-selected="${active === 'matches'}" data-go="#/schemes">${esc(t('sch.matches', 'Matches'))}</button>
   <button type="button" role="tab" aria-pressed="${active === 'whatif'}" aria-selected="${active === 'whatif'}" data-go="#/schemes/what-if">${esc(t('sch.whatif', 'What if'))}</button>
+  <button type="button" role="tab" aria-pressed="${active === 'map'}" aria-selected="${active === 'map'}" data-go="#/schemes/map">${esc(t('sch.map', 'Map'))}</button>
 </div>`;
+
+/* ── What would change it? (counterfactual explanations) ── */
+const WHATIF_FIELDS = new Set(['education_level', 'field_of_study', 'disability', 'annual_income']);
+const KIND_ICON = { later: 'calendar-clock', choice: 'route', document: 'file-text', situation: 'wallet' };
+
+/** The change in Hindi when the app is in Hindi (the server words it in English). */
+function changeText(c, j) {
+  if (getLang() !== 'hi') return j ? c.text.replace(/^(If|When)\b/, (w) => w.toLowerCase()) : c.text;
+  if (c.field === 'education_level') return `जब आप ${c.value} में जाएँगे (अगले सत्र से)`;
+  if (c.field === 'field_of_study') return `अगर आप ${c.text.replace(/^If you study /, '').replace(/ or /, ' या ')} पढ़ें`;
+  if (c.field === 'disability') return 'अगर आपकी विकलांगता 40% या अधिक है: विकलांगता प्रमाण पत्र (UDID) बनवाएँ';
+  if (c.field === 'annual_income') return `अगर आपकी पारिवारिक आय ${fmtINR(c.value)} या कम हो जाए (नए आय प्रमाण पत्र के साथ)`;
+  if (c.field === 'goals') return /business|startup/i.test(c.text) ? 'अगर आप अपना व्यवसाय या स्टार्टअप शुरू करना चाहते हैं' : `अगर आपके लक्ष्यों में ${c.text.replace(/^If your goals include /, '')} शामिल हो`;
+  return c.text;
+}
+
+function cfItem(sug, i) {
+  const tryable = sug.changes.every((c) => WHATIF_FIELDS.has(c.field));
+  const unlocks = sug.unlocks.map((u) => u.title);
+  return `<li class="cf-item">
+    <span class="cf-icon">${icon(KIND_ICON[sug.changes[0].kind] || 'sparkle', 'icon-sm')}</span>
+    <div style="min-width:0">
+      <p class="cf-change">${sug.changes.map((c, j) => esc(changeText(c, j))).join(` <span class="quiet">${esc(t('cf.and', 'and'))}</span> `)}</p>
+      <p class="small"><strong class="ok">${esc(sug.count === 1 ? t('cf.unlockOne', '+1 scheme') : t('cf.unlockN', '+{n} schemes', { n: sug.count }))}</strong>
+        ${sug.value ? `<span class="quiet"> · ${esc(t('cf.worth', 'about {amount} a year', { amount: fmtINR(sug.value) }))}</span>` : ''}</p>
+      <p class="tiny quiet">${esc(unlocks.slice(0, 3).join(' · '))}${unlocks.length > 3 ? ` +${unlocks.length - 3}` : ''}</p>
+    </div>
+    ${tryable ? `<button class="btn btn-quiet btn-sm" type="button" data-cf="${i}">${esc(t('cf.try', 'Try it'))}${icon('arrow-right', 'icon-sm')}</button>` : '<span></span>'}
+  </li>`;
+}
+
+async function drawCounterfactuals(box) {
+  if (!box || !state.profileId) return;
+  box.innerHTML = `<p class="working quiet small" style="padding:16px 22px"><span class="spinner"></span>${esc(t('cf.loading', 'Trying small changes to your profile…'))}</p>`;
+  let res;
+  try { res = await counterfactuals(); } catch (err) { box.innerHTML = `<p class="small bad" style="padding:16px 22px">${esc(err.message)}</p>`; return; }
+  if (!box.isConnected) return;
+  const sugs = res.suggestions || [];
+  box.innerHTML = sugs.length
+    ? `<ul class="cf-list">${sugs.map(cfItem).join('')}</ul>
+       <p class="notice tiny" style="margin:0 22px 18px">${icon('shield-check', 'icon-sm')}<span>${esc(t('cf.note', 'Suggestions are about documents you can get or changes in your situation. Always report your details truthfully. Caste, gender, age and state are never suggested.'))}</span></p>`
+    : `<p class="quiet small" style="padding:16px 22px">${esc(t('cf.none', 'No small change would unlock another open scheme right now.'))}</p>`;
+  box.querySelectorAll('[data-cf]').forEach((b) => b.addEventListener('click', () => {
+    const sug = sugs[+b.dataset.cf];
+    const p = state.profile || {};
+    scenario = { ...p, annual_income: p.annual_income ?? 300000 };
+    sug.changes.forEach((c) => { scenario[c.field] = c.field === 'field_of_study' ? String(c.value) : c.value; });
+    location.hash = '#/schemes/what-if';
+  }));
+}
 
 function bindTabs(el) {
   el.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => { location.hash = b.dataset.go; }));
@@ -84,6 +136,7 @@ function bindTabs(el) {
 
 let filter = 'all';
 let query = '';
+let cfOpen = true;
 
 export const schemes = {
   title: () => t('nav.schemes', 'Schemes'),
@@ -92,20 +145,31 @@ export const schemes = {
   render(el, params) {
     if (params.get('filter')) filter = params.get('filter');
     if (!state.run) {
-      el.innerHTML = tabs('matches') + emptyCard({ iconName: 'landmark', title: t('sch.noRun', 'Fill in your profile first to see schemes.'), action: `<a class="btn btn-primary" href="#/start">${esc(t('land.start', 'Get started free'))}</a>` });
+      el.innerHTML = schemesTabs('matches') + emptyCard({ iconName: 'landmark', title: t('sch.noRun', 'Fill in your profile first to see schemes.'), action: `<a class="btn btn-primary" href="#/start">${esc(t('land.start', 'Get started free'))}</a>` });
       bindTabs(el);
       return;
     }
     const all = state.run.matches || [];
-    el.innerHTML = `${tabs('matches')}
+    el.innerHTML = `${schemesTabs('matches')}
       <div class="toolbar">
         <label class="input-icon"><span class="sr-only">${esc(t('sch.search', 'Search schemes or departments'))}</span>${icon('search')}
           <input class="input" type="search" id="sQuery" value="${esc(query)}" placeholder="${esc(t('sch.search', 'Search schemes or departments'))}" /></label>
         <div class="segmented" role="group" aria-label="Filter">${FILTERS.map(([k, key, en, fn]) =>
           `<button type="button" aria-pressed="${filter === k}" data-filter="${k}">${esc(t(key, en))}<span class="count num">${all.filter(fn).length}</span></button>`).join('')}</div>
       </div>
-      <section class="card"><ul class="rows" id="sList"></ul></section>`;
+      <details class="card cf-card" id="sCf" ${cfOpen ? 'open' : ''}>
+        <summary class="panel-head" style="cursor:pointer"><h2 class="h3">${icon('wand-sparkles', 'icon-sm')} ${esc(t('cf.title', 'What would change it?'))}</h2>
+          <span class="tiny quiet">${esc(t('cf.sub', 'Small honest changes that unlock more schemes'))}</span></summary>
+        <div id="sCfBody"></div>
+      </details>
+      <section class="card section"><ul class="rows" id="sList"></ul></section>`;
     bindTabs(el);
+    const cfBox = el.querySelector('#sCf');
+    if (cfOpen) drawCounterfactuals(el.querySelector('#sCfBody'));
+    cfBox.addEventListener('toggle', () => {
+      cfOpen = cfBox.open;
+      if (cfOpen && !el.querySelector('#sCfBody').innerHTML) drawCounterfactuals(el.querySelector('#sCfBody'));
+    });
 
     const draw = () => {
       const fn = (FILTERS.find(([k]) => k === filter) || FILTERS[0])[3];
@@ -135,7 +199,7 @@ export const whatIf = {
     const p = state.profile || {};
     if (!scenario) scenario = { ...p, annual_income: p.annual_income ?? 300000 };
     const s = scenario;
-    el.innerHTML = `${tabs('whatif')}
+    el.innerHTML = `${schemesTabs('whatif')}
       <div class="whatif">
         <form class="card panel-pad stack" id="wiForm" style="margin-top:0">
           ${incomeSlider('annual_income', s.annual_income, { label: t('wi.income', 'Family income per year') })}

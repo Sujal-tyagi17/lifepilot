@@ -83,7 +83,9 @@ def test_scrape_only_allows_government_portals(client, url):
 def test_csp_allows_no_external_scripts(client):
     csp = client.get("/api/health").headers["content-security-policy"]
     assert "script-src 'self'" in csp
-    assert "unsafe-eval" not in csp and "cdn." not in csp and "unpkg" not in csp
+    # JavaScript eval stays blocked; only WebAssembly compilation (the document scanner) is allowed
+    assert "'unsafe-eval'" not in csp and "cdn." not in csp and "unpkg" not in csp
+    assert "'wasm-unsafe-eval'" in csp
 
 
 def test_ui_files_are_always_revalidated(client):

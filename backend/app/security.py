@@ -17,9 +17,12 @@ from starlette.responses import JSONResponse, Response
 # Every script, stylesheet, font and icon is served from this server, so
 # scripts are 'self' only (no CDNs, no eval). 'unsafe-inline' for styles covers
 # style attributes the UI sets (bar widths); it does not allow inline scripts.
+# 'wasm-unsafe-eval' lets the document scanner compile Tesseract's WebAssembly
+# (served from /static/vendor/ocr); it does not allow JavaScript eval.
 _CSP = "; ".join([
     "default-src 'self'",
-    "script-src 'self'",
+    "script-src 'self' 'wasm-unsafe-eval'",
+    "worker-src 'self'",
     "style-src 'self' 'unsafe-inline'",
     "font-src 'self'",
     "img-src 'self' data: blob: https://*.googleusercontent.com https://*.gravatar.com https://*.kinde.com",
@@ -36,7 +39,7 @@ _SECURITY_HEADERS = {
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
     "Referrer-Policy": "no-referrer-when-downgrade",
-    "Permissions-Policy": "geolocation=(), camera=(), microphone=(), payment=()",
+    "Permissions-Policy": "geolocation=(), camera=(self), microphone=(self), payment=()",
     "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
 }
 

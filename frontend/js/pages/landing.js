@@ -156,14 +156,13 @@ export const landing = {
             ['route', 'land.c1', 'Personal job roadmaps', 'land.c1p', 'A week-by-week plan for each job: skills in the right order, free courses, a project to build.'],
             ['wand-sparkles', 'land.f5', 'Describe yourself in one line', 'land.f5p', 'Type one sentence in Hindi or English and the form fills itself.'],
             ['bot', 'land.f6', 'ML Lab', 'land.f6p', 'Six machine learning models with their real accuracy, and a box to try each one.'],
-          ].map(([ic, k, en, kp, enp]) => `<article class="card card-lift feature reveal"><span class="feature-icon">${icon(ic)}</span><h3 class="h3">${esc(t(k, en))}</h3><p>${esc(t(kp, enp))}</p></article>`).join('')}
-          ${[
-            ['scan-line', 'land.c2', 'Document scanner', 'land.c2p', 'Photograph a certificate. LifePilot reads it, ticks your checklist and warns if it has expired.'],
-            ['list-todo', 'land.c3', 'Smart priority planner', 'land.c3p', 'Deadlines, amounts and missing documents turned into the best order to apply.'],
+            ['scan-line', 'land.c2', 'Document scanner', 'land.c2p', 'Photograph a certificate. LifePilot reads it in your browser, checks it against your profile and ticks your checklist.'],
+            ['list-todo', 'land.c3', 'Smart priority planner', 'land.c3p', 'Deadlines, amounts and missing documents turned into the best order to apply, week by week.'],
             ['mic', 'land.c4', 'Voice in Hindi and English', 'land.c4p', 'Speak your question and hear the answer.'],
             ['network', 'land.c5', 'Scheme map', 'land.c5p', 'See how one document unlocks several schemes at once.'],
             ['wand-sparkles', 'land.c6', '“What would change it?”', 'land.c6p', 'The smallest change that would unlock more schemes or jobs for you.'],
-          ].map(([ic, k, en, kp, enp]) => `<article class="card feature is-soon reveal"><span class="soon-badge">${esc(t('land.soon', 'Coming next'))}</span><span class="feature-icon">${icon(ic)}</span><h3 class="h3">${esc(t(k, en))}</h3><p>${esc(t(kp, enp))}</p></article>`).join('')}
+            ['calendar-plus', 'land.f7', 'Deadlines in your calendar', 'land.f7p', 'Add every deadline to your phone calendar, or print your action plan.'],
+          ].map(([ic, k, en, kp, enp]) => `<article class="card card-lift feature reveal"><span class="feature-icon">${icon(ic)}</span><h3 class="h3">${esc(t(k, en))}</h3><p>${esc(t(kp, enp))}</p></article>`).join('')}
         </div>
       </section>
 
