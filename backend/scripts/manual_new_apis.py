@@ -1,3 +1,5 @@
+# Manual check against a running server (uvicorn on :8000). Not part of the pytest suite.
+# Profile routes now need the X-Profile-Key header returned when the profile is created.
 import httpx
 
 BASE = "http://127.0.0.1:8000"

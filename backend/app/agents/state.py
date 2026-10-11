@@ -47,6 +47,13 @@ class AgentState:
     # Input
     profile: dict = field(default_factory=dict)
     owned_documents: list[str] = field(default_factory=list)
+    # "full" = normal run (web search + LLM allowed);
+    # "simulate" = What-If run (curated data only, no LLM, must be instant)
+    mode: str = "full"
+
+    @property
+    def is_simulation(self) -> bool:
+        return self.mode == "simulate"
 
     # PlannerAgent output
     search_plan: dict = field(default_factory=dict)

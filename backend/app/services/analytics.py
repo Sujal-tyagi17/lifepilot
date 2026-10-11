@@ -15,19 +15,56 @@ import re
 from datetime import date
 
 
-def parse_amount(text: str | None) -> int:
-    """Best-effort parse of an annual rupee value from a free-text amount string."""
+_AMOUNT_RE = re.compile(
+    r"\u20b9\s*([\d,]+(?:\.\d+)?)\s*(lakhs?|lacs?|crores?|cr\b|l\b)?", re.IGNORECASE
+)
+
+
+def parse_amount_details(text: str | None) -> tuple[int, str]:
+    """Parse the largest rupee value in a free-text amount and its period.
+
+    Returns (value_in_rupees, period) where period is "year", "month" or
+    "one_time". Handles Indian units: "\u20b920 lakh" = 20,00,000.
+    """
     if not text:
-        return 0
-    nums = re.findall(r"\u20b9\s*([\d,]+)", text)
-    values = [int(n.replace(",", "")) for n in nums if n.replace(",", "").isdigit()]
+        return 0, "one_time"
+    values = []
+    for num, unit in _AMOUNT_RE.findall(text):
+        try:
+            n = float(num.replace(",", ""))
+        except ValueError:
+            continue
+        unit = (unit or "").lower()
+        if unit.startswith(("lakh", "lac")) or unit == "l":
+            n *= 100_000
+        elif unit.startswith(("crore", "cr")):
+            n *= 10_000_000
+        values.append(int(n))
     if not values:
-        return 0
-    value = max(values)
+        return 0, "one_time"
     low = text.lower()
-    if "/month" in low or "per month" in low or "month" in low:
-        value *= 12
-    return value
+    if "month" in low:
+        period = "month"
+    elif "year" in low or "annum" in low or "p.a" in low:
+        period = "year"
+    else:
+        period = "one_time"
+    return max(values), period
+
+
+def parse_amount(text: str | None) -> int:
+    """Annual rupee value of a recurring benefit; 0 for one-time or unknown amounts."""
+    value, period = parse_amount_details(text)
+    if period == "month":
+        return value * 12
+    if period == "year":
+        return value
+    return 0
+
+
+def status_of(m: dict) -> str:
+    """Status of a match; older saved runs have no status field."""
+    return m.get("status") or ("eligible" if m.get("eligible") else "partial")
 
 
 def _days_left(deadline: str | None) -> int | None:
@@ -54,17 +91,26 @@ def _urgency_level(days: int | None) -> str:
 def build_insights(matches: list[dict], owned_documents: list[str] | None = None) -> dict:
     owned = {d.strip().lower() for d in (owned_documents or []) if d.strip()}
 
-    eligible = [m for m in matches if m["eligible"]]
-    partial = [m for m in matches if not m["eligible"]]
+    eligible = [m for m in matches if status_of(m) == "eligible"]
+    partial = [m for m in matches if status_of(m) == "partial"]
+    closed = [m for m in matches if status_of(m) == "closed"]
+    needs_review = [m for m in matches if status_of(m) == "needs_review"]
 
-    # Estimated potential annual benefit (eligible only; grants counted once).
+    # Estimated annual benefit: recurring amounts of open, eligible schemes only.
+    # One-time grants are reported separately so they don't inflate the yearly figure.
     estimated_benefit = 0
+    one_time_benefit = 0
     for m in eligible:
         estimated_benefit += parse_amount(m.get("amount"))
+        value, period = parse_amount_details(m.get("amount"))
+        if period == "one_time":
+            one_time_benefit += value
 
     # Master, de-duplicated document checklist across all matched schemes.
     doc_map: dict[str, dict] = {}
     for m in matches:
+        if status_of(m) == "closed":
+            continue
         for doc in m.get("documents", []):
             key = doc.strip().lower()
             if key not in doc_map:
@@ -97,12 +143,13 @@ def build_insights(matches: list[dict], owned_documents: list[str] | None = None
                 "deadline": m.get("deadline"),
                 "days_left": days,
                 "level": _urgency_level(days),
-                "eligible": m["eligible"],
+                "eligible": status_of(m) == "eligible",
             }
         )
     urgency.sort(key=lambda u: (u["days_left"] is None, u["days_left"] if u["days_left"] is not None else 9999))
 
-    open_count = sum(1 for u in urgency if (u["days_left"] or -1) >= 0)
+    # A deadline of today (0 days left) is still open; None means rolling/unknown.
+    open_count = sum(1 for u in urgency if u["days_left"] is not None and u["days_left"] >= 0)
     critical = [u for u in urgency if u["level"] == "critical" and u["eligible"]]
 
     # Category distribution (by scheme id prefix is unreliable; use title-agnostic count of eligible/partial).
@@ -112,9 +159,12 @@ def build_insights(matches: list[dict], owned_documents: list[str] | None = None
         "total_opportunities": len(matches),
         "eligible_count": len(eligible),
         "partial_count": len(partial),
+        "closed_count": len(closed),
+        "needs_review_count": len(needs_review),
         "open_count": open_count,
         "estimated_annual_benefit": estimated_benefit,
         "estimated_benefit_label": f"\u20b9{estimated_benefit:,}",
+        "one_time_benefit": one_time_benefit,
         "master_documents": master_documents,
         "documents_total": total_docs,
         "documents_owned": owned_docs,

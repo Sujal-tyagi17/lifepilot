@@ -49,7 +49,7 @@ class PlannerAgent(BaseAgent):
         profile_json = json.dumps(profile, indent=2, default=str)
 
         # Use LLM for intelligent planning (skip in simulation mode to stay fast & offline)
-        if self.llm.name != "mock" and profile.get("name") != "Simulation":
+        if self.llm.name != "mock" and not state.is_simulation:
             prompt = _PLAN_PROMPT.format(profile_json=profile_json)
             plan = self.llm.generate_json(
                 prompt,

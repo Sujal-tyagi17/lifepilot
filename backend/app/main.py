@@ -27,7 +27,7 @@ from app import auth
 from app.config import settings
 from app.database import init_db
 from app.llm.provider import get_provider
-from app.routers import agent, opportunities, profiles
+from app.routers import agent, opportunities, profiles, resume
 from app.security import add_security
 
 # Configure logging
@@ -46,7 +46,7 @@ app.add_middleware(
     allow_origins=settings.origins_list,
     allow_credentials=True,
     allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type"],
+    allow_headers=["Content-Type", "Authorization", "X-Profile-Key"],
 )
 
 
@@ -111,6 +111,7 @@ def auth_me(user: dict | None = Depends(auth.get_current_user)):
 app.include_router(profiles.router)
 app.include_router(opportunities.router)
 app.include_router(agent.router)
+app.include_router(resume.router)
 app.include_router(auth.router_auth)
 
 # ---- Static frontend (built-in single-page UI) ----

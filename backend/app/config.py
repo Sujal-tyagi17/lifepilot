@@ -45,6 +45,11 @@ class Settings(BaseSettings):
     scraping_cache_hours: int = 24
     serper_api_key: str = ""  # optional — serper.dev free tier (2500 searches)
 
+    # Adzuna job search API (optional, free developer tier: developer.adzuna.com)
+    adzuna_app_id: str = ""
+    adzuna_app_key: str = ""
+    adzuna_country: str = "in"
+
     # ── ChromaDB ─────────────────────────────────────────────
     chroma_persist_dir: str = "./chroma_data"
 

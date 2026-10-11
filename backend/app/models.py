@@ -47,6 +47,10 @@ class Profile(Base):
     disability: Mapped[bool] = mapped_column(Boolean, default=False)
     goals: Mapped[str | None] = mapped_column(Text, nullable=True)
 
+    # Secret given to the browser that created a guest (not logged-in) profile.
+    # Guest requests must present it in the X-Profile-Key header.
+    guest_key: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow)
 
     runs: Mapped[list["AgentRun"]] = relationship(back_populates="profile", cascade="all, delete-orphan")
@@ -91,13 +95,16 @@ class MatchResult(Base):
     url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
     amount: Mapped[str | None] = mapped_column(String(300), nullable=True)
     deadline: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    deadline_note: Mapped[str | None] = mapped_column(String(200), nullable=True)
 
     eligible: Mapped[bool] = mapped_column(Boolean, default=False)
+    status: Mapped[str | None] = mapped_column(String(20), nullable=True)
     score: Mapped[float] = mapped_column(Float, default=0.0)
     confidence: Mapped[float] = mapped_column(Float, default=0.0)
 
     reasons: Mapped[list] = mapped_column(JSON, default=list)
     unmet: Mapped[list] = mapped_column(JSON, default=list)
+    notes: Mapped[list | None] = mapped_column(JSON, nullable=True)
     documents: Mapped[list] = mapped_column(JSON, default=list)
     roadmap: Mapped[list] = mapped_column(JSON, default=list)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
