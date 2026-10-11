@@ -13,8 +13,9 @@ from urllib.parse import urlparse
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 
-from app.jobs.matching import rank_jobs
-from app.jobs.sources import search_jobs
+from app.jobs.matching import candidate, match_report
+from app.jobs.roadmap import build_plan
+from app.jobs.sources import sample_jobs, search_jobs
 from app.knowledge.vectorstore import DATA_FILE, add_schemes, search as vector_search
 from app.scraper.engine import scrape_portals
 
@@ -143,14 +144,55 @@ class JobMatchRequest(BaseModel):
 
 @router.post("/jobs/match")
 def match_jobs(payload: JobMatchRequest):
-    """Rank jobs by fit, with a score breakdown, matched and missing skills."""
+    """Rank jobs for this person: the profile form, the resume and the target role.
+
+    Returns the ranked jobs (with a score breakdown and a relevance flag), what
+    was read from the resume, and the one skill that would lift the most matches.
+    """
     profile = payload.profile or {}
     query = payload.desired_role or profile.get("field_of_study") or ""
-    jobs = search_jobs(query, payload.skills or [], profile.get("state"))
-    ranked = rank_jobs(
+    jobs = search_jobs(query, payload.skills or [], profile.get("state"), limit=0, filter_samples=False)
+    report = match_report(
         jobs, profile,
         resume_text=payload.resume_text or "",
         desired_role=payload.desired_role or "",
         user_skills=payload.skills,
     )
-    return [_public_job(j) for j in ranked]
+    report["jobs"] = [_public_job(j) for j in report["jobs"][:60]]
+    return report
+
+
+class PlanJob(BaseModel):
+    id: Optional[str] = Field(default=None, max_length=300)
+    title: str = Field(max_length=300)
+    description: str = Field(default="", max_length=20_000)
+    company: Optional[str] = Field(default=None, max_length=300)
+    location: Optional[str] = Field(default=None, max_length=300)
+    url: Optional[str] = Field(default=None, max_length=2_000)
+    source: Optional[str] = Field(default=None, max_length=40)
+    family: Optional[str] = Field(default=None, max_length=40)
+
+
+class JobPlanRequest(JobMatchRequest):
+    job_id: Optional[str] = Field(default=None, max_length=300)
+    job: Optional[PlanJob] = None
+    hours_per_week: int = Field(default=8, ge=2, le=40)
+    learned: List[str] = Field(default_factory=list, max_length=100)
+
+
+@router.post("/jobs/plan")
+def job_plan(payload: JobPlanRequest):
+    """A personalised, week-by-week roadmap to become ready for one job."""
+    job = None
+    if payload.job_id:
+        job = next((j for j in sample_jobs() if j["id"] == payload.job_id), None)
+    if job is None and payload.job:
+        job = payload.job.model_dump()
+        if job.get("source") == "sample":
+            job["family"] = job.get("family")  # trusted only for our own sample roles
+        else:
+            job["family"] = None
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found. Search again and pick it from the list.")
+    cand = candidate(payload.profile or {}, payload.resume_text or "", payload.desired_role or "", payload.skills)
+    return build_plan(job, cand, payload.hours_per_week, payload.learned)
