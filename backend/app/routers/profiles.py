@@ -1,190 +1,166 @@
-"""Profile CRUD endpoints."""
+"""Profile endpoints.
+
+Every route that touches an existing profile checks ownership (see
+app/ownership.py). There is deliberately no "list all profiles" endpoint.
+"""
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-import pypdf
-import json
+from typing import Any, Optional
 
-from typing import Optional
-from app.database import get_db
+from fastapi import APIRouter, Depends, File, Header, HTTPException, UploadFile
+from sqlalchemy import select, text
+from sqlalchemy.orm import Session
+
 from app import models, schemas
-from app.llm.provider import get_provider
 from app.auth import get_current_user
+from app.database import get_db
+from app.llm.provider import get_provider
+from app.ownership import PROFILE_KEY_HEADER, is_owner, new_guest_key, owned_profile
+from app.resume.parser import ResumeParseError, extract_text
 
 router = APIRouter(prefix="/api/profiles", tags=["profiles"])
 
 
-@router.post("", response_model=schemas.ProfileOut, status_code=201)
-def create_profile(
+def _created_out(profile: models.Profile) -> schemas.ProfileCreatedOut:
+    out = schemas.ProfileCreatedOut.model_validate(profile)
+    out.guest_key = profile.guest_key
+    return out
+
+
+@router.post("", response_model=schemas.ProfileCreatedOut, status_code=201)
+def create_or_update_profile(
     payload: schemas.ProfileCreate,
     db: Session = Depends(get_db),
-    current_user: Optional[dict] = Depends(get_current_user),
+    current_user: Optional[dict[str, Any]] = Depends(get_current_user),
+    x_profile_key: Optional[str] = Header(default=None, alias=PROFILE_KEY_HEADER),
 ):
+    """Create a profile, or update the caller's existing one.
+
+    - Logged in: one profile per user, found by user id only.
+    - Guest: the profile whose guest key the browser presents is updated;
+      otherwise a new guest profile is created with a fresh key.
+    - A logged-in user presenting the key of a guest profile claims it, so
+      work done before signing in is kept.
+    """
     data = payload.model_dump()
+    data.pop("user_id", None)  # ownership is never taken from the request body
     user_id = current_user.get("id") if current_user else None
-    email = current_user.get("email") if current_user else None
 
+    existing: models.Profile | None = None
     if user_id:
-        data["user_id"] = user_id
-        if not data.get("email") and email:
-            data["email"] = email
-
-    # Check if an existing profile already exists for this user to UPDATE it in Neon DB
-    existing = None
-    if user_id:
-        from sqlalchemy import or_
-        filters = [models.Profile.user_id == user_id]
-        if email:
-            filters.append(models.Profile.email == email)
-        raw_name = data.get("name") or (current_user.get("name") if current_user else "")
-        first_token = raw_name.split()[0] if raw_name else ""
-        if first_token and len(first_token) >= 3:
-            filters.append(models.Profile.name.ilike(f"%{first_token}%"))
         existing = db.scalars(
-            select(models.Profile).where(or_(*filters)).order_by(models.Profile.created_at.desc())
+            select(models.Profile)
+            .where(models.Profile.user_id == user_id)
+            .order_by(models.Profile.created_at.desc())
         ).first()
+        if not existing and x_profile_key:
+            guest = db.scalars(
+                select(models.Profile).where(
+                    models.Profile.guest_key == x_profile_key,
+                    models.Profile.user_id.is_(None),
+                )
+            ).first()
+            if guest and is_owner(guest, None, x_profile_key):
+                existing = guest
+        if not data.get("email") and current_user.get("email"):
+            data["email"] = current_user["email"]
+    elif x_profile_key:
+        guest = db.scalars(
+            select(models.Profile).where(models.Profile.guest_key == x_profile_key)
+        ).first()
+        if guest and is_owner(guest, None, x_profile_key):
+            existing = guest
 
     if existing:
         for k, v in data.items():
             if v is not None:
                 setattr(existing, k, v)
-        # Ensure strict 1-to-1: delete any duplicate stale profile rows for this user
         if user_id:
-            db.query(models.Profile).filter(
-                models.Profile.user_id == user_id,
-                models.Profile.id != existing.id
-            ).delete(synchronize_session=False)
+            existing.user_id = user_id
+        if not existing.guest_key:
+            existing.guest_key = new_guest_key()
         db.commit()
         db.refresh(existing)
-        return existing
-    else:
-        # If inserting into an empty table or sequence is desynced, reset sequence to max(id)+1 (or 1)
-        from sqlalchemy import text
-        try:
-            db.execute(text("SELECT setval(pg_get_serial_sequence('profiles', 'id'), COALESCE((SELECT MAX(id) FROM profiles), 0) + 1, false);"))
-            db.commit()
-        except Exception:
-            pass
+        return _created_out(existing)
 
-        profile = models.Profile(**data)
-        db.add(profile)
+    # PostgreSQL only: re-sync the id sequence if it drifted (no-op on SQLite).
+    try:
+        db.execute(text(
+            "SELECT setval(pg_get_serial_sequence('profiles', 'id'), "
+            "COALESCE((SELECT MAX(id) FROM profiles), 0) + 1, false);"
+        ))
         db.commit()
-        db.refresh(profile)
-        return profile
+    except Exception:
+        db.rollback()
+
+    profile = models.Profile(**data, user_id=user_id, guest_key=new_guest_key())
+    db.add(profile)
+    db.commit()
+    db.refresh(profile)
+    return _created_out(profile)
 
 
 @router.post("/parse-resume", response_model=schemas.ParseResumeResponse)
-async def parse_resume(file: UploadFile = File(...)):
-    """Parse a resume PDF and return extracted profile data."""
-    if not file.filename.endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Only PDF files are supported")
-        
+async def parse_resume_to_profile(file: UploadFile = File(...)):
+    """Read a resume and suggest profile fields using the configured LLM."""
+    content = await file.read()
     try:
-        # Extract text using pypdf
-        reader = pypdf.PdfReader(file.file)
-        text = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
-        
-        if not text.strip():
-            raise HTTPException(status_code=400, detail="Could not extract text from PDF")
-            
-        # Call LLM to parse
-        llm = get_provider()
-        prompt = f"""
-        Extract the following profile information from the resume text below.
-        Return ONLY a valid JSON object matching this schema, nothing else:
-        {{
-            "name": "Full Name",
-            "email": "Email address",
-            "age": 22, (estimate if possible, or null)
-            "gender": "Male/Female/Other or null",
-            "state": "State in India (e.g., Karnataka, Delhi) or null",
-            "category": "General/OBC/SC/ST/EWS or null",
-            "education_level": "Undergraduate/Postgraduate/High School etc.",
-            "field_of_study": "e.g., Computer Science, Commerce",
-            "annual_income": null,
-            "disability": false,
-            "goals": "Short summary of career goals based on resume"
-        }}
-        
-        Resume Text:
-        {text[:5000]}
-        """
-        
-        # We use standard generate since this is an isolated task
-        response = llm.generate(prompt, system="You are a strict JSON data extractor. Output only raw JSON.")
-        
-        # Clean JSON if wrapped in markdown
-        cleaned = response.strip()
-        if cleaned.startswith("```json"):
-            cleaned = cleaned.replace("```json", "", 1).replace("```", "")
-        elif cleaned.startswith("```"):
-            cleaned = cleaned.replace("```", "", 2)
-            
-        data = json.loads(cleaned)
-        return schemas.ParseResumeResponse(**data)
-        
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to parse resume: {e}")
+        resume_text = extract_text(file.filename or "", content)
+    except ResumeParseError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+    llm = get_provider()
+    if llm.name == "mock":
+        raise HTTPException(
+            status_code=503,
+            detail="Filling a profile from a resume needs an LLM provider (set LLM_PROVIDER in .env).",
+        )
+
+    prompt = f"""Extract profile information from the resume below.
+Return ONLY a JSON object with these keys (use null when the resume does not say):
+name, email, age, gender, state, category, education_level, field_of_study,
+annual_income, disability, goals.
+Never guess category, income or disability; they are almost never in a resume.
+
+Resume:
+{resume_text[:5000]}"""
+    data = llm.generate_json(prompt, system="You are a strict JSON data extractor. Output only JSON.")
+    if not data:
+        raise HTTPException(status_code=502, detail="Could not extract details from this resume.")
+    if not data.get("name"):
+        data["name"] = "Unknown"
+    try:
+        return schemas.ParseResumeResponse(**{k: v for k, v in data.items() if k != "user_id"})
+    except Exception:
+        raise HTTPException(status_code=502, detail="The extracted details were not in the expected format.")
 
 
-@router.get("/me/latest", response_model=Optional[schemas.ProfileOut])
+@router.get("/me/latest", response_model=Optional[schemas.ProfileCreatedOut])
 def get_my_latest_profile(
     db: Session = Depends(get_db),
-    current_user: Optional[dict] = Depends(get_current_user),
+    current_user: Optional[dict[str, Any]] = Depends(get_current_user),
 ):
-    """Retrieve the latest saved citizen profile for the current authenticated user."""
+    """The logged-in user's own profile, or null."""
     if not current_user or not current_user.get("id"):
         return None
-
-    user_id = current_user["id"]
-    email = current_user.get("email")
-    from sqlalchemy import or_
-
-    filters = [models.Profile.user_id == user_id]
-    if email:
-        filters.append(models.Profile.email == email)
-    
-    raw_name = current_user.get("name") or ""
-    first_token = raw_name.split()[0] if raw_name else ""
-    if first_token and len(first_token) >= 3:
-        filters.append(models.Profile.name.ilike(f"%{first_token}%"))
-
     profile = db.scalars(
         select(models.Profile)
-        .where(or_(*filters))
+        .where(models.Profile.user_id == current_user["id"])
         .order_by(models.Profile.created_at.desc())
     ).first()
-
-    # If this profile was legacy (user_id is null), automatically link it now!
-    if profile and not profile.user_id:
-        profile.user_id = user_id
-        if email and not profile.email:
-            profile.email = email
+    if profile and not profile.guest_key:
+        profile.guest_key = new_guest_key()
         db.commit()
         db.refresh(profile)
-
-    return profile
-
-
-@router.get("", response_model=list[schemas.ProfileOut])
-def list_profiles(db: Session = Depends(get_db)):
-    return db.scalars(select(models.Profile).order_by(models.Profile.created_at.desc())).all()
+    return _created_out(profile) if profile else None
 
 
 @router.get("/{profile_id}", response_model=schemas.ProfileOut)
-def get_profile(profile_id: int, db: Session = Depends(get_db)):
-    profile = db.get(models.Profile, profile_id)
-    if not profile:
-        raise HTTPException(status_code=404, detail="Profile not found")
+def get_profile(profile: models.Profile = Depends(owned_profile)):
     return profile
 
 
 @router.delete("/{profile_id}", status_code=204)
-def delete_profile(profile_id: int, db: Session = Depends(get_db)):
-    profile = db.get(models.Profile, profile_id)
-    if not profile:
-        raise HTTPException(status_code=404, detail="Profile not found")
-    db.delete(profile)
+def delete_profile(profile: models.Profile = Depends(owned_profile), db: Session = Depends(get_db)):
+    db.delete(db.merge(profile))
     db.commit()

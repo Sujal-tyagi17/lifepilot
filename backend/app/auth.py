@@ -42,53 +42,43 @@ def get_jwks_client() -> Optional[PyJWKClient]:
     return _jwks_client
 
 
-def verify_kinde_token(token: str) -> dict[str, Any]:
-    """Verify and decode a Kinde JWT token using Kinde's JWKS."""
-    if token in ("guest_mock_access_token", "guest_mock_id_token"):
-        return {
-            "sub": "guest_citizen",
-            "email": "guest@lifepilot.local",
-            "name": "Guest Citizen",
-        }
+def _auth_configured() -> bool:
+    return bool(settings.kinde_domain and settings.kinde_client_id)
 
-    if not settings.kinde_domain:
-        try:
-            return jwt.decode(token, options={"verify_signature": False})
-        except Exception as e:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=f"Invalid token: {e}",
-            )
+
+def verify_kinde_token(token: str) -> dict[str, Any]:
+    """Verify a Kinde JWT against Kinde's JWKS and return its claims.
+
+    A token is accepted ONLY if its RS256 signature verifies. There is no
+    fallback to unverified decoding: that would let anyone forge a token for
+    any user id.
+    """
+    if not _auth_configured():
+        # Offline demo mode: the only "login" is the shared mock guest account.
+        if token in ("guest_mock_access_token", "guest_mock_id_token"):
+            return {
+                "sub": "guest_citizen",
+                "email": "guest@lifepilot.local",
+                "name": "Guest Citizen",
+            }
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication is not configured.")
 
     client = get_jwks_client()
     if not client:
-        try:
-            return jwt.decode(token, options={"verify_signature": False})
-        except Exception as e:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=f"Invalid token: {e}",
-            )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Cannot verify token right now.")
 
     try:
         signing_key = client.get_signing_key_from_jwt(token)
-        payload = jwt.decode(
+        return jwt.decode(
             token,
             signing_key.key,
             algorithms=["RS256"],
             options={"verify_aud": False},
             leeway=60,
         )
-        return payload
     except jwt.PyJWTError as e:
-        logger.debug(f"JWT Verification notice: {e}")
-        try:
-            return jwt.decode(token, options={"verify_signature": False})
-        except Exception:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=f"Token verification error: {e}",
-            )
+        logger.debug(f"JWT verification failed: {e}")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token.")
 
 
 def get_current_user(
@@ -194,7 +184,7 @@ def logout(request: Request):
 @router_auth.post("/exchange")
 def exchange_token(req: ExchangeRequest, request: Request):
     """Exchange authorization code for Kinde access and ID tokens."""
-    if req.code == "guest_mock_code":
+    if req.code == "guest_mock_code" and not _auth_configured():
         guest_user = {
             "id": "guest_citizen",
             "email": "guest@lifepilot.local",
@@ -362,14 +352,9 @@ def delete_account(
             except Exception:
                 pass
 
-            from sqlalchemy import or_
-            query_filters = [Profile.user_id == user_id]
-            if user.get("email"):
-                query_filters.append(Profile.email == user["email"])
-            if user.get("name"):
-                query_filters.append(Profile.name.ilike(user["name"]))
-            
-            profiles = db.query(Profile).filter(or_(*query_filters)).all()
+            # Only this user's own profiles. Never match by name or email:
+            # other people can share a name, and a guest can type any email.
+            profiles = db.query(Profile).filter(Profile.user_id == user_id).all()
             profile_ids = [p.id for p in profiles]
 
             if profile_ids:

@@ -37,6 +37,12 @@ _RAG_PROMPT = """You are LifePilot, an AI assistant helping Indian citizens disc
 """
 
 
+def _is_open_eligible(m: dict) -> bool:
+    """Eligible and still accepting applications (older saved runs lack status)."""
+    status = m.get("status") or ("eligible" if m.get("eligible") else "partial")
+    return status == "eligible"
+
+
 def rag_answer(
     question: str,
     matches: list[dict] | None = None,
@@ -63,7 +69,7 @@ def rag_answer(
     # Summarize matches
     matches_summary = "No matches computed yet."
     if matches:
-        eligible = [m for m in matches if m.get("eligible")]
+        eligible = [m for m in matches if _is_open_eligible(m)]
         if eligible:
             lines = [f"User is eligible for {len(eligible)} scheme(s):"]
             for m in eligible[:5]:
@@ -118,7 +124,7 @@ def rag_answer(
 def _offline_answer(question: str, matches: list[dict], profile: dict | None) -> str:
     """Simple keyword-based fallback when LLM is unavailable."""
     q = question.lower()
-    eligible = [m for m in matches if m.get("eligible")]
+    eligible = [m for m in matches if _is_open_eligible(m)]
 
     # Check if user is asking about a specific scheme (e.g. pragati, yasasvi, etc.)
     for m in matches:
@@ -174,10 +180,20 @@ def _offline_answer(question: str, matches: list[dict], profile: dict | None) ->
         return "No documents to prepare yet."
 
     if any(w in q for w in ("deadline", "when", "date")):
+        from datetime import date
+        upcoming = []
+        for m in matches:
+            try:
+                d = date.fromisoformat(m.get("deadline") or "")
+            except ValueError:
+                continue
+            if d >= date.today():
+                upcoming.append((not _is_open_eligible(m), d, m))
+        upcoming.sort(key=lambda t: (t[0], t[1]))
         lines = ["Upcoming deadlines:"]
-        for m in matches[:5]:
-            if m.get("deadline"):
-                lines.append(f"• {m['title']} — {m['deadline']}")
+        for not_eligible, d, m in upcoming[:5]:
+            tag = "" if not not_eligible else " (you don't qualify yet)"
+            lines.append(f"• {m['title']} — {d.isoformat()}{tag}")
         return "\n".join(lines) if len(lines) > 1 else "No deadlines found."
 
     if any(w in q for w in ("how much", "benefit", "money", "amount")):

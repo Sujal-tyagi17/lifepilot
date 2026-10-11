@@ -37,6 +37,12 @@ class ProfileOut(ProfileBase):
     created_at: datetime
 
 
+class ProfileCreatedOut(ProfileOut):
+    """Returned only when a profile is created or updated. Guests must store
+    guest_key and send it back as the X-Profile-Key header."""
+    guest_key: str | None = None
+
+
 # ---------- Agent run ----------
 class AgentLogOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -55,14 +61,17 @@ class MatchOut(BaseModel):
     amount: str | None = None
     deadline: str | None = None
     eligible: bool
+    status: str | None = None  # eligible | partial | needs_review | closed
     score: float
     confidence: float
     reasons: list[str] = []
     unmet: list[str] = []
+    notes: list[str] | None = None
     documents: list[str] = []
     roadmap: list[str] = []
     description: str | None = None
     criteria: dict | None = None
+    deadline_note: str | None = None
 
 
 class AgentRunOut(BaseModel):

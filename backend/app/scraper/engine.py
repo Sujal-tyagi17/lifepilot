@@ -133,7 +133,7 @@ def _scrape_myscheme(url: str) -> list[dict]:
 
 
 def _scrape_rss_jobs(url: str) -> list[dict]:
-    """Scrape Job Portals via standard RSS/XML feeds (Upwork, Indeed, LinkedIn standard feeds)."""
+    """Read a public job RSS/XML feed (e.g. We Work Remotely, python.org jobs)."""
     try:
         with httpx.Client(timeout=15.0, follow_redirects=True, headers=_HEADERS) as client:
             resp = client.get(url)
@@ -160,7 +160,7 @@ def _scrape_rss_jobs(url: str) -> list[dict]:
                         "title": title_text,
                         "provider": "Job Portal",
                         "url": link.get_text(strip=True),
-                        "description": raw_desc[:300].strip(),
+                        "description": raw_desc[:2000].strip(),
                         "source": "scraped_rss",
                         "category": "job",
                     })

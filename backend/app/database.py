@@ -65,6 +65,10 @@ def init_db() -> None:
         "ALTER TABLE match_results ALTER COLUMN provider TYPE VARCHAR(400);",
         "ALTER TABLE match_results ALTER COLUMN url TYPE VARCHAR(1000);",
         "ALTER TABLE match_results ALTER COLUMN amount TYPE VARCHAR(300);",
+        "ALTER TABLE match_results ADD COLUMN status VARCHAR(20);",
+        "ALTER TABLE match_results ADD COLUMN notes JSON;",
+        "ALTER TABLE match_results ADD COLUMN deadline_note VARCHAR(200);",
+        "ALTER TABLE profiles ADD COLUMN guest_key VARCHAR(64);",
     ]
     for stmt in migrations:
         try:
@@ -72,37 +76,3 @@ def init_db() -> None:
                 conn.execute(text(stmt))
         except Exception:
             pass
-
-    # Seed job opportunities if empty
-    from app.models import JobOpportunity
-    from pathlib import Path
-    import json
-    
-    db = SessionLocal()
-    try:
-        if db.query(JobOpportunity).count() == 0:
-            data_file = Path(__file__).resolve().parent / "data" / "indian_jobs.json"
-            if data_file.exists():
-                with open(data_file, encoding="utf-8") as f:
-                    jobs = json.load(f)
-                for item in jobs:
-                    job_op = JobOpportunity(
-                        id=item.get("id"),
-                        title=item.get("title"),
-                        company=item.get("company"),
-                        location=item.get("location"),
-                        job_type=item.get("job_type"),
-                        country=item.get("country"),
-                        salary_num=item.get("salary_num"),
-                        salary=item.get("salary"),
-                        description=item.get("description"),
-                        url=item.get("url"),
-                        category=item.get("category", "job"),
-                        source=item.get("source", "database")
-                    )
-                    db.add(job_op)
-                db.commit()
-    except Exception as e:
-        pass
-    finally:
-        db.close()

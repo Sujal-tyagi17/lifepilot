@@ -47,7 +47,8 @@ class Orchestrator:
     def __init__(self) -> None:
         self.llm = get_provider()
 
-    def run(self, profile, owned_documents: list[str] | None = None) -> dict:
+    def run(self, profile, owned_documents: list[str] | None = None, mode: str = "full") -> dict:
+        """Run the pipeline. mode="simulate" skips web search and LLM calls."""
         start = time.perf_counter()
         pdict = _profile_to_dict(profile)
         owned = list(owned_documents or getattr(profile, "owned_documents", None) or [])
@@ -58,6 +59,7 @@ class Orchestrator:
             owned_documents=owned,
             matches=[],
             insights={},
+            mode=mode,
         )
 
         # Build the agent pipeline
@@ -80,11 +82,11 @@ class Orchestrator:
                 # Continue pipeline even on critical failure
 
         elapsed_ms = int((time.perf_counter() - start) * 1000)
-        eligible_count = sum(1 for m in state.matches if m.get("eligible"))
+        eligible_count = sum(1 for m in state.matches if m.get("status") == "eligible")
 
         summary = (
-            f"Found {eligible_count} eligible and {len(state.matches) - eligible_count} "
-            f"partial matches for {pdict.get('name', 'user')}. "
+            f"Found {eligible_count} open schemes you qualify for, out of {len(state.matches)} checked "
+            f"for {pdict.get('name') or 'you'}. "
             f"Pipeline ran {len(agents)} agents in {elapsed_ms}ms. "
             f"LLM: {self.llm.name}."
         )
@@ -100,8 +102,8 @@ class Orchestrator:
         )
 
         # Add top pick
-        eligible = [m for m in state.matches if m.get("eligible")]
-        partial = [m for m in state.matches if not m.get("eligible")]
+        eligible = [m for m in state.matches if m.get("status") == "eligible"]
+        partial = [m for m in state.matches if m.get("status") == "partial"]
         state.insights.setdefault("top_pick",
             eligible[0] if eligible else (partial[0] if partial else None)
         )
