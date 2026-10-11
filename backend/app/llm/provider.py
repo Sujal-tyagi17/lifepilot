@@ -72,7 +72,9 @@ def _retry(fn, max_retries: int = 3, base_delay: float = 1.0, retry_if=lambda e:
         try:
             return fn()
         except Exception as e:
-            if attempt == max_retries - 1 or not retry_if(e):
+            if not retry_if(e):
+                raise  # not worth retrying (e.g. the model does not exist); the caller logs it
+            if attempt == max_retries - 1:
                 logger.error(f"All {max_retries} retries failed: {e}")
                 raise
             delay = base_delay * (2 ** attempt)
