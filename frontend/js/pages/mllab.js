@@ -123,11 +123,13 @@ function showResult(box, res) {
   let html = '';
   if (tryTab === 'role') {
     const m = res.model;
+    if (!m) { box.innerHTML = `<p class="small">${icon('circle-help', 'icon-sm')} ${esc(t('ml.noRole', 'No job family: none of these words appear in any job description the model learned from, so it does not guess.'))}</p>`; return; }
     html = m ? `<p class="result-head">${icon('briefcase')} <b>${esc(m.label_name || m.label)}</b> <span class="quiet small">${pct(m.confidence)}</span></p>${topList(m.top)}${because(m.because)}
       <p class="tiny quiet" style="margin-top:10px">${esc(t('ml.rulesSaid', 'Old keyword rules said: {r}', { r: res.rules.label_name || t('ml.noMatch', 'no match') }))}</p>` : t('ml.noModel', 'Model not trained.');
   } else if (tryTab === 'intent') {
-    const m = res.model;
-    html = m ? `<p class="result-head">${icon('message-circle')} <b>${esc(m.label)}</b> <span class="quiet small">${pct(m.confidence)}</span></p>${topList(m.top)}${because(m.because)}` : t('ml.noModel', 'Model not trained.');
+    const m = res.model, u = res.used || {};
+    const used = u.label ? `<p class="small" style="margin-top:10px">${icon('message-circle', 'icon-sm')} ${esc(t('ml.usedAs', 'The assistant answers it as: {a}', { a: u.label + (u.also ? ` + ${u.also}` : '') }))}${u.by === 'keywords' ? ` <span class="quiet">(${esc(t('ml.lowConf', 'model under 40% sure, so keywords decided'))})</span>` : ''}</p>` : '';
+    html = m ? `<p class="result-head">${icon('message-circle')} <b>${esc(m.label)}</b> <span class="quiet small">${pct(m.confidence)}</span></p>${topList(m.top)}${because(m.because)}${used}` : t('ml.noModel', 'Model not trained.');
   } else if (tryTab === 'document') {
     const m = res.model;
     html = m ? `<p class="result-head">${icon('file-search')} <b>${esc(m.label)}</b> <span class="quiet small">${pct(m.confidence)}</span></p>${topList(m.top)}${because(m.because)}` : t('ml.noModel', 'Model not trained.');

@@ -59,6 +59,13 @@ def split_sections(text: str) -> dict[str, str]:
             current = name
             sections.setdefault(current, [])
             continue
+        # "Projects: chat app in React" — a heading and its content on one line
+        head, sep, rest = line.partition(":")
+        inline = _heading(head) if sep and rest.strip() else None
+        if inline:
+            current = inline
+            sections.setdefault(current, []).append(rest.strip())
+            continue
         sections.setdefault(current, []).append(line)
     return {k: "\n".join(v).strip() for k, v in sections.items() if "\n".join(v).strip() or k != "_top"}
 

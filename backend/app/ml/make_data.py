@@ -183,6 +183,9 @@ def make_fit_pairs(n: int = 260) -> list[dict]:
     from app.jobs import matching
     from app.jobs.matching import candidate, score_with
     matching.weights = lambda: matching.HAND_WEIGHTS   # "rules_fit" is always the old hand-set score
+    # The data must not depend on a model trained from it: use the keyword role rules here
+    from app.jobs import catalog
+    matching.classify_role = catalog.classify_role_rules
     jobs = [{"title": j["title"], "description": j["description"], "family": j["family"]} for j in sample_jobs()]
     rows = []
     keys = list(families())
@@ -272,6 +275,13 @@ INTENTS = {
         "jobs for my skills",
     ],
 }
+
+
+INTENTS["other"] = [
+    "hello", "hi", "hello how are you", "good morning", "thanks", "thank you so much", "who are you?", "what can you do?",
+    "ok", "bye", "namaste", "kaise ho", "shukriya", "aap kaun ho", "नमस्ते", "धन्यवाद", "आप कौन हैं?", "आप क्या कर सकते हैं?",
+    "tell me a joke", "what is your name?", "nice", "good night", "help", "how does this app work?",
+]
 
 
 def _vary(q: str) -> list[str]:

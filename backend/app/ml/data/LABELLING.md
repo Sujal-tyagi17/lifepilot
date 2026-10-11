@@ -44,7 +44,7 @@ change to these rules in the project report.
 
 `eligibility` (which schemes can I get), `documents` (papers needed),
 `deadlines` (last dates), `benefits` (amounts), `how_to_apply` (process,
-links), `jobs` (jobs, skills, careers).
+links), `jobs` (jobs, skills, careers), `other` (greetings, thanks, questions about the assistant itself).
 
 ## Document types
 

@@ -97,3 +97,19 @@ def test_labelling_writes_team_file_and_is_off_in_production(client, monkeypatch
     monkeypatch.setattr(settings, "environment", "production")
     assert client.post("/api/ml/label", json={**body, "label": "Poor"}).status_code == 403
     assert client.post("/api/ml/retrain").status_code == 403
+
+
+def test_fixes_from_the_ml_lab_test_sheet():
+    from app.jobs.resume import analyse_resume
+    from app.knowledge.rag import detect_intent
+    # T9: no known words -> no guess, in the Lab and in the app
+    assert predict.role_family_explained("Chef for an Italian restaurant") is None
+    # T15: small talk has its own intent now
+    assert detect_intent("hello how are you")["label"] == "other"
+    # T14: two questions in one
+    both = detect_intent("When is the last date and what documents do I need?")
+    assert {both["label"], both.get("also")} == {"documents", "deadlines"}
+    # T16: "Projects: ..." on one line is still the Projects section
+    ev = {s["name"]: s["evidence"] for s in analyse_resume(
+        "Skills: Pyhton, MS Excel\nProjects: dashboard in Power BI with SQL\nExperience: intern, built REST APIs with FastAPI")["skills"]}
+    assert ev["FastAPI"] == "work" and ev["SQL"] == "project" and ev["Python"] == "work"

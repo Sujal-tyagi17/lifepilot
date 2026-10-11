@@ -1,5 +1,5 @@
 {
- "trained_at": "2026-10-11 22:58",
+ "trained_at": "2026-10-11 23:34",
  "sklearn": "1.6.1",
  "python": "3.13.16",
  "split": "stratified 80/20, random_state=42",
@@ -787,7 +787,7 @@
    "unseen_real_roles": {
     "rows": 51,
     "accuracy": 0.902,
-    "macro_f1": 0.917
+    "macro_f1": 0.919
    },
    "note": "Template-made descriptions are easier than real posts; the unseen real roles score is the fairer number."
   },
@@ -977,29 +977,29 @@
    "used_for": "Routes each chat question to the right answer; intent badge in the chat",
    "dataset": {
     "file": "intents.csv",
-    "rows": 222,
-    "classes": 6,
+    "rows": 252,
+    "classes": 7,
     "languages": {
-     "en": 175,
-     "hi": 47
+     "en": 199,
+     "hi": 53
     },
-    "train": 177,
-    "test": 45
+    "train": 201,
+    "test": 51
    },
    "test": {
-    "accuracy": 0.956,
-    "macro_f1": 0.955,
+    "accuracy": 0.922,
+    "macro_f1": 0.916,
     "per_class": {
      "benefits": {
-      "precision": 1.0,
-      "recall": 0.857,
-      "f1": 0.923,
+      "precision": 0.875,
+      "recall": 1.0,
+      "f1": 0.933,
       "support": 7
      },
      "deadlines": {
       "precision": 1.0,
-      "recall": 0.857,
-      "f1": 0.923,
+      "recall": 0.714,
+      "f1": 0.833,
       "support": 7
      },
      "documents": {
@@ -1009,15 +1009,15 @@
       "support": 7
      },
      "eligibility": {
-      "precision": 0.889,
+      "precision": 1.0,
       "recall": 1.0,
-      "f1": 0.941,
+      "f1": 1.0,
       "support": 8
      },
      "how_to_apply": {
-      "precision": 0.889,
+      "precision": 0.727,
       "recall": 1.0,
-      "f1": 0.941,
+      "f1": 0.842,
       "support": 8
      },
      "jobs": {
@@ -1025,6 +1025,12 @@
       "recall": 1.0,
       "f1": 1.0,
       "support": 8
+     },
+     "other": {
+      "precision": 1.0,
+      "recall": 0.667,
+      "f1": 0.8,
+      "support": 6
      }
     },
     "labels": [
@@ -1033,23 +1039,26 @@
      "documents",
      "eligibility",
      "how_to_apply",
-     "jobs"
+     "jobs",
+     "other"
     ],
     "confusion_matrix": [
      [
-      6,
+      7,
       0,
       0,
-      1,
+      0,
+      0,
       0,
       0
      ],
      [
       0,
-      6,
+      5,
       0,
       0,
-      1,
+      2,
+      0,
       0
      ],
      [
@@ -1058,9 +1067,20 @@
       7,
       0,
       0,
+      0,
       0
      ],
      [
+      0,
+      0,
+      0,
+      8,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
       0,
       0,
       0,
@@ -1073,28 +1093,30 @@
       0,
       0,
       0,
+      0,
       8,
       0
      ],
      [
+      1,
       0,
       0,
       0,
+      1,
       0,
-      0,
-      8
+      4
      ]
     ]
    },
    "cv5": {
-    "mean": 0.901,
-    "std": 0.067,
+    "mean": 0.854,
+    "std": 0.104,
     "folds": [
-     0.911,
-     0.778,
-     0.932,
-     0.909,
-     0.977
+     0.922,
+     0.647,
+     0.9,
+     0.92,
+     0.88
     ]
    }
   },
@@ -1110,5 +1132,5 @@
    "skipped": "Not evaluated on this machine: the vector store is empty or unavailable"
   }
  },
- "seconds": 15.7
+ "seconds": 16.8
 }
