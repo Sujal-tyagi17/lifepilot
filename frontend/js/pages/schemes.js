@@ -1,10 +1,12 @@
 /* Schemes: every match as an expandable slip, plus the What-if simulator. */
 import { esc, fmtINR, daysLeft, fmtDate, matchStatus, debounce } from '../util.js';
 import { t, getLang } from '../i18n.js';
-import { icon, stamp, emptyState, toast } from '../ui.js';
+import { icon, stamp, toast } from '../ui.js';
+import { emptyCard, chips, incomeSlider, typeahead, switchRow, bindControls } from '../components.js';
+import { genderOptions, eduOptions, matchState } from './start.js';
 import { state, hasDoc } from '../state.js';
 import { simulate } from '../run.js';
-import { STATES, CATEGORIES, EDUCATION } from '../profileFields.js';
+import { STATES, CATEGORIES } from '../profileFields.js';
 
 const FILTERS = [
   ['all', 'f.all', 'All', () => true],
@@ -85,23 +87,24 @@ let query = '';
 
 export const schemes = {
   title: () => t('nav.schemes', 'Schemes'),
+  sub: () => t('sch.sub', 'Every scholarship and scheme checked against your profile, with the reasons.'),
   deps: ['run', 'vault', 'ownedDocs'],
   render(el, params) {
     if (params.get('filter')) filter = params.get('filter');
     if (!state.run) {
-      el.innerHTML = tabs('matches') + emptyState({ title: t('sch.noRun', 'Fill in your profile first to see schemes.'), action: `<a class="btn btn-primary" href="#/start">${esc(t('welcome.start', 'Start'))}</a>` });
+      el.innerHTML = tabs('matches') + emptyCard({ iconName: 'landmark', title: t('sch.noRun', 'Fill in your profile first to see schemes.'), action: `<a class="btn btn-primary" href="#/start">${esc(t('land.start', 'Get started free'))}</a>` });
       bindTabs(el);
       return;
     }
     const all = state.run.matches || [];
     el.innerHTML = `${tabs('matches')}
       <div class="toolbar">
-        <label class="search"><span class="sr-only">${esc(t('sch.search', 'Search schemes or departments'))}</span>${icon('search')}
+        <label class="input-icon"><span class="sr-only">${esc(t('sch.search', 'Search schemes or departments'))}</span>${icon('search')}
           <input class="input" type="search" id="sQuery" value="${esc(query)}" placeholder="${esc(t('sch.search', 'Search schemes or departments'))}" /></label>
         <div class="segmented" role="group" aria-label="Filter">${FILTERS.map(([k, key, en, fn]) =>
           `<button type="button" aria-pressed="${filter === k}" data-filter="${k}">${esc(t(key, en))}<span class="count num">${all.filter(fn).length}</span></button>`).join('')}</div>
       </div>
-      <section class="panel"><ul class="rows" id="sList"></ul></section>`;
+      <section class="card"><ul class="rows" id="sList"></ul></section>`;
     bindTabs(el);
 
     const draw = () => {
@@ -125,43 +128,33 @@ export const schemes = {
 let scenario = null;
 
 export const whatIf = {
-  title: () => t('sch.whatif', 'What if'),
+  title: () => t('sch.whatifT', 'What if…?'),
+  sub: () => t('wi.lede', 'Change income, category or studies to see how your results change. Nothing is saved.'),
   deps: [],
   render(el) {
     const p = state.profile || {};
     if (!scenario) scenario = { ...p, annual_income: p.annual_income ?? 300000 };
     const s = scenario;
-    const opt = (v, label, cur) => `<option value="${esc(v)}" ${cur === v ? 'selected' : ''}>${esc(label)}</option>`;
     el.innerHTML = `${tabs('whatif')}
-      <p class="lede" style="margin-bottom:20px">${esc(t('wi.lede', 'Change income, category or studies to see how your results change. Nothing is saved.'))}</p>
       <div class="whatif">
-        <form class="panel panel-pad stack" id="wiForm">
-          <div class="field">
-            <label class="label" for="wiIncome">${esc(t('wi.income', 'Family income per year'))}: <span class="num" id="wiIncomeOut">${esc(fmtINR(s.annual_income))}</span></label>
-            <input class="range" type="range" id="wiIncome" name="annual_income" min="0" max="1500000" step="25000" value="${Math.min(s.annual_income || 0, 1500000)}" />
-          </div>
-          <div class="grid-2">
-            <div class="field"><label class="label" for="wiCat">${esc(t('f.category', 'Category'))}</label>
-              <select class="select" id="wiCat" name="category">${opt('', t('f.choose', 'Choose'), s.category || '')}${CATEGORIES.map((c) => opt(c, c, s.category)).join('')}</select></div>
-            <div class="field"><label class="label" for="wiEdu">${esc(t('f.education', 'Education level'))}</label>
-              <select class="select" id="wiEdu" name="education_level">${opt('', t('f.choose', 'Choose'), s.education_level || '')}${EDUCATION.map(([v, en, hi]) => opt(v, getLang() === 'hi' ? hi : en, s.education_level)).join('')}</select></div>
-            <div class="field"><label class="label" for="wiGender">${esc(t('f.gender', 'Gender'))}</label>
-              <select class="select" id="wiGender" name="gender">${opt('', t('f.choose', 'Choose'), s.gender || '')}${[['Female', 'g.female'], ['Male', 'g.male'], ['Other', 'g.other']].map(([v, k]) => opt(v, t(k, v), s.gender)).join('')}</select></div>
-            <div class="field"><label class="label" for="wiState">${esc(t('f.state', 'State'))}</label>
-              <select class="select" id="wiState" name="state">${opt('', t('f.choose', 'Choose'), s.state || '')}${STATES.map((x) => opt(x, x, s.state)).join('')}</select></div>
-          </div>
+        <form class="card panel-pad stack" id="wiForm" style="margin-top:0">
+          ${incomeSlider('annual_income', s.annual_income, { label: t('wi.income', 'Family income per year') })}
+          ${chips('category', CATEGORIES.map((c) => [c, c]), s.category, { label: t('f.category', 'Category'), id: 'wiCat' })}
+          ${chips('education_level', eduOptions().map(([v, l]) => [v, l]), s.education_level, { label: t('f.education', 'Education level'), id: 'wiEdu' })}
+          ${chips('gender', genderOptions(), s.gender, { label: t('f.gender', 'Gender'), id: 'wiGender' })}
+          ${typeahead('state', STATES, s.state, { label: t('f.state', 'State'), placeholder: t('ob.statePh', 'Start typing your state') })}
           <div class="field"><label class="label" for="wiField">${esc(t('f.field', 'Field of study'))}</label>
             <input class="input" id="wiField" name="field_of_study" value="${esc(s.field_of_study || '')}" /></div>
-          <label class="check"><input type="checkbox" name="disability" ${s.disability ? 'checked' : ''} /> ${esc(t('f.disability', 'I have a disability of 40% or more'))}</label>
+          ${switchRow('disability', t('f.disability', 'I have a disability of 40% or more'), s.disability)}
           <button class="btn btn-quiet" type="button" id="wiReset">${icon('arrow-left')}${esc(t('wi.reset', 'Back to my profile'))}</button>
         </form>
-        <div class="stack">
+        <div class="stack" style="margin-top:0;position:sticky;top:92px">
           <div class="figures" aria-live="polite">
-            <div class="figure"><p class="figure-value num" id="wiElig">–</p><p class="figure-label">${esc(t('wi.eligible', 'Schemes you qualify for'))}</p></div>
-            <div class="figure"><p class="figure-value num" id="wiBen">–</p><p class="figure-label">${esc(t('wi.perYear', 'a year'))}</p></div>
-            <div class="figure"><p class="figure-value num" id="wiDelta">–</p><p class="figure-label">${esc(t('wi.vsYou', 'Compared with your profile'))}</p></div>
+            <div class="card figure"><p class="figure-value num" id="wiElig">–</p><p class="figure-label">${esc(t('wi.eligible', 'Schemes you qualify for'))}</p></div>
+            <div class="card figure"><p class="figure-value num" id="wiBen">–</p><p class="figure-label">${esc(t('wi.perYear', 'a year'))}</p></div>
+            <div class="card figure"><p class="figure-value num" id="wiDelta">–</p><p class="figure-label">${esc(t('wi.vsYou', 'Compared with your profile'))}</p></div>
           </div>
-          <section class="panel" aria-labelledby="wiListH">
+          <section class="card" aria-labelledby="wiListH">
             <div class="panel-head"><h2 class="h3" id="wiListH">${esc(t('wi.list', 'Schemes you would qualify for'))}</h2></div>
             <ul class="rows" id="wiList"></ul>
           </section>
@@ -170,16 +163,16 @@ export const whatIf = {
     bindTabs(el);
 
     const form = el.querySelector('#wiForm');
+    bindControls(form);
     const read = () => {
       const fd = new FormData(form);
       scenario = {
         ...p,
         annual_income: Number(fd.get('annual_income')),
         category: fd.get('category') || null, education_level: fd.get('education_level') || null,
-        gender: fd.get('gender') || null, state: fd.get('state') || null,
+        gender: fd.get('gender') || null, state: matchState(fd.get('state')),
         field_of_study: (fd.get('field_of_study') || '').trim() || null, disability: fd.get('disability') === 'on',
       };
-      el.querySelector('#wiIncomeOut').textContent = fmtINR(scenario.annual_income);
     };
     const run = debounce(async () => {
       try {
@@ -197,7 +190,7 @@ export const whatIf = {
         delta.className = `figure-value num ${dE > 0 || dB > 0 ? 'ok' : dE < 0 || dB < 0 ? 'bad' : ''}`;
         const elig = res.matches.filter((m) => matchStatus(m) === 'eligible');
         el.querySelector('#wiList').innerHTML = elig.length
-          ? elig.map((m) => `<li class="row" style="padding:12px 20px"><div style="flex:1;min-width:0"><p style="font-weight:600">${esc(m.title)}</p><p class="small quiet num">${esc(m.amount || '')}</p></div>${stamp('eligible')}</li>`).join('')
+          ? elig.map((m) => `<li class="row" style="padding:14px 22px;animation:enter .35s var(--ease) both"><div style="flex:1;min-width:0"><p style="font-weight:620">${esc(m.title)}</p><p class="small quiet num">${esc(m.amount || '')}</p></div>${stamp('eligible')}</li>`).join('')
           : `<li><p class="quiet" style="padding:16px 20px">${esc(t('wi.none', 'No scheme matches this scenario.'))}</p></li>`;
       } catch (err) { toast(err.message, 'bad'); }
     }, 200);

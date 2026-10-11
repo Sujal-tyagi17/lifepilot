@@ -14,13 +14,16 @@ function render() {
   const d = $('#drawer');
   d.innerHTML = `
     <div class="drawer-head">
+      <span class="bot-face" aria-hidden="true">${icon('sparkles')}</span>
       <div style="flex:1"><h2 class="h3" id="drawerTitle">${esc(t('asst.title', 'Assistant'))}</h2>
         <p class="tiny quiet">${esc(t('asst.lede', 'Answers based on your real matches'))}</p></div>
       <button class="btn btn-quiet btn-icon" type="button" id="drawerClose" aria-label="${esc(t('asst.close', 'Close'))}">${icon('x')}</button>
     </div>
     <div class="chat-log" id="chatLog" aria-live="polite">
       ${[{ who: 'bot', text: state.profileId ? t('asst.hello', 'Hello! Ask about your schemes, documents or deadlines.') : t('asst.needProfile', 'Fill in your profile first, then I can answer about your matches.') }, ...log]
-        .map((m) => `<p class="bubble ${m.who}">${esc(m.text)}</p>`).join('')}
+        .map((m) => m.typing
+          ? `<p class="bubble bot" aria-label="…"><span class="typing"><i></i><i></i><i></i></span></p>`
+          : `<p class="bubble ${m.who}">${esc(m.text)}</p>`).join('')}
     </div>
     ${state.profileId && log.length < 2 ? `<div class="chat-suggest">${SUGGEST.map(([k, en]) => `<button class="chip-btn" type="button" data-q="${esc(t(k, en))}">${esc(t(k, en))}</button>`).join('')}</div>` : ''}
     <form class="chat-form" id="chatForm">
@@ -38,13 +41,13 @@ async function ask(q) {
   q = (q || '').trim();
   if (!q || !state.profileId) return;
   log.push({ who: 'user', text: q });
-  log.push({ who: 'bot', text: '…' });
+  log.push({ who: 'bot', text: '', typing: true });
   render();
   try {
     const res = await api('/api/agent/assistant', { method: 'POST', json: { profile_id: state.profileId, question: q } });
-    log[log.length - 1].text = res.answer;
+    log[log.length - 1] = { who: 'bot', text: res.answer };
   } catch (err) {
-    log[log.length - 1].text = t('asst.error', 'Could not get an answer: {msg}', { msg: err.message });
+    log[log.length - 1] = { who: 'bot', text: t('asst.error', 'Could not get an answer: {msg}', { msg: err.message }) };
   }
   render();
   $('#chatInput')?.focus();

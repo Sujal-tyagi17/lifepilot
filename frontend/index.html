@@ -3,59 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>LifePilot</title>
-  <meta name="description" content="Find the scholarships, government schemes and jobs you qualify for, and what to do next." />
-  <meta name="theme-color" content="#16233b" />
+  <title>LifePilot · Scholarships, schemes and jobs you qualify for</title>
+  <meta name="description" content="LifePilot checks every scholarship and government scheme against your profile, matches jobs to your resume, and tells you what to do next." />
+  <meta name="theme-color" content="#121a2f" />
   <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
   <link rel="preload" href="/static/fonts/anek-latin.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="/static/css/app.css?v=7" />
-  <script src="/static/js/theme-init.js?v=7"></script>
+  <link rel="stylesheet" href="/static/css/app.css?v=8" />
+  <script src="/static/js/theme-init.js?v=8"></script>
 </head>
 <body>
   <a class="skip-link" href="#content" data-i18n="skip">Skip to content</a>
+  <div class="field-bg" aria-hidden="true"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>
 
-  <div class="app" id="app">
-    <aside class="rail" aria-label="LifePilot">
-      <a class="brand" href="#/home">
-        <span class="brand-mark" aria-hidden="true">LP</span>
-        <span>
-          <span class="brand-name">LifePilot</span><br />
-          <span class="brand-sub" data-i18n="brand.sub">Schemes and jobs, sorted</span>
-        </span>
-      </a>
-      <nav class="nav" id="railNav" aria-label="Main"></nav>
-      <div class="rail-foot">
-        <a class="nav-link" href="#/how-it-works" data-route="how-it-works"></a>
-        <a class="nav-link" href="#/profile" data-route="profile"></a>
-        <p class="status-line" id="health" role="status"><span class="dot"></span><span></span></p>
-      </div>
-    </aside>
+  <header class="topnav" id="topnav">
+    <a class="brand" href="#/" aria-label="LifePilot home">
+      <span class="brand-mark" aria-hidden="true">LP</span>
+      <span class="brand-name">LifePilot</span>
+    </a>
+    <nav class="navlinks" id="navlinks" aria-label="Main"></nav>
+    <div class="nav-actions" id="navActions"></div>
+  </header>
 
-    <div class="main">
-      <header class="topbar">
-        <h1 class="topbar-title" id="pageTitle">LifePilot</h1>
-        <div class="topbar-actions">
-          <button class="btn btn-quiet btn-sm" id="paletteBtn" type="button" title="Search commands (Ctrl+K)"></button>
-          <button class="btn btn-quiet btn-sm" id="langBtn" type="button"></button>
-          <button class="btn btn-quiet btn-icon" id="themeBtn" type="button"></button>
-          <div id="authSlot" class="row"></div>
-        </div>
-      </header>
-      <main class="content" id="content" tabindex="-1"></main>
-    </div>
-  </div>
+  <main id="content" tabindex="-1"></main>
 
   <nav class="tabbar" id="tabbar" aria-label="Main"></nav>
 
   <div class="scrim" id="scrim" hidden></div>
   <aside class="drawer" id="drawer" aria-labelledby="drawerTitle" role="dialog" aria-modal="true"></aside>
-
   <dialog class="palette" id="palette" aria-label="Commands"></dialog>
   <dialog class="dialog" id="dialog"></dialog>
   <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
   <div id="printArea"></div>
 
   <noscript><p style="padding:24px">LifePilot needs JavaScript to run.</p></noscript>
-  <script type="module" src="/static/js/main.js?v=7"></script>
+  <script type="module" src="/static/js/main.js?v=8"></script>
 </body>
 </html>
