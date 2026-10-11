@@ -35,6 +35,10 @@ export function saveProfile(id, profile) {
 export function forgetProfile() {
   state.profileId = null; state.profile = null; state.run = null; state.jobs = null;
   store.remove('lp_pid', 'lp_profile', 'lp_pkey', 'lp_jobs');
+  try {
+    Object.keys(localStorage).filter((k) => k.startsWith('lp_plan_')).forEach((k) => localStorage.removeItem(k));
+    sessionStorage.removeItem('lp_resume');
+  } catch { /* storage blocked */ }
 }
 
 export const saveDocs = () => store.set('lp_docs', [...state.ownedDocs]);
