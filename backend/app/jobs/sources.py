@@ -241,6 +241,9 @@ def source_status() -> dict[str, str]:
 CLOSED = re.compile(r"no longer accepting|not accepting applications|job (?:has )?expired|this job is closed|"
                     r"position (?:has been )?filled|applications? (?:are )?closed|expired on", re.IGNORECASE)
 MAX_AGE_DAYS = 30
+LISTING_TITLE = re.compile(
+    r"^\s*\d[\d,.]*\s*k?\+?\s|\bjob vacanc|\bvacancies\b|\bjobs (?:in|near|for)\b|\bjobs,? employment\b|"
+    r"\b(?:latest|top|best) .*\bjobs\b|\bjob openings\b|\bjobs\s*(?:\||-|–)\s*apply", re.IGNORECASE)
 
 
 def age_days(text: str | None) -> float | None:
@@ -371,6 +374,8 @@ def web_job_postings(query: str, location: str | None, fresher: bool = False) ->
             if not site or key in seen:
                 continue  # a listing page, an unrelated result, or one we already have
             seen.add(key)
+            if LISTING_TITLE.search(item.get("title", "")):
+                continue  # "91758 Developer Job Vacancies In India" is a list of jobs, not a job
             if not is_open(item):
                 closed += 1
                 continue

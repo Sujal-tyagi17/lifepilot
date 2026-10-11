@@ -148,6 +148,29 @@ def analyse_job(job: dict) -> dict:
         "family": family,
         "family_label": family_label(family),
         "family_confidence": confidence,
+        "post_skills": len(must_units),
+        "typical": [],
         "seniority": senior[1] if senior else None,
         "junior": bool(JUNIOR.search(title)),
     }
+
+
+LANGUAGES = {"Python", "Java", "JavaScript", "TypeScript", "C", "C++", "C#", "Go", "Kotlin", "Swift", "PHP", "Ruby", "Rust", "Dart"}
+
+
+def with_typical_skills(parsed: dict, family: str | None, minimum: int = 3) -> dict:
+    """A post that names fewer than `minimum` skills (common in search previews)
+    gets the skills that kind of role usually asks for, marked as typical."""
+    from app.jobs.catalog import families
+    if parsed["post_skills"] >= minimum or not family:
+        return parsed
+    core = families().get(family, {}).get("core", [])
+    have = {s for u in parsed["must_units"] + parsed["nice_units"] for s in u}
+    extra = [s for s in core if s not in have]
+    if not extra:
+        return parsed
+    # Typical lists name several languages, but one is enough: "Python or Java" is one requirement
+    langs = [s for s in extra if s in LANGUAGES]
+    units = ([langs] if langs else []) + [[s] for s in extra if s not in LANGUAGES]
+    return {**parsed, "family": parsed["family"] or family, "family_label": parsed["family_label"] or family_label(family),
+            "must_units": parsed["must_units"] + units, "must": parsed["must"] + extra, "typical": extra}

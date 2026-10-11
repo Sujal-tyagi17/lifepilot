@@ -182,7 +182,7 @@ function results(el) {
   const list = (arr) => `<section class="card"><ul class="rows">${arr.map(jobItem).join('')}</ul></section>`;
   const head = (txt, n) => `<h2 class="h3 group-head">${esc(txt)} <span class="count">${n}</span></h2>`;
   const noLive = !target.length && !other.length;
-  const samplesOpen = showSamples;
+  const samplesOpen = showSamples || !(rep.sources || []).length;  // no live search set up: the examples are all there is
   const status = rep.source_status || [];
   const failed = status.filter((x) => x.message.startsWith('failed'));
   const places = [['all', t('jobs.allIndia', 'All India')], ...(rep.state ? [['near', rep.state]] : []), ['remote', t('jobs.remote', 'Remote')]];
