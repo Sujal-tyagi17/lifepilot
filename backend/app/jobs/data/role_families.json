@@ -1,4 +1,32 @@
 {
+  "software": {
+    "label": "Software engineer",
+    "keywords": [
+      "software engineer",
+      "software developer",
+      "software development engineer",
+      "sde",
+      "programmer",
+      "application developer",
+      "software engineering"
+    ],
+    "core": [
+      "Data Structures",
+      "Algorithms",
+      "Git",
+      "Python",
+      "Java",
+      "SQL"
+    ],
+    "project": "Build and deploy one complete app that solves a real problem (for example an expense tracker or a college notice board) with a database, login and tests, and keep the code on GitHub with a clear README.",
+    "interview": [
+      "Data structures and algorithms (arrays, strings, trees, graphs)",
+      "Object-oriented programming",
+      "DBMS and SQL basics",
+      "Operating systems and networking basics",
+      "Explaining one project end to end"
+    ]
+  },
   "backend": {
     "label": "Backend developer",
     "keywords": [
@@ -7,9 +35,6 @@
       "back end",
       "api developer",
       "server-side",
-      "sde",
-      "software engineer",
-      "software developer",
       "node.js developer",
       "java developer",
       "python developer"

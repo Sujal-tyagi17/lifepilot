@@ -29,6 +29,19 @@ from app.jobs.locations import location_rank
 from app.jobs.jobparse import analyse_job, required_education  # noqa: F401  (re-exported)
 from app.jobs.resume import analyse_resume, public_summary
 
+# Families close enough that a job in one suits someone aiming for the other.
+RELATED = {
+    "software": ("backend", "frontend", "fullstack", "mobile", "qa", "devops", "data_scientist"),
+    "backend": ("software", "fullstack", "devops"),
+    "frontend": ("software", "fullstack", "design"),
+    "fullstack": ("software", "backend", "frontend"),
+    "mobile": ("software", "frontend"),
+    "data_analyst": ("data_scientist",),
+    "data_scientist": ("data_analyst", "software"),
+    "qa": ("software",),
+    "devops": ("software", "backend"),
+}
+
 WEIGHTS = {"must": 0.40, "nice": 0.10, "role": 0.20, "experience": 0.10,
            "education": 0.10, "field": 0.05, "text": 0.05}
 PROOF = {3: 1.0, 2: 0.85, 1: 0.6}
@@ -72,7 +85,8 @@ def infer_family(strength: dict[str, int]) -> str | None:
 
 
 def candidate(profile: dict | None = None, resume_text: str = "", desired_role: str = "",
-              user_skills: list[str] | None = None, learned: list[str] | None = None) -> dict:
+              user_skills: list[str] | None = None, learned: list[str] | None = None,
+              experience_years: float | None = None) -> dict:
     """Everything about the user that scoring needs, computed once per request.
 
     `learned` are skills the user has ticked off in a roadmap; they count as
@@ -95,6 +109,10 @@ def candidate(profile: dict | None = None, resume_text: str = "", desired_role: 
     else:
         target, how = infer_family(strength), "resume"
 
+    years = r["years"] + 0.5 * min(r["internships"], 2)
+    if experience_years is not None:
+        years = max(years, float(experience_years))   # what the user told us on the form
+
     return {
         "resume": r,
         "strength": strength,
@@ -105,10 +123,12 @@ def candidate(profile: dict | None = None, resume_text: str = "", desired_role: 
         "desired": desired,
         "target_family": target,
         "target_from": how if target else None,
-        "years": r["years"] + 0.5 * min(r["internships"], 2),
+        "years": years,
         "has_resume": r["has_resume"],
-        # A fresher: under a year of work on the resume, or a student with no resume yet
-        "fresher": (r["years"] < 1) if r["has_resume"] else (level is not None and level <= 6),
+        # Years are known from the resume or from the experience the user picked on the form
+        "years_known": r["has_resume"] or experience_years is not None,
+        # A fresher: under a year of work, or a student who has told us nothing about work yet
+        "fresher": years < 1 if (r["has_resume"] or experience_years is not None) else (level is not None and level <= 6),
         "bag": _bag(resume_text),
     }
 
@@ -171,6 +191,10 @@ def score_with(job: dict, cand: dict, parsed: dict | None = None) -> dict:
         signals["role"] = 0.8
         reasons.append(f"Same kind of role as {'your target' if cand['target_from'] == 'role' else 'your resume points to'}"
                        f" ({family_label(a['family'])})")
+    elif cand["target_family"] and a["family"] in RELATED.get(cand["target_family"], ()):
+        signals["role"] = 0.6
+        reasons.append(f"Close to {'your target' if cand['target_from'] == 'role' else 'what your resume points to'}"
+                       f" ({family_label(a['family'])})")
     elif words and _has_all(words, low):
         signals["role"] = 0.5
         reasons.append(f"Description mentions '{cand['desired']}'")
@@ -182,7 +206,7 @@ def score_with(job: dict, cand: dict, parsed: dict | None = None) -> dict:
     # Experience. Titles like "Senior", "Lead" or "Principal" imply years even
     # when the post does not state them.
     need = a["min_years"]
-    knows_years = cand["has_resume"] or cand["fresher"]
+    knows_years = cand["years_known"] or cand["fresher"]
     too_senior = bool(cand["fresher"] and need is not None and need >= 3)
     if need is None:
         signals["experience"] = 1.0 if (cand["fresher"] and a["junior"]) else None
