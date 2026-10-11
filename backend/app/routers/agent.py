@@ -19,6 +19,7 @@ from app.database import get_db
 from app.ownership import PROFILE_KEY_HEADER, load_owned_profile, owned_profile
 from app.services import assistant as assistant_service
 from app.services import calendar as calendar_service
+from app.services.analytics import build_insights
 
 router = APIRouter(prefix="/api/agent", tags=["agent"])
 
@@ -87,6 +88,21 @@ def run_agents(profile: models.Profile = Depends(owned_profile), db: Session = D
     run = _save_run(db, profile, result)
     out = schemas.AgentRunOut.model_validate(run)
     out.insights = result["insights"]
+    return out
+
+
+@router.get("/latest/{profile_id}", response_model=Optional[schemas.AgentRunOut])
+def latest_run(profile: models.Profile = Depends(owned_profile), db: Session = Depends(get_db)):
+    """The most recent saved run with fresh insights, or null if there is none.
+
+    Lets the app show results after a page reload without re-running the
+    pipeline (which may call web search and an LLM).
+    """
+    run = _latest_run(db, profile.id)
+    if run is None:
+        return None
+    out = schemas.AgentRunOut.model_validate(run)
+    out.insights = build_insights(_match_dicts(run), [])
     return out
 
 

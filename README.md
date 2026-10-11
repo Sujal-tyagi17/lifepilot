@@ -22,7 +22,8 @@ This repository is a **working prototype**: intentionally simple, 100% free & op
 | **What-If Simulator** | ✅ Working | Change income/category/state → eligibility & benefits recompute live (never saved) |
 | **AI Assistant** | ✅ Working | Chat grounded on *your real matches* — no hallucinated schemes |
 | **Application readiness engine** | ✅ Working | De-duplicated master document checklist across schemes + readiness % |
-| Analytics & charts | ✅ Working | Eligibility donut, value-by-scheme bar, deadline radar, animated counters |
+| Home | ✅ Working | One-line verdict, "Do this week" priorities computed from your results, deadline timeline, document readiness |
+| Hindi / English | ✅ Working | Every screen of the UI in both languages; light and dark themes |
 | **Calendar export (.ics)** | ✅ Working | One click adds all eligible deadlines (with 7-day reminders) to Google/Apple/Outlook |
 | **Print action plan** | ✅ Working | Clean, print-optimised personalised plan (schemes + roadmap + checklist) |
 | **Command palette (Ctrl/⌘ K)** | ✅ Working | Fast keyboard navigation & actions, like pro tools |
@@ -54,8 +55,8 @@ This repository is a **working prototype**: intentionally simple, 100% free & op
   stdlib `urllib` instead. The virtual environment is built **without pip** (`python -m venv --without-pip`)
   so pip's own vendored `cacert.pem` never lands in the project. `run.ps1` also scans and strips any stray
   `.pem` as a safety net, and `.gitignore` blocks all cert/key extensions.
-- **Only reputable, free CDNs** for the UI (Tailwind, Google Fonts, Chart.js via jsDelivr, Lucide via unpkg) —
-  all swappable for local files. No unknown/random remote resources.
+- **No CDNs.** Fonts (Anek, SIL OFL), icons (Lucide subset, ISC) and all scripts are served by the app
+  itself, so the UI works offline and the Content-Security-Policy allows scripts from `'self'` only.
 - **No secrets in code.** Config comes from a local `.env` (git-ignored). A `.env.example` documents every option.
 - **All data stays on your machine** — SQLite file + browser localStorage. Nothing is uploaded anywhere.
 - Inputs are validated with Pydantic; all rendered text in the UI is HTML-escaped to prevent injection.
@@ -68,7 +69,7 @@ This repository is a **working prototype**: intentionally simple, 100% free & op
 - **Backend:** FastAPI, SQLAlchemy, Pydantic (networking via stdlib `urllib` only — no HTTP-client cert bundles)
 - **Database:** SQLite (default) — swappable to PostgreSQL via one `.env` line
 - **LLM:** pluggable — offline `mock` engine (default) or local **Ollama** (Qwen/Llama/Gemma) — no paid keys
-- **Frontend:** built-in dark SPA — vanilla JS + Tailwind + Chart.js + Lucide (all free CDNs)
+- **Frontend:** built-in SPA — vanilla JS ES modules and plain CSS, no build step and no CDN
 
 ---
 
@@ -122,7 +123,7 @@ backend/
 │  │  └─ provider.py        # pluggable LLM (mock / ollama) — stdlib urllib only
 │  ├─ routers/              # profiles, opportunities, agent (run/simulate/assistant)
 │  └─ data/scholarships.json# curated opportunity dataset
-├─ frontend/                # built-in dark SPA (index.html + app.js + styles.css)
+├─ frontend/                # built-in SPA: index.html, css/app.css, js/ (one module per page), fonts/
 ├─ requirements.txt
 ├─ .env.example
 └─ run.ps1

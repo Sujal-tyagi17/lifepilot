@@ -77,3 +77,14 @@ def test_job_match_endpoint(client):
 
 def test_list_opportunities_returns_curated(client):
     assert len(client.get("/api/opportunities").json()) == 10
+
+
+def test_latest_run_survives_reload(client, guest):
+    pid, headers = guest
+    assert client.get(f"/api/agent/latest/{pid}", headers=headers).json() is None
+    run = client.post(f"/api/agent/run/{pid}", headers=headers).json()
+    latest = client.get(f"/api/agent/latest/{pid}", headers=headers).json()
+    assert latest["id"] == run["id"]
+    assert latest["insights"]["eligible_count"] == run["insights"]["eligible_count"]
+    assert [m["opportunity_id"] for m in latest["matches"]] == [m["opportunity_id"] for m in run["matches"]]
+    assert client.get(f"/api/agent/latest/{pid}").status_code == 404
