@@ -21,3 +21,13 @@ jobs:
         run: pip install -r requirements.txt
       - name: "Run tests (offline: mock LLM, no web discovery)"
         run: python -m pytest
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: "Syntax-check every frontend module"
+        run: for f in frontend/js/*.js frontend/js/pages/*.js; do node --check --input-type=module < "$f" || { echo "Syntax error in $f"; exit 1; }; done

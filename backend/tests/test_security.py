@@ -78,3 +78,9 @@ def test_mock_guest_token_only_when_auth_not_configured(monkeypatch):
 def test_scrape_only_allows_government_portals(client, url):
     # S6: the scrape endpoint used to fetch any URL (server-side request forgery)
     assert client.post("/api/opportunities/scrape", json={"urls": [url]}).status_code == 400
+
+
+def test_csp_allows_no_external_scripts(client):
+    csp = client.get("/api/health").headers["content-security-policy"]
+    assert "script-src 'self'" in csp
+    assert "unsafe-eval" not in csp and "cdn." not in csp and "unpkg" not in csp

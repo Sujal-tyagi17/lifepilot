@@ -14,19 +14,20 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
 # Content-Security-Policy.
-# NOTE: 'unsafe-eval' is required ONLY by the Tailwind Play CDN's runtime JIT.
-# For production you would precompile Tailwind to a static .css and drop it.
+# Every script, stylesheet, font and icon is served from this server, so
+# scripts are 'self' only (no CDNs, no eval). 'unsafe-inline' for styles covers
+# style attributes the UI sets (bar widths); it does not allow inline scripts.
 _CSP = "; ".join([
     "default-src 'self'",
-    "script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://unpkg.com 'unsafe-eval'",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
-    "font-src 'self' https://fonts.gstatic.com",
-    "img-src 'self' data: https://*.googleusercontent.com https://*.gravatar.com https://*.kinde.com",
-    "connect-src 'self' https://*.kinde.com https://lifepilotauth.kinde.com",
-    "frame-src 'self' https://*.kinde.com https://lifepilotauth.kinde.com",
+    "script-src 'self'",
+    "style-src 'self' 'unsafe-inline'",
+    "font-src 'self'",
+    "img-src 'self' data: blob: https://*.googleusercontent.com https://*.gravatar.com https://*.kinde.com",
+    "connect-src 'self' https://*.kinde.com",
+    "frame-src 'self' https://*.kinde.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
-    "form-action 'self' https://*.kinde.com https://lifepilotauth.kinde.com",
+    "form-action 'self' https://*.kinde.com",
     "object-src 'none'",
 ])
 
