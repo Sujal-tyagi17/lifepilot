@@ -180,3 +180,33 @@ def test_company_named_after_a_city_is_not_the_location():
     from app.jobs.sources import parse_posting_title
     assert parse_posting_title("Junior Data Analyst - Mysore Infotech - 0 to 1 years - Mysuru") == \
         ("Junior Data Analyst", "Mysore Infotech", "Mysuru")
+
+
+def test_search_failure_is_reported(monkeypatch):
+    import httpx
+    from app.jobs import sources
+    from app.config import settings
+    monkeypatch.setattr(settings, "serper_api_key", "bad")
+    sources.clear_cache()
+
+    class Resp:
+        status_code = 403
+        def json(self): return {"message": "Unauthorized"}
+
+    class Client:
+        def __init__(self, *a, **k): pass
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+        def post(self, *a, **k): return Resp()
+
+    monkeypatch.setattr(httpx, "Client", Client)
+    assert sources.web_job_postings("Data analyst", "Karnataka") == []
+    assert "key not accepted" in sources.source_status()["Google · Karnataka"]
+    sources.clear_cache()
+
+
+def test_company_career_pages_count_as_postings():
+    from app.jobs.sources import _site_of
+    assert _site_of("https://jobs.lever.co/acme/3f1c2a9e-1111-2222-3333-444455556666") == "Company site"
+    assert _site_of("https://boards.greenhouse.io/acme/jobs/123456") == "Company site"
+    assert _site_of("https://www.naukri.com/data-analyst-jobs-in-bangalore") is None
