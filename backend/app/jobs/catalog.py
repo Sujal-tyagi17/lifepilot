@@ -5,8 +5,8 @@ skills_meta.json  — per skill: learning effort in weeks (at 8 hours a week),
 role_families.json — per job family: words that identify it, its core skills,
                     a portfolio project and interview topics.
 
-Phase 3 replaces `classify_role` with a trained classifier; callers only see
-(family, confidence), so nothing else changes.
+`classify_role` uses the trained classifier from app/ml (TF-IDF + linear SVM)
+and falls back to the keyword rules; callers only see (family, confidence).
 """
 from __future__ import annotations
 
@@ -55,7 +55,17 @@ def _has(text: str, phrase: str) -> bool:
 
 
 def classify_role(title: str, description: str = "", skills: list[str] | None = None) -> tuple[str | None, float]:
-    """Best-matching job family and a 0–1 confidence.
+    """Job family and a 0–1 confidence: the trained classifier (app/ml) when its
+    model file is present and sure enough, else the keyword rules below."""
+    from app.ml.predict import role_family
+    ml = role_family(title, description)
+    if ml and ml[1] >= 0.35:
+        return ml
+    return classify_role_rules(title, description, skills)
+
+
+def classify_role_rules(title: str, description: str = "", skills: list[str] | None = None) -> tuple[str | None, float]:
+    """Best-matching job family by keywords, and a 0–1 confidence.
 
     Words in the title count three times as much as words in the description;
     the job's skills break ties using each family's core skills.

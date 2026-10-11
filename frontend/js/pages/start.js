@@ -7,6 +7,7 @@ import { state } from '../state.js';
 import { STATES, CATEGORIES, EDUCATION, EXAMPLE, profilePayload } from '../profileFields.js';
 import { chips, choiceCards, incomeSlider, typeahead, switchRow, bindControls } from '../components.js';
 import { saveAndRun } from '../run.js';
+import { api } from '../api.js';
 
 export const EDU_ICONS = { '9th': 'school', '10th': 'school', '11th': 'book-open', '12th': 'book-open', Diploma: 'layers', Undergraduate: 'graduation-cap', Postgraduate: 'badge-check' };
 export const FIELDS = ['Engineering', 'Science', 'Commerce', 'Arts', 'Medicine', 'Law', 'Agriculture', 'Computer Science'];
@@ -37,6 +38,13 @@ export const joinGoals = (chosen, rest) => [...chosen, rest].map((s) => (s || ''
 let step = 1;
 let dir = 'fwd';
 let draft = null;
+let described = null;   // what "Describe yourself" filled in, shown as chips
+
+const FIELD_NAMES = {
+  name: ['f.name', 'Name'], age: ['f.age', 'Age'], gender: ['f.gender', 'Gender'], state: ['f.state', 'State'],
+  category: ['f.category', 'Category'], education_level: ['f.education', 'Education'], field_of_study: ['f.field', 'Field of study'],
+  annual_income: ['f.income', 'Family income'], disability: ['f.disabilityShort', 'Disability'], goals: ['ob.s4', 'Goals'],
+};
 
 const QUESTIONS = [
   ['ob.q1', 'First, what should we call you?', 'ob.q1p', 'Only your name is required.'],
@@ -48,6 +56,17 @@ const QUESTIONS = [
 function body() {
   const d = draft;
   if (step === 1) return `
+    <div class="describe">
+      <label class="label" for="f-describe">${icon('wand-sparkles', 'icon-sm')} ${esc(t('ob.describe', 'Describe yourself in one line'))} <span class="quiet">(${esc(t('ob.optional', 'optional'))})</span></label>
+      <div class="describe-row">
+        <textarea class="textarea" id="f-describe" rows="2" maxlength="600" placeholder="${esc(t('ob.describePh', "e.g. I'm Aisha, a 21-year-old girl from Bengaluru doing B.Tech, OBC, family income 3 lakh, I want a job"))}">${esc(described?.text || '')}</textarea>
+        <button class="btn btn-secondary" type="button" id="obDescribe">${icon('sparkles', 'icon-sm')}${esc(t('ob.fillForMe', 'Fill in for me'))}</button>
+      </div>
+      ${described ? `<div class="describe-found" role="status">
+        <p class="tiny quiet">${esc(t('ob.filled', 'Filled {n} answers. Check them on each step:', { n: described.found.length }))}</p>
+        <div class="skills">${described.found.map((f) => `<span class="skill" title="${esc(t('ob.fromWords', 'from: "{w}"', { w: f.from }))}">${icon('check', 'icon-sm')}${esc(t(...(FIELD_NAMES[f.field] || [f.field, f.field])))}: ${esc(f.field === 'annual_income' ? '₹' + Number(f.value).toLocaleString('en-IN') : f.value === true ? t('yes', 'Yes') : f.value)}</span>`).join('')}</div>
+      </div>` : ''}
+    </div>
     <div class="field"><label class="label" for="f-name">${esc(t('f.name', 'Full name'))}</label>
       <input class="input input-lg" id="f-name" name="name" required maxlength="120" autocomplete="name" value="${esc(d.name || '')}" placeholder="${esc(t('ob.namePh', 'e.g. Aisha Kumar'))}" /></div>
     <div class="grid-2">
@@ -136,6 +155,21 @@ export const onboarding = {
     const go = (n, d) => { step = n; dir = d; onboarding.render(el); window.dispatchEvent(new Event('lp:title')); };
     el.querySelector('#obBack')?.addEventListener('click', () => { draft = read(form); go(step - 1, 'back'); });
     el.querySelector('#obSkip')?.addEventListener('click', () => go(step + 1, 'fwd'));
+    el.querySelector('#obDescribe')?.addEventListener('click', async (e) => {
+      const text = el.querySelector('#f-describe').value.trim();
+      if (!text) { el.querySelector('#f-describe').focus(); return; }
+      const btn = e.currentTarget;
+      btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+      try {
+        const res = await api('/api/ml/describe', { method: 'POST', json: { text } });
+        draft = { ...read(form), ...res.profile };
+        described = { ...res, text };
+        if (!res.found.length) toast(t('ob.nothingFound', 'Could not pick out any answers. Try adding your age, state or course.'), 'bad');
+        onboarding.render(el);
+      } catch (err) {
+        toast(err.message, 'bad'); btn.disabled = false; btn.textContent = t('ob.fillForMe', 'Fill in for me');
+      }
+    });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -154,7 +188,7 @@ export const onboarding = {
       btn.innerHTML = `<span class="spinner"></span>${esc(t('run.workingShort', 'Matching…'))}`;
       try {
         await saveAndRun(profilePayload(draft), () => { location.hash = '#/home'; });
-        draft = null; step = 1;
+        draft = null; step = 1; described = null;
       } catch (err) {
         btn.disabled = false; btn.textContent = t('ob.finish', 'Find my matches');
         toast(t('run.failed', 'Could not run the match: {msg}', { msg: err.message }), 'bad');

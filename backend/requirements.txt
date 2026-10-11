@@ -23,6 +23,10 @@ python-docx>=1.1.0
 # Vector database & embeddings
 chromadb==0.6.3
 
+# Machine learning (Phase 3): the models in app/ml/models were saved with this version
+scikit-learn==1.6.1
+joblib>=1.4
+
 # Testing (TestClient needs httpx, already listed above)
 pytest==8.3.4
 

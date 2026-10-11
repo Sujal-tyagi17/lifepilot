@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 
-from app.knowledge.rag import rag_answer
+from app.knowledge.rag import detect_intent, rag_answer
 from app.memory.store import add_message, get_context_string
 
 logger = logging.getLogger("lifepilot.assistant")
@@ -51,4 +51,5 @@ def answer(
     return {
         "answer": reply,
         "grounded_on": len(matches),
+        "intent": detect_intent(question),
     }

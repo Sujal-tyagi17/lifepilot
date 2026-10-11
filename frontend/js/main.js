@@ -19,11 +19,12 @@ import { jobs } from './pages/jobs.js';
 import { jobPlan } from './pages/plan.js';
 import { documents } from './pages/documents.js';
 import { how } from './pages/how.js';
+import { mlLab } from './pages/mllab.js';
 import { profile, applyTheme } from './pages/profile.js';
 
 const ROUTES = {
   '': landing, welcome: landing, start: onboarding, home, schemes, 'schemes/what-if': whatIf,
-  jobs, 'jobs/plan': jobPlan, documents, 'how-it-works': how, profile,
+  jobs, 'jobs/plan': jobPlan, documents, 'how-it-works': how, 'ml-lab': mlLab, profile,
 };
 
 const NAV = [
@@ -79,6 +80,7 @@ function renderChrome() {
           <div class="menu-head"><p style="font-weight:680">${esc(who || t('nav.guest', 'Guest'))}</p><p class="tiny quiet">${esc(state.user ? (state.user.email || '') : t('nav.guestNote', 'Saved in this browser'))}</p></div>
           <a role="menuitem" href="#/profile">${icon('user-round')}${esc(t('nav.profile', 'Profile and settings'))}</a>
           <a role="menuitem" href="#/how-it-works">${icon('route')}${esc(t('nav.how', 'How it works'))}</a>
+          <a role="menuitem" href="#/ml-lab">${icon('bot')}${esc(t('ml.title', 'ML Lab'))}</a>
           <button role="menuitem" type="button" data-cmd="palette">${icon('command')}${esc(t('palette.open', 'Commands'))} <span class="spacer"></span><kbd>Ctrl K</kbd></button>
           ${state.user
             ? `<button role="menuitem" type="button" data-cmd="signout">${icon('log-out')}${esc(t('auth.signout', 'Sign out'))}</button>`
@@ -170,6 +172,7 @@ function commands() {
     { icon: 'printer', label: t('cmd.print', 'Print action plan'), keys: 'pdf', run: printPlan },
     { icon: 'user-round', label: t('cmd.profile', 'Edit profile'), keys: 'settings', run: go('#/profile') },
     { icon: 'route', label: t('cmd.how', 'How it works'), keys: 'agents trace', run: go('#/how-it-works') },
+    { icon: 'bot', label: t('cmd.ml', 'Open ML Lab'), keys: 'machine learning models metrics', run: go('#/ml-lab') },
     { icon: 'moon', label: t('cmd.theme', 'Switch light/dark'), keys: 'theme dark', run: toggleTheme },
     { icon: 'languages', label: t('cmd.lang', 'Change language'), keys: 'hindi english', run: toggleLang },
   ];

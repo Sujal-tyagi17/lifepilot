@@ -1,0 +1,122 @@
+[
+ {
+  "query": "scholarship for SC students after class 10",
+  "expect": "nsp-post-matric-sc"
+ },
+ {
+  "query": "OBC post matric scholarship",
+  "expect": "nsp-post-matric-obc"
+ },
+ {
+  "query": "money for backward class students in class 9",
+  "expect": "pm-yasasvi"
+ },
+ {
+  "query": "science degree scholarship for toppers",
+  "expect": "inspire-she"
+ },
+ {
+  "query": "Karnataka state scholarship for college students",
+  "expect": "cm-vidyasiri-karnataka"
+ },
+ {
+  "query": "scholarship for girls in engineering",
+  "expect": "aicte-pragati-girls"
+ },
+ {
+  "query": "support for students with a disability",
+  "expect": "swami-vivekananda-disability"
+ },
+ {
+  "query": "merit scholarship for top 12th marks",
+  "expect": "central-sector-merit"
+ },
+ {
+  "query": "free skill training with stipend",
+  "expect": "pmkvy-skill"
+ },
+ {
+  "query": "funding for my startup idea",
+  "expect": "startup-india-seed"
+ },
+ {
+  "query": "dalit students fees help",
+  "expect": "nsp-post-matric-sc"
+ },
+ {
+  "query": "OBC fees reimbursement college",
+  "expect": "nsp-post-matric-obc"
+ },
+ {
+  "query": "YASASVI",
+  "expect": "pm-yasasvi"
+ },
+ {
+  "query": "INSPIRE SHE",
+  "expect": "inspire-she"
+ },
+ {
+  "query": "Vidyasiri",
+  "expect": "cm-vidyasiri-karnataka"
+ },
+ {
+  "query": "AICTE girls technical education",
+  "expect": "aicte-pragati-girls"
+ },
+ {
+  "query": "divyang scholarship",
+  "expect": "swami-vivekananda-disability"
+ },
+ {
+  "query": "central sector scholarship",
+  "expect": "central-sector-merit"
+ },
+ {
+  "query": "Kaushal Vikas",
+  "expect": "pmkvy-skill"
+ },
+ {
+  "query": "seed fund for entrepreneurs",
+  "expect": "startup-india-seed"
+ },
+ {
+  "query": "BSc physics scholarship",
+  "expect": "inspire-she"
+ },
+ {
+  "query": "diploma girl student scholarship",
+  "expect": "aicte-pragati-girls"
+ },
+ {
+  "query": "learn a trade and get placement",
+  "expect": "pmkvy-skill"
+ },
+ {
+  "query": "prototype grant for a new business",
+  "expect": "startup-india-seed"
+ },
+ {
+  "query": "hostel and food help for Karnataka students",
+  "expect": "cm-vidyasiri-karnataka"
+ },
+ {
+  "query": "scheduled caste scholarship",
+  "expect": "nsp-post-matric-sc"
+ },
+ {
+  "query": "physically challenged students money",
+  "expect": "swami-vivekananda-disability"
+ },
+ {
+  "query": "top rank in class 12 scholarship",
+  "expect": "central-sector-merit"
+ },
+ {
+  "query": "EBC DNT students scholarship",
+  "expect": "pm-yasasvi"
+ },
+ {
+  "query": "job training scheme government",
+  "expect": "pmkvy-skill"
+ }
+]

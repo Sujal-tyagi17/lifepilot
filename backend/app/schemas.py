@@ -107,3 +107,4 @@ class AssistantRequest(BaseModel):
 class AssistantResponse(BaseModel):
     answer: str
     grounded_on: int
+    intent: dict | None = None   # {"label", "confidence", "by": "model" | "keywords"}
