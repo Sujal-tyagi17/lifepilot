@@ -198,7 +198,7 @@ function results(el) {
     ${weak.length ? `<div class="row" style="justify-content:center;margin-top:16px"><button class="btn btn-quiet btn-sm" type="button" id="jWeak" aria-expanded="${showWeak}">
         ${icon(showWeak ? 'chevron-up' : 'chevron-down', 'icon-sm')}${esc(showWeak ? t('jobs.hideWeak', 'Hide weaker matches') : t('jobs.showWeak', 'Show {n} weaker matches', { n: weak.length }))}</button></div>
       ${showWeak ? `<div style="margin-top:12px">${list(weak)}</div>` : ''}` : ''}
-    ${samples.length ? `<div class="row" style="justify-content:center;margin-top:10px"><button class="btn btn-quiet btn-sm" type="button" id="jSamples" aria-expanded="${samplesOpen}">
+    ${samples.length && !(rep.sources || []).length ? `<div class="row" style="justify-content:center;margin-top:10px"><button class="btn btn-quiet btn-sm" type="button" id="jSamples" aria-expanded="${samplesOpen}">
           ${icon(samplesOpen ? 'chevron-up' : 'chevron-down', 'icon-sm')}${esc(samplesOpen ? t('jobs.hideSamples', 'Hide example roles') : t('jobs.showSamples', 'Show {n} example roles', { n: samples.length }))}</button></div>
         ${samplesOpen ? `<div style="margin-top:12px">${head(t('jobs.gSamples', 'Example roles (not live openings)'), samples.length)}${list(samples)}</div>` : ''}` : ''}`;
   animateIn(box);
