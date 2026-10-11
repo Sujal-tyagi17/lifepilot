@@ -210,3 +210,21 @@ def test_company_career_pages_count_as_postings():
     assert _site_of("https://jobs.lever.co/acme/3f1c2a9e-1111-2222-3333-444455556666") == "Company site"
     assert _site_of("https://boards.greenhouse.io/acme/jobs/123456") == "Company site"
     assert _site_of("https://www.naukri.com/data-analyst-jobs-in-bangalore") is None
+
+
+def test_fresher_does_not_get_senior_roles():
+    fresher = candidate({"education_level": "Undergraduate"}, "Skills\nPython, SQL\nEducation\nB.Tech 2022-2026")
+    senior = {"title": "Senior Software Engineer", "description": "Python, SQL."}
+    junior = {"title": "Junior Python Developer", "description": "Python, SQL."}
+    s, j = score_with(senior, fresher), score_with(junior, fresher)
+    assert s["too_senior"] and s["group"] == "weak" and any("Senior role" in u for u in s["unmet"])
+    assert not j["too_senior"] and j["group"] != "weak" and j["fit_score"] > s["fit_score"]
+    # an experienced person still sees it
+    pro = candidate({}, "Experience\nDeveloper, Acme  Jan 2018 - Dec 2023\nUsed Python and SQL")
+    assert not score_with(senior, pro)["too_senior"]
+
+
+def test_short_posts_are_not_overconfident():
+    cand = candidate({}, "", user_skills=["Python"])
+    thin = score_with({"title": "Python developer", "description": ""}, cand)
+    assert thin["fit_score"] < 0.8

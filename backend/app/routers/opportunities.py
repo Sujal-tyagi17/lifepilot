@@ -155,9 +155,12 @@ def match_jobs(payload: JobMatchRequest):
     # Live sources are searched in the user's state and across India; ranking
     # then puts their state first, remote next, then the rest of India.
     jobs = search_jobs(query, payload.skills or [], profile.get("state"), limit=0, filter_samples=False,
-                       include_rss=False)
+                       include_rss=False, fresher=cand["fresher"])
     report = match_report(jobs, profile, cand=cand)
     report["sources"] = live_sources()
+    if report["sources"]:
+        # Live search is set up: show real openings only, never the example roles
+        report["jobs"] = [j for j in report["jobs"] if j.get("source") != "sample"]
     scopes = {"India", profile.get("state") or "India"}
     report["source_status"] = [{"source": k, "message": v} for k, v in source_status().items()
                                if k.split(" · ")[-1] in scopes]

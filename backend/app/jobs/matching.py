@@ -107,6 +107,8 @@ def candidate(profile: dict | None = None, resume_text: str = "", desired_role: 
         "target_from": how if target else None,
         "years": r["years"] + 0.5 * min(r["internships"], 2),
         "has_resume": r["has_resume"],
+        # A fresher: under a year of work on the resume, or a student with no resume yet
+        "fresher": (r["years"] < 1) if r["has_resume"] else (level is not None and level <= 6),
         "bag": _bag(resume_text),
     }
 
@@ -177,20 +179,27 @@ def score_with(job: dict, cand: dict, parsed: dict | None = None) -> dict:
     else:
         signals["role"] = None
 
-    # Experience
+    # Experience. Titles like "Senior", "Lead" or "Principal" imply years even
+    # when the post does not state them.
     need = a["min_years"]
+    knows_years = cand["has_resume"] or cand["fresher"]
+    too_senior = bool(cand["fresher"] and need is not None and need >= 3)
     if need is None:
-        signals["experience"] = None
+        signals["experience"] = 1.0 if (cand["fresher"] and a["junior"]) else None
+        if cand["fresher"] and a["junior"]:
+            reasons.append("Made for freshers and juniors")
     elif need == 0:
         signals["experience"] = 1.0
         reasons.append("Open to freshers")
-    elif cand["has_resume"]:
+    elif knows_years:
         got = cand["years"]
         signals["experience"] = min(1.0, got / need)
         if got >= need:
             reasons.append(f"Your experience ({got:g} yrs) meets the {need:g}+ years asked")
         else:
-            unmet.append(f"Asks for {need:g}+ years of experience (you: {got:g})")
+            you = "fresher" if cand["fresher"] else f"{got:g} yrs"
+            what = f"{a['seniority']}: usually needs" if a["seniority"] else "Asks for"
+            unmet.append(f"{what} {need:g}+ years of experience (you: {you})")
     else:
         signals["experience"] = None
 
@@ -222,10 +231,13 @@ def score_with(job: dict, cand: dict, parsed: dict | None = None) -> dict:
 
     known = {k: v for k, v in signals.items() if v is not None}
     total_weight = sum(WEIGHTS[k] for k in known)
-    fit = sum(WEIGHTS[k] * v for k, v in known.items()) / total_weight if total_weight else 0.0
+    # A short post that names only one or two skills tells us little, so its
+    # score is held back (up to 30%) until it names four or more.
+    detail = 0.7 + 0.3 * min(1.0, len(a["must_units"]) / 4)
+    fit = detail * sum(WEIGHTS[k] * v for k, v in known.items()) / total_weight if total_weight else 0.0
     breakdown = [
         {"signal": k, "value": round(v, 2), "weight": round(WEIGHTS[k] / total_weight, 2),
-         "points": round(100 * WEIGHTS[k] * v / total_weight, 1)}
+         "points": round(100 * detail * WEIGHTS[k] * v / total_weight, 1)}
         for k, v in known.items()
     ]
 
@@ -233,7 +245,9 @@ def score_with(job: dict, cand: dict, parsed: dict | None = None) -> dict:
     # to), other roles your resume fits, or weak matches hidden by default.
     coverage = len(have_must) / len(a["must_units"]) if a["must_units"] else 0.0
     role = signals["role"]
-    if role is not None and role >= 0.5:
+    if too_senior:
+        group = "weak"    # a senior role is not shown to a fresher unless they open weaker matches
+    elif role is not None and role >= 0.5:
         group = "target"
     elif coverage >= 0.6 or fit >= 0.5 or (role is None and (coverage >= 0.34 or fit >= 0.35)):
         group = "other"
@@ -262,6 +276,8 @@ def score_with(job: dict, cand: dict, parsed: dict | None = None) -> dict:
         "skills_weak": weak,
         "alternatives": alts,
         "min_years": a["min_years"],
+        "too_senior": too_senior,
+        "seniority": a["seniority"],
         "location_rank": location_rank(job, cand.get("state"))[0],
         "location_tag": location_rank(job, cand.get("state"))[1],
         "education_required": req[1] if req else None,

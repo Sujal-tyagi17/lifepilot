@@ -25,6 +25,7 @@ import logging
 import re
 import time
 from concurrent.futures import ThreadPoolExecutor
+from functools import partial
 from pathlib import Path
 from typing import Callable
 
@@ -298,13 +299,15 @@ def _serper(q: str) -> list[dict] | str:
         return "bad response"
 
 
-def web_job_postings(query: str, location: str | None) -> list[dict]:
+def web_job_postings(query: str, location: str | None, fresher: bool = False) -> list[dict]:
     if not settings.serper_api_key:
         return []
 
     def fetch() -> list[dict]:
         place = _place_terms(location)
-        queries = [f'{" OR ".join(f"site:{x}" for x in group)} "{query}" {place}' for group in QUERY_GROUPS]
+        # Freshers: leave senior, lead and manager roles out of the search itself
+        level = " -senior -sr -lead -principal -staff -manager -architect -director" if fresher else ""
+        queries = [f'{" OR ".join(f"site:{x}" for x in group)} "{query}" {place}{level}' for group in QUERY_GROUPS]
         with ThreadPoolExecutor(max_workers=len(queries)) as pool:
             answers = list(pool.map(_serper, queries))
         errors = [a for a in answers if isinstance(a, str)]
@@ -338,18 +341,18 @@ def web_job_postings(query: str, location: str | None) -> list[dict]:
             _note(f"Google · {location or 'India'}", f"{len(jobs)} postings found")
         return jobs
 
-    return cached(f"webjobs:{query.lower()}:{(location or 'india').lower()}", fetch)
+    return cached(f"webjobs:{query.lower()}:{(location or 'india').lower()}:{int(fresher)}", fetch)
 
 
 # ── 4b. Google Jobs through SerpApi (free plan: serpapi.com) ──
 
-def google_jobs(query: str, location: str | None) -> list[dict]:
+def google_jobs(query: str, location: str | None, fresher: bool = False) -> list[dict]:
     """Structured listings from Google's job search: title, company, place, full description."""
     if not settings.serpapi_key:
         return []
 
     def fetch() -> list[dict]:
-        params = {"engine": "google_jobs", "q": query, "location": f"{location}, India" if location else "India",
+        params = {"engine": "google_jobs", "q": f"{query} fresher" if fresher else query, "location": f"{location}, India" if location else "India",
                   "gl": "in", "hl": "en", "api_key": settings.serpapi_key}
         try:
             with httpx.Client(timeout=20.0) as client:
@@ -381,7 +384,7 @@ def google_jobs(query: str, location: str | None) -> list[dict]:
         _note(f"Google Jobs · {location or 'India'}", f"{len(jobs)} listings found")
         return jobs
 
-    return cached(f"gjobs:{query.lower()}:{(location or 'india').lower()}", fetch)
+    return cached(f"gjobs:{query.lower()}:{(location or 'india').lower()}:{int(fresher)}", fetch)
 
 
 # ── 5. Jooble (free key on request: jooble.org/api/about) ────
@@ -450,7 +453,7 @@ def _matches_query(job: dict, terms: list[str]) -> bool:
 
 def search_jobs(query: str = "", skills: list[str] | None = None, location: str | None = None,
                 live: bool = True, limit: int = 50, filter_samples: bool = True,
-                include_rss: bool = True) -> list[dict]:
+                include_rss: bool = True, fresher: bool = False) -> list[dict]:
     """Search all sources, filter by the query, and de-duplicate."""
     skills = skills or []
     q = (query or "").strip().lower()
@@ -464,7 +467,8 @@ def search_jobs(query: str = "", skills: list[str] | None = None, location: str 
             # The user's state first, then all of India, so nearby jobs are
             # never crowded out by the big cities.
             scopes = [location, None] if location and location.lower() not in ("india", "remote") else [None]
-            calls = [(fn, where) for where in scopes for fn in (adzuna_jobs, jooble_jobs, web_job_postings, google_jobs)]
+            sources_ = (adzuna_jobs, jooble_jobs, partial(web_job_postings, fresher=fresher), partial(google_jobs, fresher=fresher))
+            calls = [(fn, where) for where in scopes for fn in sources_]
             with ThreadPoolExecutor(max_workers=len(calls)) as pool:  # sources are slow; ask them all at once
                 for found in pool.map(lambda c: c[0](q, c[1]), calls):
                     jobs += found
