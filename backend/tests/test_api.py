@@ -73,7 +73,8 @@ def test_job_match_endpoint(client):
     assert r.status_code == 200 and jobs
     target = [j for j in jobs if j["group"] == "target"]
     assert target and jobs[: len(target)] == target  # the role asked for comes first
-    assert target[0]["fit_score"] >= target[-1]["fit_score"]
+    key = [(j["source"] == "sample", j["location_rank"], not j["eligible"], -j["fit_score"]) for j in target]
+    assert key == sorted(key)
     assert all(j["salary"] == "Not disclosed" and j["salary_num"] is None for j in jobs)
     assert "fit_breakdown" in jobs[0]
     assert body["target_family"] == "backend" and body["resume"]["has_resume"]
