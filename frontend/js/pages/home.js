@@ -2,7 +2,7 @@
 import { esc, fmtINR, daysLeft, fmtDate, matchStatus } from '../util.js';
 import { t, getLang } from '../i18n.js';
 import { icon, stamp } from '../ui.js';
-import { runLoader, startLoader } from '../loader.js';
+import { runLoader, startLoader, resetLoader } from '../loader.js';
 import { emptyCard, ring, animateIn } from '../components.js';
 import { state, eligibleMatches, readiness, hasDoc } from '../state.js';
 import { runAgents } from '../run.js';
@@ -142,12 +142,14 @@ export const home = {
   deps: ['run', 'running', 'runError', 'profile', 'jobs', 'vault', 'ownedDocs'],
   render(el) {
     const name = (state.profile?.name || '').split(' ')[0];
+    // While the agents run (first time, after Save, or Check again) show the full loader
+    if (state.running) {
+      el.innerHTML = runLoader();
+      startLoader(el);
+      return;
+    }
+    resetLoader();
     if (!state.run) {
-      if (state.running) {
-        el.innerHTML = runLoader();
-        startLoader(el);
-        return;
-      }
       el.innerHTML = state.runError
         ? `<p class="notice notice-bad" role="alert">${icon('triangle-alert')}<span>${esc(state.runError)}</span></p>
            <div class="row" style="margin-top:16px"><button class="btn btn-primary" id="hRun">${icon('refresh-cw')}${esc(t('run.again', 'Check again'))}</button></div>`
