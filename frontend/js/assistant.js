@@ -1,6 +1,6 @@
 /* Assistant: a drawer available on every page. Answers come from your saved results. */
 import { $, esc } from './util.js';
-import { t } from './i18n.js';
+import { t, langInfo } from './i18n.js';
 import { icon } from './ui.js';
 import { logoMark } from './brand.js';
 import { api } from './api.js';
@@ -66,7 +66,7 @@ function render() {
     <form class="chat-form" id="chatForm">
       <label class="sr-only" for="chatInput">${esc(t('asst.ph', 'Ask about eligibility, documents, deadlines'))}</label>
       <input class="input" id="chatInput" autocomplete="off" maxlength="500" placeholder="${esc(t('asst.ph', 'Ask about eligibility, documents, deadlines'))}" ${state.profileId ? '' : 'disabled'} />
-      ${canListen() ? `<button class="btn btn-secondary btn-icon mic-btn" type="button" id="micBtn" aria-pressed="false" aria-label="${esc(t('voice.mic', 'Speak your question ({lang})', { lang: voiceLang() === 'hi-IN' ? 'हिन्दी' : 'English' }))}" title="${esc(t('voice.micTip', 'Speak in {lang}. Your browser sends the audio to its speech service to turn it into text.', { lang: voiceLang() === 'hi-IN' ? 'हिन्दी' : 'English' }))}" ${state.profileId ? '' : 'disabled'}>${icon('mic')}</button>` : ''}
+      ${canListen() ? `<button class="btn btn-secondary btn-icon mic-btn" type="button" id="micBtn" aria-pressed="false" aria-label="${esc(t('voice.mic', 'Speak your question ({lang})', { lang: langInfo().native }))}" title="${esc(t('voice.micTip', 'Speak in {lang}. Your browser sends the audio to its speech service to turn it into text.', { lang: langInfo().native }))}" ${state.profileId ? '' : 'disabled'}>${icon('mic')}</button>` : ''}
       <button class="btn btn-primary btn-icon" type="submit" aria-label="${esc(t('asst.send', 'Send'))}" ${state.profileId ? '' : 'disabled'}>${icon('send')}</button>
     </form>`;
   const chat = $('#chatLog'); chat.scrollTop = chat.scrollHeight;

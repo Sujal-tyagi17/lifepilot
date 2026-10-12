@@ -19,7 +19,8 @@ export const GOALS = [
 ];
 
 export const genderOptions = () => [['Female', t('g.female', 'Female')], ['Male', t('g.male', 'Male')], ['Other', t('g.other', 'Other')]];
-export const eduOptions = () => EDUCATION.map(([v, en, hi]) => [v, getLang() === 'hi' ? hi : en, EDU_ICONS[v]]);
+export const eduLabel = ([v, en, hi]) => (getLang() === 'hi' ? hi : t(`edu.${v}`, en));
+export const eduOptions = () => EDUCATION.map((e) => [e[0], eduLabel(e), EDU_ICONS[e[0]]]);
 
 /** Canonical state name for typed input, or null. */
 export const matchState = (v) => STATES.find((s) => s.toLowerCase() === String(v || '').trim().toLowerCase()) || null;

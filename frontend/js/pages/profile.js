@@ -1,6 +1,6 @@
 /* Profile and settings: the same tap-to-choose controls as onboarding, plus preferences. */
 import { esc, store } from '../util.js';
-import { t, getLang, setLang } from '../i18n.js';
+import { t, getLang, setLang, LANGS } from '../i18n.js';
 import { icon, toast, confirmDialog } from '../ui.js';
 import { state } from '../state.js';
 import { STATES, CATEGORIES, profilePayload } from '../profileFields.js';
@@ -61,7 +61,7 @@ export const profile = {
       <div style="max-width:820px">
         ${section('hPrefs', t('prof.prefs', 'Preferences'), `
           <div class="grid-2">
-            ${chips('lang', [['en', 'English'], ['hi', 'हिन्दी']], getLang(), { label: t('prof.language', 'Language'), id: 'pLang' })}
+            ${chips('lang', LANGS.map((l) => [l.code, l.native]), getLang(), { label: t('prof.language', 'Language'), id: 'pLang' })}
             ${chips('theme', [['system', t('prof.system', 'Same as my device')], ['light', t('prof.light', 'Light')], ['dark', t('prof.dark', 'Dark')]], theme, { label: t('prof.theme', 'Colours'), id: 'pTheme' })}
           </div>`)}
         ${section('hDel', t('prof.delete', 'Delete my data'), `
@@ -104,7 +104,7 @@ export const profile = {
         btn.disabled = false; btn.textContent = t('prof.save', 'Save and check again');
       }
     });
-    el.querySelectorAll('#pLang input').forEach((r) => r.addEventListener('change', () => { setLang(r.value); ctx.refresh(); }));
+    el.querySelectorAll('#pLang input').forEach((r) => r.addEventListener('change', async () => { await setLang(r.value); ctx.refresh(); }));
     el.querySelectorAll('#pTheme input').forEach((r) => r.addEventListener('change', () => { applyTheme(r.value); ctx.refreshChrome(); }));
     el.querySelector('#pDelete').addEventListener('click', async () => {
       const ok = await confirmDialog({

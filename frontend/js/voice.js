@@ -1,14 +1,14 @@
 /* Voice in and out with the browser's Web Speech API, in Hindi or English.
    Note: in Chrome and Edge, speech recognition sends the audio to the browser
    maker's servers. Reading answers aloud runs on the device. */
-import { getLang } from './i18n.js';
+import { getLang, langInfo } from './i18n.js';
 import { store } from './util.js';
 
 const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 export const canListen = () => !!Recognition && window.isSecureContext !== false;
 export const canSpeak = () => 'speechSynthesis' in window && typeof SpeechSynthesisUtterance === 'function';
-export const voiceLang = () => (getLang() === 'hi' ? 'hi-IN' : 'en-IN');
+export const voiceLang = () => langInfo().speech;
 
 let current = null;
 
@@ -69,16 +69,25 @@ export function plain(text) {
     .replace(/https?:\/\/\S+/g, '')
     .replace(/[*_#`>]/g, '')
     .replace(/^\s*[-•]\s+/gm, '')
-    .replace(/₹\s?/g, getLang() === 'hi' ? '₹' : 'rupees ')
+    .replace(/₹\s?/g, getLang() === 'en' ? 'rupees ' : '₹')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+/* Pick a voice from the script the text is written in, so a Hindi answer is
+   read with a Hindi voice even when the app is in English. */
+const SCRIPTS = [[/[\u0980-\u09FF]/, 'bn-IN'], [/[\u0B80-\u0BFF]/, 'ta-IN'], [/[\u0C00-\u0C7F]/, 'te-IN']];
+function scriptLang(text) {
+  for (const [re, l] of SCRIPTS) if (re.test(text)) return l;
+  if (/[\u0900-\u097F]/.test(text)) return getLang() === 'mr' ? 'mr-IN' : 'hi-IN';
+  return voiceLang();
 }
 
 export function speak(text, lang) {
   if (!canSpeak()) return;
   window.speechSynthesis.cancel();
   // Hindi text is read with a Hindi voice even when the app is in English
-  const l = lang || (/[ऀ-ॿ]/.test(text) ? 'hi-IN' : voiceLang());
+  const l = lang || scriptLang(text);
   const u = new SpeechSynthesisUtterance(plain(text).slice(0, 1200));
   u.lang = l;
   const v = pickVoice(l);

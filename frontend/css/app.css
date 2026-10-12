@@ -15,6 +15,11 @@
 @font-face { font-family: "Anek"; src: url("../fonts/anek-devanagari.woff2") format("woff2-variations"); font-weight: 100 800; font-stretch: 75% 125%; font-display: swap;
   unicode-range: U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20A8, U+25CC, U+A830-A839, U+A8E0-A8FF; }
 
+/* Other Indian scripts: each file downloads only when its script appears on the page */
+@font-face { font-family: "Anek"; src: url("../fonts/anek-bangla.woff2") format("woff2-variations"); font-weight: 100 800; font-stretch: 75% 125%; font-display: swap; unicode-range: U+0980-09FE; }
+@font-face { font-family: "Anek"; src: url("../fonts/anek-tamil.woff2") format("woff2-variations"); font-weight: 100 800; font-stretch: 75% 125%; font-display: swap; unicode-range: U+0B82-0BFA; }
+@font-face { font-family: "Anek"; src: url("../fonts/anek-telugu.woff2") format("woff2-variations"); font-weight: 100 800; font-stretch: 75% 125%; font-display: swap; unicode-range: U+0C00-0C7F; }
+
 /* ── Tokens ── */
 :root {
   --bg: #f4f5fa;
@@ -1195,3 +1200,19 @@ kbd { font-family: inherit; font-size: .75rem; border: 1px solid var(--line-stro
 @media (max-width: 560px) { .foot-inner { grid-template-columns: 1fr 1fr; } .site-footer { padding-top: 56px; } }
 @media (max-width: 900px) { .site-footer { padding-bottom: calc(110px + env(safe-area-inset-bottom)); } }
 @media print { .site-footer { display: none !important; } }
+
+/* Language menu */
+.lang-menu { min-width: 210px; max-height: min(70vh, 520px); overflow-y: auto; }
+.lang-menu button { justify-content: flex-start; }
+.lang-menu .lang-native { font-weight: 650; min-width: 84px; }
+.lang-menu .tiny { flex: 1; }
+.lang-menu [aria-checked="true"] { background: var(--surface-2); }
+.lang-menu [aria-checked="true"] .icon { color: var(--saffron); }
+.lang-btn span { min-width: 1.6em; }
+.foot-select { position: relative; padding-right: 10px; }
+.foot-select select { appearance: none; -webkit-appearance: none; background: none; border: 0; color: inherit; font: inherit; font-weight: 600; cursor: pointer; padding: 0 18px 0 0; }
+.foot-select::after { content: ""; position: absolute; right: 12px; top: 50%; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-70%) rotate(45deg); pointer-events: none; }
+.foot-select select option { color: #0b1640; }
+/* Scripts that need more line height */
+:root:is([lang="bn"], [lang="mr"], [lang="te"], [lang="ta"]) :is(.hero-title, .display, .ob-q, .h1) { line-height: 1.28; }
+:root[lang="ta"] .hero-title { font-size: clamp(2rem, 3.6vw + .4rem, 3.3rem); }

@@ -8,6 +8,7 @@ import { runAgents } from '../run.js';
 import { downloadCalendar, printPlan } from '../print.js';
 import { EDUCATION } from '../profileFields.js';
 import { thisWeek } from './planner.js';
+import { eduLabel } from './start.js';
 import { rosette } from '../brand.js';
 import { burst } from '../fx.js';
 
@@ -26,7 +27,7 @@ function fileFields() {
   const p = state.profile || {};
   const edu = EDUCATION.find(([v]) => v === p.education_level);
   const fields = [
-    ['f.education', 'Education', edu ? (getLang() === 'hi' ? edu[2] : edu[1]) : null, 'graduation-cap'],
+    ['f.education', 'Education', edu ? eduLabel(edu) : null, 'graduation-cap'],
     ['f.category', 'Category', p.category, 'users'],
     ['f.state', 'State', p.state, 'map-pin'],
     ['f.income', 'Family income per year (₹)', p.annual_income != null ? fmtINR(p.annual_income) : null, 'wallet'],
@@ -113,7 +114,7 @@ function deadlines() {
     <li class="${d <= 7 ? 'urgent' : d <= 30 ? 'soon' : ''}">
       <span class="pin" aria-hidden="true"></span>
       <div>
-        <p class="timeline-date num">${esc(fmtDate(m.deadline, lang))} <span class="quiet small">· ${d === 0 ? esc(t('sch.closesToday', 'Closes today')) : `${d} ${lang === 'hi' ? 'दिन' : d === 1 ? 'day' : 'days'}`}</span></p>
+        <p class="timeline-date num">${esc(fmtDate(m.deadline, lang))} <span class="quiet small">· ${d === 0 ? esc(t('sch.closesToday', 'Closes today')) : esc(d === 1 ? t('home.day1', '1 day') : t('home.dayN', '{d} days', { d }))}</span></p>
         <p class="small">${esc(m.title)}</p>
       </div>
     </li>`).join('')}</ol>`;
