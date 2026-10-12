@@ -20,7 +20,7 @@ export function fmtDate(iso, lang = 'en') {
   if (!iso) return '';
   const d = new Date(iso + 'T00:00:00');
   if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  return d.toLocaleDateString(`${lang || 'en'}-IN`, { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 /** Annual rupee value of a recurring benefit; 0 for one-time or unknown amounts.

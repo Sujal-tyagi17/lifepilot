@@ -50,7 +50,7 @@ function journey(p) {
     </div>
     <div class="progress-line"><span style="width:${steps ? (100 * done) / steps : 0}%"></span></div>
     <p class="small quiet" style="margin-top:8px">${esc(t('plan.progress', '{d} of {n} steps done · {w} weeks at {h} hrs/week', { d: done, n: steps, w: p.total_weeks, h: p.hours_per_week }))}</p>
-    ${p.ready_by ? `<p class="ready-by">${icon('calendar-clock', 'icon-sm')} ${esc(t('plan.readyBy', 'Job-ready by {d}', { d: new Date(p.ready_by).toLocaleDateString(getLang() === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) }))}</p>` : ''}
+    ${p.ready_by ? `<p class="ready-by">${icon('calendar-clock', 'icon-sm')} ${esc(t('plan.readyBy', 'Job-ready by {d}', { d: new Date(p.ready_by).toLocaleDateString(`${getLang()}-IN`, { day: 'numeric', month: 'short', year: 'numeric' }) }))}</p>` : ''}
     ${p.pace ? `<p class="pace pace-${esc(p.pace.key)}">${icon('gauge', 'icon-sm')} ${esc(t(`pace.${p.pace.key}`, p.pace.label))}</p>` : ''}`;
 }
 

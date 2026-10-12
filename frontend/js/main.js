@@ -1,6 +1,6 @@
 /* LifePilot app entry: floating top navigation, hash router, startup. */
 import { $, esc } from './util.js';
-import { t, getLang, setLang } from './i18n.js';
+import { t, getLang, setLang, loadLang, LANGS, langInfo } from './i18n.js';
 import { icon } from './icons.js';
 import { toast } from './ui.js';
 import { api } from './api.js';
@@ -41,6 +41,7 @@ const NAV = [
 let current = { name: null, page: null, params: new URLSearchParams() };
 let firstRoute = true;  // on first load keep focus at the top so "Skip to content" is the first Tab stop
 let menuOpen = false;
+let langOpen = false;
 
 function parseHash() {
   const raw = location.hash.replace(/^#\/?/, '');
@@ -76,7 +77,11 @@ function renderChrome() {
   const initials = who.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join('') || '?';
 
   $('#navActions').innerHTML = `
-    <button class="icon-btn lang-btn" type="button" id="langBtn" title="${esc(t('prof.language', 'Language'))}">${icon('languages', 'icon-sm')}<span lang="${getLang() === 'hi' ? 'en' : 'hi'}">${getLang() === 'hi' ? 'EN' : 'हिं'}</span></button>
+    <div class="menu-wrap lang-wrap">
+      <button class="icon-btn lang-btn" type="button" id="langBtn" aria-haspopup="menu" aria-expanded="${langOpen}" title="${esc(t('prof.language', 'Language'))}" aria-label="${esc(t('prof.language', 'Language'))}: ${esc(langInfo().native)}">${icon('languages', 'icon-sm')}<span>${esc(langInfo().short)}</span></button>
+      ${langOpen ? `<div class="menu lang-menu" role="menu" id="langMenu">${LANGS.map((l) => `<button role="menuitemradio" type="button" aria-checked="${l.code === getLang()}" data-lang="${l.code}" lang="${l.code}">
+        <span class="lang-native">${esc(l.native)}</span><span class="tiny quiet">${esc(l.name)}</span>${l.code === getLang() ? icon('check', 'icon-sm') : ''}</button>`).join('')}</div>` : ''}
+    </div>
     <button class="icon-btn" type="button" id="themeBtn" aria-label="${esc(dark ? t('theme.light', 'Switch to light mode') : t('theme.dark', 'Switch to dark mode'))}">${icon(dark ? 'sun' : 'moon')}</button>
     ${known ? `<div class="menu-wrap">
         <button class="icon-btn" type="button" id="menuBtn" aria-haspopup="menu" aria-expanded="${menuOpen}" aria-label="${esc(t('nav.account', 'Account menu'))}"><span class="avatar">${esc(initials)}</span></button>
@@ -94,11 +99,12 @@ function renderChrome() {
       : `<button class="btn btn-quiet btn-sm" type="button" data-cmd="signin">${esc(t('auth.signin', 'Sign in'))}</button>
          <a class="btn btn-primary btn-sm" href="#/start">${esc(t('land.start', 'Get started free'))}</a>`}`;
 
-  $('#langBtn').addEventListener('click', toggleLang);
+  $('#langBtn').addEventListener('click', (e) => { e.stopPropagation(); langOpen = !langOpen; menuOpen = false; renderChrome(); if (langOpen) $('#langMenu [aria-checked="true"]')?.focus(); });
+  $('#navActions').querySelectorAll('[data-lang]').forEach((b) => b.addEventListener('click', () => { langOpen = false; changeLang(b.dataset.lang); }));
   $('#themeBtn').addEventListener('click', toggleTheme);
-  $('#menuBtn')?.addEventListener('click', (e) => { e.stopPropagation(); menuOpen = !menuOpen; renderChrome(); if (menuOpen) $('#acctMenu a')?.focus(); });
+  $('#menuBtn')?.addEventListener('click', (e) => { e.stopPropagation(); menuOpen = !menuOpen; langOpen = false; renderChrome(); if (menuOpen) $('#acctMenu a')?.focus(); });
   $('#navActions').querySelectorAll('[data-cmd]').forEach((b) => b.addEventListener('click', () => {
-    menuOpen = false;
+    menuOpen = false; langOpen = false;
     ({ palette: openPalette, signin: signIn, signout: signOut })[b.dataset.cmd]();
     renderChrome();
   }));
@@ -123,7 +129,8 @@ function renderFooter() {
         <a class="foot-brand" href="#/">${logoMark()}<span>LifePilot</span></a>
         <p class="foot-tag">${esc(t('land.foot', 'Scholarships, schemes and jobs, checked against your profile.'))}</p>
         <div class="foot-actions">
-          <button type="button" class="foot-pill" data-foot="lang">${icon('languages', 'icon-sm')}<span>${getLang() === 'hi' ? 'English' : 'हिन्दी'}</span></button>
+          <label class="foot-pill foot-select">${icon('languages', 'icon-sm')}<span class="sr-only">${esc(t('prof.language', 'Language'))}</span>
+            <select data-foot="lang">${LANGS.map((l) => `<option value="${l.code}" ${l.code === getLang() ? 'selected' : ''}>${esc(l.native)}</option>`).join('')}</select></label>
           <button type="button" class="foot-pill" data-foot="theme">${icon('moon', 'icon-sm')}<span>${esc(t('foot.theme', 'Light / dark'))}</span></button>
         </div>
       </div>
@@ -141,7 +148,7 @@ function renderFooter() {
       <span>© ${new Date().getFullYear()} LifePilot</span>
       <span>${esc(t('foot.disclaimer', 'Not a government website. Always confirm details on the official portal before you apply.'))}</span>
     </div>`;
-  f.querySelector('[data-foot="lang"]').addEventListener('click', toggleLang);
+  f.querySelector('[data-foot="lang"]').addEventListener('change', (e) => changeLang(e.target.value));
   f.querySelector('[data-foot="theme"]').addEventListener('click', toggleTheme);
 }
 
@@ -152,7 +159,7 @@ function setTitle() {
 
 /* ── Router ── */
 const ctx = {
-  refresh() { renderChrome(); renderPage(true); },
+  refresh() { renderChrome(); renderPage(true); renderFooter(); },
   refreshChrome: () => renderChrome(),
 };
 
@@ -185,7 +192,7 @@ function route() {
   const changed = current.name !== name;
   if (changed) current.page?.leave?.();
   current = { name, page, params };
-  menuOpen = false;
+  menuOpen = false; langOpen = false;
   renderChrome();
   renderPage(changed);
   renderFooter();
@@ -221,7 +228,7 @@ function commands() {
     { icon: 'route', label: t('cmd.how', 'How it works'), keys: 'agents trace', run: go('#/how-it-works') },
     { icon: 'bot', label: t('cmd.ml', 'Open ML Lab'), keys: 'machine learning models metrics', run: go('#/ml-lab') },
     { icon: 'moon', label: t('cmd.theme', 'Switch light/dark'), keys: 'theme dark', run: toggleTheme },
-    { icon: 'languages', label: t('cmd.lang', 'Change language'), keys: 'hindi english', run: toggleLang },
+    ...LANGS.filter((l) => l.code !== getLang()).map((l) => ({ icon: 'languages', label: `${t('cmd.lang', 'Change language')}: ${l.native}`, keys: `language ${l.name} ${l.native}`, run: () => changeLang(l.code) })),
   ];
 }
 
@@ -231,8 +238,8 @@ function toggleTheme() {
   renderChrome();
 }
 
-function toggleLang() {
-  setLang(getLang() === 'hi' ? 'en' : 'hi');
+async function changeLang(code) {
+  await setLang(code);
   setCommands(commands());
   ctx.refresh();
   renderFooter();
@@ -253,10 +260,10 @@ async function boot() {
   setCommands(commands());
   document.addEventListener('click', (e) => {
     if (e.target.closest('[data-assistant]')) openAssistant();
-    if (menuOpen && !e.target.closest('.menu-wrap')) { menuOpen = false; renderChrome(); }
+    if ((menuOpen || langOpen) && !e.target.closest('.menu-wrap')) { menuOpen = false; langOpen = false; renderChrome(); }
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && menuOpen) { menuOpen = false; renderChrome(); $('#menuBtn')?.focus(); }
+    if (e.key === 'Escape' && (menuOpen || langOpen)) { const was = langOpen ? '#langBtn' : '#menuBtn'; menuOpen = false; langOpen = false; renderChrome(); $(was)?.focus(); }
   });
   window.addEventListener('hashchange', route);
   window.addEventListener('lp:title', setTitle);
@@ -265,6 +272,7 @@ async function boot() {
 
   checkHealth();
   vaultList().then((vault) => setState({ vault }));
+  await loadLang(getLang());   // the chosen language's strings, before the first page draws
   await initAuth();
   route();
   if (state.profileId && !state.run) {

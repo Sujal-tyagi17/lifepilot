@@ -106,7 +106,7 @@ export const landing = {
       <span class="flight-plane" aria-hidden="true">${logoMark('plane-only')}</span>
       <div class="wrap hero">
         <div class="hero-copy">
-          <span class="badge badge-ink"><span class="dot">${icon('check', 'icon-sm')}</span>${esc(t('land.badge', 'Free · Hindi and English · Works offline'))}</span>
+          <span class="badge badge-ink"><span class="dot">${icon('check', 'icon-sm')}</span>${esc(t('land.badge2', 'Free · 5 Indian languages · Works offline'))}</span>
           <h1 class="hero-title" id="heroTitle">${esc(t('land.h1a', 'Find the'))}<br />
             <span class="cycle" aria-hidden="true">${words.map((w, i) => `<span class="${i === 0 ? 'on' : ''}">${esc(w)}</span>`).join('')}</span><br />
             ${esc(t('land.h1b', 'you qualify for.'))}
@@ -127,7 +127,7 @@ export const landing = {
         <div class="demo" aria-label="${esc(t('land.demo', 'Live preview'))}">
           <div class="float float-1">${icon('scale')}<span>${esc(t('land.float1', 'Rules decide, not guesses'))}</span></div>
           <div class="float float-2">${icon('calendar-clock')}<span id="floatDeadline">${esc(t('land.floatRules', 'Every rule checked'))}</span></div>
-          <div class="float float-3">${icon('languages')}<span>हिन्दी · English</span></div>
+          <div class="float float-3">${icon('languages')}<span>हिन्दी · বাংলা · मराठी · తెలుగు · தமிழ்</span></div>
           <div class="demo-card certificate" id="demoCard" data-tilt>
             <div class="cert-corner">${miniRosette()}</div>
             <div class="demo-top"><span class="avatar">AK</span><div><p class="demo-person">Aisha, 21</p>
@@ -198,7 +198,7 @@ export const landing = {
             ['scan-line', 'land.c2', 'Document scanner', 'land.c2p', 'Photograph a certificate. LifePilot reads it in your browser, checks it against your profile and ticks your checklist.', 'scan'],
             ['list-todo', 'land.c3', 'Smart priority planner', 'land.c3p', 'Deadlines, amounts and missing documents turned into the best order to apply, week by week.', 'plan'],
             ['network', 'land.c5', 'Scheme map', 'land.c5p', 'See how one document unlocks several schemes at once.', 'map'],
-            ['mic', 'land.c4', 'Voice in Hindi and English', 'land.c4p', 'Speak your question and hear the answer.', 'voice'],
+            ['mic', 'land.c4b', 'Voice in your language', 'land.c4pb', 'Speak your question in Hindi, Bengali, Marathi, Telugu, Tamil or English, and hear the answer.', 'voice'],
             ['message-circle', 'land.f1', 'Ask the assistant', 'land.f1p', 'Ask in plain words about your schemes, documents or deadlines. Answers use your own results.'],
             ['wand-sparkles', 'land.c6', '“What would change it?”', 'land.c6p', 'The smallest change that would unlock more schemes or jobs for you.'],
             ['sliders-horizontal', 'land.f3', 'What-if simulator', 'land.f3p', 'Move the income slider or change category and watch your results change instantly.'],

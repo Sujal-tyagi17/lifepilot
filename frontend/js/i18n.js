@@ -1,26 +1,55 @@
 /* English is written where it is used: t('key', 'English text').
-   Hindi lives in HI below; any key missing there falls back to English.
-   Scheme names, job ads and assistant answers come from the server in English. */
+   Hindi lives in HI below; the other languages live in js/lang/<code>.js and
+   load when chosen. Any key missing in a language falls back to English.
+   Six languages: English and the five most spoken Indian languages.
+   Scheme names, job ads and most assistant answers come from the server in English. */
 import { store } from './util.js';
 
-let lang = store.raw('lp_lang') === 'hi' ? 'hi' : 'en';
+/** Languages offered, in the order shown. `speech` is the Web Speech API locale. */
+export const LANGS = [
+  { code: 'en', name: 'English', native: 'English', short: 'EN', speech: 'en-IN' },
+  { code: 'hi', name: 'Hindi', native: 'हिन्दी', short: 'हिं', speech: 'hi-IN' },
+  { code: 'bn', name: 'Bengali', native: 'বাংলা', short: 'বাং', speech: 'bn-IN' },
+  { code: 'mr', name: 'Marathi', native: 'मराठी', short: 'मरा', speech: 'mr-IN' },
+  { code: 'te', name: 'Telugu', native: 'తెలుగు', short: 'తె', speech: 'te-IN' },
+  { code: 'ta', name: 'Tamil', native: 'தமிழ்', short: 'த', speech: 'ta-IN' },
+];
+const CODES = new Set(LANGS.map((l) => l.code));
+const dicts = {};   // code -> strings, filled as languages load
+
+let lang = CODES.has(store.raw('lp_lang')) ? store.raw('lp_lang') : 'en';
 
 export const getLang = () => lang;
+export const langInfo = (code = lang) => LANGS.find((l) => l.code === code) || LANGS[0];
+/** Locale for dates and numbers, e.g. 'ta-IN'. */
+export const locale = () => langInfo().speech;
 
-export function setLang(next) {
-  lang = next === 'hi' ? 'hi' : 'en';
+/** Load a language's strings (Hindi is built in). */
+export async function loadLang(code) {
+  if (code === 'en' || code === 'hi' || dicts[code]) return;
+  try { dicts[code] = (await import(`./lang/${code}.js`)).default; } catch { dicts[code] = {}; }
+}
+
+export async function setLang(next) {
+  next = CODES.has(next) ? next : 'en';
+  await loadLang(next);
+  lang = next;
   store.setRaw('lp_lang', lang);
   document.documentElement.setAttribute('lang', lang);
 }
 
 export function t(key, english, vars) {
-  let s = (lang === 'hi' && HI[key]) || english || key;
+  const d = lang === 'hi' ? HI : dicts[lang];
+  let s = (d && d[key]) || english || key;
   if (vars) s = s.replace(/\{(\w+)\}/g, (_, k) => (vars[k] ?? ''));
   return s;
 }
 
 export const HI = {
   /* Phase 4 */
+  'land.badge2': 'मुफ़्त · 5 भारतीय भाषाएँ · ऑफ़लाइन भी', 'land.c4b': 'आपकी भाषा में आवाज़',
+  'land.c4pb': 'अपना सवाल हिन्दी, बांग्ला, मराठी, तेलुगु, तमिल या अंग्रेज़ी में बोलें, और जवाब सुनें।',
+  'home.day1': '1 दिन', 'home.dayN': '{d} दिन',
   'foot.theme': 'हल्का / गहरा', 'foot.find': 'खोजें', 'foot.plan': 'योजना बनाएँ', 'foot.learn': 'जानें', 'foot.trust': 'आपका डेटा',
   'foot.t1': 'दस्तावेज़ और स्कैन आपके ब्राउज़र में ही रहते हैं।',
   'foot.t2': 'पात्रता हर योजना के प्रकाशित नियमों से तय होती है।',

@@ -8,7 +8,7 @@
   document.documentElement.setAttribute('data-theme', theme);
   var lang = null;
   try { lang = localStorage.getItem('lp_lang'); } catch (e) { /* storage blocked */ }
-  document.documentElement.setAttribute('lang', lang === 'hi' ? 'hi' : 'en');
+  document.documentElement.setAttribute('lang', /^(hi|bn|mr|te|ta)$/.test(lang || '') ? lang : 'en');
 })();
 
 /* Safety net: if the app's scripts fail to start (for example a stale copy
