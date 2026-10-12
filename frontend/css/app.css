@@ -254,6 +254,12 @@ legend { padding: 0; }
   .lang-btn span { display: none; }
   .lang-btn { width: 42px; padding: 0; }
   .topnav { padding-right: 8px; }
+  /* Long translations (Tamil, Telugu…) must not push the bar past the screen edge */
+  .nav-actions { min-width: 0; flex: 0 1 auto; }
+  .nav-actions .btn-primary.btn-sm { max-width: 42vw; white-space: normal; line-height: 1.15; text-align: center; font-size: .8rem; padding-inline: 10px; }
+  .segmented { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+  .segmented::-webkit-scrollbar { display: none; }
+  .segmented button { flex: none; padding: 0 12px; }
 }
 /* Devanagari needs more room between lines */
 :root[lang="hi"] .hero-title { font-size: clamp(2.2rem, 4.2vw + .4rem, 3.7rem); line-height: 1.2; }
@@ -610,7 +616,8 @@ legend { padding: 0; }
 
 /* ── Jobs ── */
 .jobs { display: grid; grid-template-columns: minmax(300px, 400px) minmax(0, 1fr); gap: 18px; align-items: start; }
-@media (max-width: 960px) { .jobs { grid-template-columns: 1fr; } }
+@media (max-width: 960px) { .jobs { grid-template-columns: minmax(0, 1fr); } }
+.jobs > * { min-width: 0; overflow-wrap: anywhere; }
 .job { padding: 20px 22px; }
 .job-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: start; }
 .fit-ring { position: relative; width: 68px; height: 68px; }
