@@ -41,21 +41,25 @@ export function runLoader() {
   </section>`;
 }
 
+let startedAt = 0;   // when the current run began, so a re-render does not restart the animation
+
+/** The run is over: the next loader starts from the first agent again. */
+export function resetLoader() { startedAt = 0; }
+
 /** Light the agents one after another until the loader leaves the page. */
 export function startLoader(root) {
   const box = root.querySelector('.ld');
   if (!box) return;
+  startedAt ||= Date.now();
   const steps = [...box.querySelectorAll('.ld-step')];
   const bar = box.querySelector('.ld-bar span');
-  let i = 0;
   const tick = () => {
     if (!box.isConnected) { clearInterval(timer); return; }
-    steps.forEach((s, j) => { s.classList.toggle('done', j < i); s.classList.toggle('now', j === i); });
-    box.style.setProperty('--now', i);
-    bar.style.width = `${Math.min(96, ((i + 0.6) / steps.length) * 100)}%`;
     // The last agent keeps working until the run finishes
-    if (i < steps.length - 1) i++;
+    const i = Math.min(steps.length - 1, Math.floor((Date.now() - startedAt) / 420));
+    steps.forEach((s, j) => { s.classList.toggle('done', j < i); s.classList.toggle('now', j === i); });
+    bar.style.width = `${Math.min(96, ((i + 0.6) / steps.length) * 100)}%`;
   };
   tick();
-  const timer = setInterval(tick, 650);
+  const timer = setInterval(tick, 100);
 }

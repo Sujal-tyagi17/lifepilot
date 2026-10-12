@@ -31,7 +31,8 @@ export async function runAgents() {
   if (!state.profileId || state.running) return null;
   setState({ running: true, runError: null });
   try {
-    const run = await api(`/api/agent/run/${state.profileId}`, { method: 'POST' });
+    // Keep the loader up long enough to see the six agents, even when the server is instant
+    const [run] = await Promise.all([api(`/api/agent/run/${state.profileId}`, { method: 'POST' }), new Promise((r) => setTimeout(r, 2400))]);
     setState({ run, running: false });
     return run;
   } catch (err) {
