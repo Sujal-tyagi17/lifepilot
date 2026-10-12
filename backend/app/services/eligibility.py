@@ -77,7 +77,9 @@ def evaluate(profile: dict, opportunity: dict) -> EligibilityResult:
     if "field_of_study" in criteria:
         allowed = [f.lower() for f in criteria["field_of_study"]]
         val = _norm(profile.get("field_of_study"))
-        passed = bool(val) and any(a in val or val in a for a in allowed)
+        # "Computer Science" contains "science" but is not a natural science
+        excluded = [f.lower() for f in criteria.get("field_exclude", [])]
+        passed = bool(val) and any(a in val or val in a for a in allowed) and not any(x in val for x in excluded)
         record(passed,
                f"Field of study '{profile.get('field_of_study')}' is relevant",
                f"Intended for fields: {', '.join(criteria['field_of_study'])}",
