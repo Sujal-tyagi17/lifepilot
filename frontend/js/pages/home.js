@@ -1,7 +1,8 @@
 /* Home: your file. One sentence verdict, what to do this week, deadlines, documents. */
 import { esc, fmtINR, daysLeft, fmtDate, matchStatus } from '../util.js';
 import { t, getLang } from '../i18n.js';
-import { icon, stamp, skeleton } from '../ui.js';
+import { icon, stamp } from '../ui.js';
+import { runLoader, startLoader } from '../loader.js';
 import { emptyCard, ring, animateIn } from '../components.js';
 import { state, eligibleMatches, readiness, hasDoc } from '../state.js';
 import { runAgents } from '../run.js';
@@ -143,8 +144,8 @@ export const home = {
     const name = (state.profile?.name || '').split(' ')[0];
     if (!state.run) {
       if (state.running) {
-        el.innerHTML = `<div class="card hello"><div><p class="working quiet"><span class="spinner"></span>${esc(t('run.working', 'Checking your profile against every scheme…'))}</p>
-          <div style="margin-top:18px">${skeleton(4)}</div></div></div>`;
+        el.innerHTML = runLoader();
+        startLoader(el);
         return;
       }
       el.innerHTML = state.runError
