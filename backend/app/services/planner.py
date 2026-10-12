@@ -23,12 +23,17 @@ Scheduling
     closing this week or within two weeks after it counts 2×, within four weeks 1.4×; a task
     with no deadline counts half, since nothing is lost by doing it later. A document is as
     urgent as the earliest application still waiting for it, and worth a share of each such
-    application (the last missing document carries the most). Earlier deadlines win ties
+    application (the last missing document carries the most). Looking ahead, an
+    application whose remaining work would no longer fit before its deadline if it
+    waited a week is critical, and its whole chain counts 3×. Earlier deadlines win ties
     (Earliest Deadline First). An application that cannot be finished before its deadline is
     marked "at risk"; one whose deadline passes first is listed as missed.
 
-For the report, the same tasks are also scheduled the naive way (nearest deadline first,
-take whatever fits) and the value captured by each plan is compared.
+The same tasks are also scheduled the naive way (nearest deadline first, take whatever
+fits). Both schedules are scored by the value of applications finished before their
+deadlines, and the better one is returned ("strategy"), with both values reported.
+Any hours left in a week go to work that became possible that week (a form whose last
+document was just collected).
 """
 from __future__ import annotations
 
@@ -120,6 +125,8 @@ def _week_value(t: dict, week_end: date) -> float:
             v *= 1.4
     else:
         v *= 0.5          # no deadline: nothing is lost by doing it a week later
+    if t.get("crit"):
+        v *= 3.0          # its application cannot wait another week
     return v
 
 
@@ -165,6 +172,20 @@ def _schedule(tasks: list[dict], hours: float, pick) -> tuple[list[dict], list[d
                 t["deadline"] = min(dated) if dated else None
                 t["value"] = round(sum(0.9 * r["value"] / max(1, len([d for d in set(r["deps"]) if d not in done]))
                                        for r in waiting), 1)
+        # Look ahead: an application whose remaining work (its missing documents plus the form)
+        # no longer fits in the weeks before its deadline if we skip this week is critical,
+        # and so is everything in its chain. Critical work is done first.
+        for t in remaining.values():
+            t["crit"] = False
+        for r in remaining.values():
+            if r["kind"] == "document" or not r["deadline"]:
+                continue
+            chain = [r] + [remaining[d] for d in set(r["deps"]) if d in remaining]
+            need = sum(t.get("hours_left", t["hours"]) for t in chain)
+            weeks_left = sum(1 for k in range(wk, WEEKS + 1) if today + timedelta(days=7 * (k - 1)) <= r["deadline"])
+            if need > hours * (weeks_left - 1) + 1e-9:   # it cannot wait a week
+                for t in chain:
+                    t["crit"] = True
         ready = [t for t in remaining.values() if all(d in done for d in t["deps"])]
         cap = int(hours * 2)
         oversized = [t for t in ready if t["hours"] * 2 > cap]
@@ -182,6 +203,17 @@ def _schedule(tasks: list[dict], hours: float, pick) -> tuple[list[dict], list[d
             weeks.append({"week": wk, "start": start.isoformat(), "end": end.isoformat(), "hours_used": used, "tasks": chosen_rows})
             continue
         for t in chosen:
+            done.add(t["id"]); remaining.pop(t["id"])
+        # Time left this week: do follow-on work that just became possible, such as the
+        # application form whose last document was collected earlier this week
+        while True:
+            left = hours - used
+            follow = [t for t in remaining.values() if all(d in done for d in t["deps"]) and t["hours"] <= left + 1e-9]
+            if not follow:
+                break
+            t = max(follow, key=lambda x: (x.get("crit", False), x["kind"] != "document" and bool(x["deadline"]),
+                                           -(x["deadline"] or date(9999, 1, 1)).toordinal(), x["value"]))
+            chosen.append(t); used += t["hours"]
             done.add(t["id"]); remaining.pop(t["id"])
         weeks.append({"week": wk, "start": start.isoformat(), "end": end.isoformat(), "hours_used": round(used, 1),
                       "tasks": [_public(t, end) for t in sorted(chosen, key=lambda t: (t["kind"] != "document", t["deadline"] or date(9999, 1, 1)))]})
@@ -227,11 +259,18 @@ def plan(matches: list[dict], hours_per_week: float = 6, owned: list[str] | None
     hours = max(1.0, min(40.0, float(hours_per_week or 6)))
     tasks = build_tasks(matches, owned, jobs, skill)
     weeks, left, missed = _schedule([dict(t) for t in tasks], hours, _knapsack)
-    naive_weeks, _, _ = _schedule([dict(t) for t in tasks], hours, _naive)
+    naive_weeks, naive_left, naive_missed = _schedule([dict(t) for t in tasks], hours, _naive)
+    # Two candidate schedules; keep the one that gets more value in before the deadlines.
+    # Value-first usually wins when deadlines differ; deadline-first can win when they cluster.
+    strategy = "value-first"
+    knapsack_value = _captured(weeks)
+    if _captured(naive_weeks) > _captured(weeks) + 1e-9:
+        weeks, left, missed, strategy = naive_weeks, naive_left, naive_missed, "deadline-first"
     first_deadline = min((t["deadline"] for t in tasks if t["deadline"]), default=None)
     return {
         "hours_per_week": hours,
         "weeks": weeks,
+        "strategy": strategy,
         "not_scheduled": [_public(t, date.today()) for t in left],
         "missed": missed,
         "totals": {
@@ -241,6 +280,7 @@ def plan(matches: list[dict], hours_per_week: float = 6, owned: list[str] | None
             "jobs": sum(t["kind"] == "job" for t in tasks),
             "value": _captured(weeks),
             "naive_value": _captured(naive_weeks),
+            "knapsack_value": knapsack_value,
             "at_risk": sum(t.get("at_risk", False) for w in weeks for t in w["tasks"]),
             "first_deadline": first_deadline.isoformat() if first_deadline else None,
         },
