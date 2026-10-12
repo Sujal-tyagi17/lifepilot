@@ -80,7 +80,7 @@ class RoadmapAgent(BaseAgent):
 
         # Generate intro with LLM (skip in simulation mode to stay fast & offline)
         top = eligible[0] if eligible else None
-        if top and self.llm.name != "mock" and profile.get("name") != "Simulation":
+        if top and self.llm.name != "mock" and not state.is_simulation:
             nearest = None
             for m in eligible:
                 dl = _days_left(m.get("deadline"))

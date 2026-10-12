@@ -15,6 +15,11 @@ class EligibilityResult:
     confidence: float  # 0..1 how sure we are (based on data completeness)
     reasons: list[str] = field(default_factory=list)
     unmet: list[str] = field(default_factory=list)
+    # "eligible" | "partial" | "needs_review" (no machine-readable criteria)
+    status: str = "partial"
+
+
+NEEDS_REVIEW_MESSAGE = "Eligibility rules not available. Check the official portal before applying."
 
 
 def _norm(value) -> str:
@@ -22,7 +27,7 @@ def _norm(value) -> str:
 
 
 def evaluate(profile: dict, opportunity: dict) -> EligibilityResult:
-    criteria = opportunity.get("criteria", {})
+    criteria = opportunity.get("criteria") or {}
     reasons: list[str] = []
     unmet: list[str] = []
 
@@ -126,8 +131,12 @@ def evaluate(profile: dict, opportunity: dict) -> EligibilityResult:
                had_data=bool(goals))
 
     if checks_total == 0:
-        # No criteria to check -> open to all
-        return EligibilityResult(True, 1.0, 0.6, ["Open to all eligible citizens"], [])
+        # Only schemes explicitly marked open_to_all in the curated data count as
+        # eligible without criteria. Anything else (e.g. a web search result) has
+        # unknown rules, so we must not claim the user qualifies.
+        if criteria.get("open_to_all") is True:
+            return EligibilityResult(True, 1.0, 0.9, ["Open to all citizens"], [], status="eligible")
+        return EligibilityResult(False, 0.0, 0.3, [], [NEEDS_REVIEW_MESSAGE], status="needs_review")
 
     score = checks_passed / checks_total
     # Confidence reflects how much profile data we actually had to judge with.
@@ -138,4 +147,7 @@ def evaluate(profile: dict, opportunity: dict) -> EligibilityResult:
     # Remove any empty reason strings produced when data was missing
     reasons = [r for r in reasons if r]
 
-    return EligibilityResult(eligible, round(score, 2), confidence, reasons, unmet)
+    return EligibilityResult(
+        eligible, round(score, 2), confidence, reasons, unmet,
+        status="eligible" if eligible else "partial",
+    )

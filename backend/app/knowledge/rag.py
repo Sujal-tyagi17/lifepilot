@@ -6,35 +6,73 @@ question with that context, and sends it to the LLM for a grounded answer.
 from __future__ import annotations
 
 import logging
+import re
 
 from app.knowledge.vectorstore import search as vector_search
-from app.llm.provider import get_provider
+from datetime import date
+
+from app.llm.provider import clean_reply, get_provider
+from app.knowledge import local_answers
 
 logger = logging.getLogger("lifepilot.knowledge.rag")
 
-_RAG_PROMPT = """You are LifePilot, an AI assistant helping Indian citizens discover and apply for government schemes, scholarships, and grants.
+SYSTEM = """You are LifePilot's assistant for Indian students and citizens. You answer questions about
+government schemes, scholarships, documents and deadlines using ONLY the facts you are given.
 
-## Context — Relevant Schemes:
-{context}
+How to answer:
+- Answer the question in the first line. No greeting, no preamble, no restating the question.
+- Then short bullet points, one per scheme: **Scheme name**: amount · deadline (days left) · one key detail.
+- Mention only schemes in the facts. Never invent schemes, amounts, dates or links.
+- "Eligible" schemes are ones the person qualifies for. Say clearly when a scheme is only a partial match and what is missing.
+- If the facts do not cover the question, say so in one line and suggest what they can do.
+- At most about 120 words. End with one clear next step.
+- Reply in the same language as the question (Hindi if they write in Hindi)."""
 
-## User's Profile Summary:
-{profile_summary}
+_PROMPT = """FACTS
 
-## User's Matched Schemes (if any):
-{matches_summary}
+Person: {profile_summary}
+Today: {today}
 
+Schemes they are ELIGIBLE for (open):
+{eligible}
+
+Partial matches (not eligible yet):
+{partial}
+{extra}
 {chat_history_section}
+QUESTION ({intent}): {question}
+(If the question asks two things, answer both.)"""
 
-## User's Question:
-{question}
 
-## Instructions:
-1. Answer ONLY based on the context and matches above. Do NOT invent schemes.
-2. Be specific — mention scheme names, amounts, deadlines, documents.
-3. Be warm and encouraging but factual.
-4. If the context doesn't cover the question, say so honestly.
-5. Format nicely with bullet points where helpful.
-"""
+def _is_open_eligible(m: dict) -> bool:
+    """Eligible and still accepting applications (older saved runs lack status)."""
+    status = m.get("status") or ("eligible" if m.get("eligible") else "partial")
+    return status == "eligible"
+
+
+def _days_left(deadline: str | None) -> int | None:
+    try:
+        return (date.fromisoformat(deadline or "") - date.today()).days
+    except ValueError:
+        return None
+
+
+def _when(m: dict) -> str:
+    d = _days_left(m.get("deadline"))
+    if d is None:
+        return "deadline: check the portal"
+    return f"deadline {m['deadline']} ({d} days left)" if d >= 0 else f"closed on {m['deadline']}"
+
+
+def _scheme_line(m: dict, with_docs: bool = True) -> str:
+    parts = [f"- {m['title']}: {m.get('amount') or 'amount not stated'}; {_when(m)}"]
+    if m.get("url"):
+        parts.append(f"apply: {m['url']}")
+    if with_docs and m.get("documents"):
+        parts.append("documents: " + ", ".join(m["documents"][:6]))
+    if m.get("reasons"):
+        parts.append("why: " + "; ".join(m["reasons"][:2]))
+    return "; ".join(parts)
 
 
 def rag_answer(
@@ -42,90 +80,162 @@ def rag_answer(
     matches: list[dict] | None = None,
     profile: dict | None = None,
     chat_history: str | None = None,
+    lang: str | None = None,
 ) -> str:
-    """Answer a question using RAG: vector search + LLM."""
+    """Answer a question from the person's own matches (plus the scheme database for other schemes).
+    `lang` is the app's language, used to tell Marathi from Hindi (both use Devanagari)."""
     llm = get_provider()
+    matches = matches or []
+    qlang = local_answers.question_lang(question, lang)
+    detected = detect_intent(question, lang)
+    intent = detected["label"]
+    eligible = [m for m in matches if _is_open_eligible(m)]
+    partial = [m for m in matches if not _is_open_eligible(m) and m.get("status") != "closed"]
 
-    # Retrieve relevant context from vector store
-    context_docs = vector_search(question, n_results=5)
-    context_text = ""
-    if context_docs:
-        lines = []
-        for doc in context_docs:
-            lines.append(
-                f"- {doc.get('title', 'Unknown')}: {doc.get('description', '')} "
-                f"| Amount: {doc.get('amount', 'N/A')} | Deadline: {doc.get('deadline', 'N/A')}"
-            )
-        context_text = "\n".join(lines)
-    else:
-        context_text = "No additional context available from knowledge base."
+    # Schemes from the database that are not among their matches, for questions about a named scheme
+    known = {m.get("title") for m in matches}
+    try:
+        others = [d for d in vector_search(question, n_results=3) if d.get("title") not in known]
+    except Exception:
+        others = []
+    extra = ""
+    if others:
+        extra = "\nOther schemes in the database (NOT checked for this person):\n" + "\n".join(
+            f"- {d.get('title')}: {d.get('amount', 'N/A')}; deadline {d.get('deadline', 'N/A')}" for d in others)
 
-    # Summarize matches
-    matches_summary = "No matches computed yet."
-    if matches:
-        eligible = [m for m in matches if m.get("eligible")]
-        if eligible:
-            lines = [f"User is eligible for {len(eligible)} scheme(s):"]
-            for m in eligible[:5]:
-                lines.append(f"  - {m['title']}: {m.get('amount', 'N/A')}")
-            matches_summary = "\n".join(lines)
-        else:
-            matches_summary = f"User has {len(matches)} partial matches but none fully eligible yet."
-
-    # Profile summary
     profile_summary = "No profile available."
     if profile:
-        parts = []
-        if profile.get("name"):
-            parts.append(f"Name: {profile['name']}")
-        if profile.get("category"):
-            parts.append(f"Category: {profile['category']}")
-        if profile.get("state"):
-            parts.append(f"State: {profile['state']}")
-        if profile.get("education_level"):
-            parts.append(f"Education: {profile['education_level']}")
+        parts = [f"{k}: {profile[k]}" for k in ("name", "category", "state", "education_level") if profile.get(k)]
         if profile.get("annual_income"):
-            parts.append(f"Income: ₹{profile['annual_income']:,}")
-        profile_summary = ", ".join(parts) if parts else "Incomplete profile."
+            parts.append(f"family income: ₹{profile['annual_income']:,}/year")
+        profile_summary = ", ".join(parts) or "Incomplete profile."
 
-    chat_history_section = ""
-    if chat_history:
-        chat_history_section = f"## Recent Chat History:\n{chat_history}"
-
-    prompt = _RAG_PROMPT.format(
-        context=context_text,
+    prompt = _PROMPT.format(
         profile_summary=profile_summary,
-        matches_summary=matches_summary,
-        chat_history_section=chat_history_section,
-        question=question,
+        today=date.today().isoformat(),
+        eligible="\n".join(_scheme_line(m) for m in eligible[:8]) or "- none yet",
+        partial="\n".join(f"- {m['title']}: missing: {'; '.join(m.get('unmet') or ['some criteria'])[:160]}" for m in partial[:5]) or "- none",
+        extra=extra,
+        chat_history_section=f"\nEarlier in this chat:\n{chat_history}\n" if chat_history else "",
+        question=question + (f"\n(Write the whole answer in {LANG_NAMES[qlang]}.)" if qlang != "en" else ""),
+        intent=intent.replace("_", " "),
     )
 
     if llm.name != "mock":
         try:
-            answer = llm.generate(
-                prompt,
-                system="You are LifePilot, a helpful civic AI assistant. Be concise, warm, factual."
-            )
-            if answer and len(answer) > 20:
-                return answer
+            reply = clean_reply(llm.generate(prompt, system=SYSTEM))
+            # A real answer, not an echo of our own instructions
+            if reply and len(reply) > 20 and "FACTS" not in reply[:200] and "QUESTION:" not in reply:
+                return reply
         except Exception as e:
             logger.warning(f"RAG LLM call failed: {e}")
 
-    # Fallback for mock/offline
-    return _offline_answer(question, matches or [], profile)
+    first = _offline_answer(question, matches, profile, intent, lang)
+    also = detected.get("also")
+    if also:
+        return first + "\n\n" + _offline_answer(question, matches, profile, also, lang)
+    return first
 
 
-def _offline_answer(question: str, matches: list[dict], profile: dict | None) -> str:
-    """Simple keyword-based fallback when LLM is unavailable."""
-    q = question.lower()
-    eligible = [m for m in matches if m.get("eligible")]
+LANG_NAMES = {"hi": "Hindi", "mr": "Marathi", "bn": "Bengali", "te": "Telugu", "ta": "Tamil", "en": "English"}
 
-    # Check if user is asking about a specific scheme (e.g. pragati, yasasvi, etc.)
+
+# Words in many scheme names; they don't pick out one scheme
+_GENERIC = {"scheme", "schemes", "scholarship", "scholarships", "students", "student", "india", "indian", "national",
+            "central", "sector", "girls", "yojana", "grant", "grants", "merit", "matric", "post-matric", "science",
+            "training", "skill", "stipend", "pradhan", "mantri", "state", "government", "fund", "support"}
+
+
+_KEYWORDS = {
+    "eligibility": ("eligible", "qualify", "can i get", "which scheme", "schemes for me", "my schemes", "पात्र", "योग्य",
+                    "कौन सी योजना", "कौनसी योजना", "कौन सी स्कॉलरशिप", "मिल सकती", "मिल सकता"),
+    "documents": ("document", "papers", "checklist", "certificate", "दस्तावेज", "कागज", "डॉक्यूमेंट", "प्रमाण पत्र", "प्रमाणपत्र"),
+    "deadlines": ("deadline", "last date", "when", "closing", "तारीख", "तिथि", "आखिरी", "अंतिम", "कब तक", "डेडलाइन"),
+    "benefits": ("how much", "benefit", "money", "amount", "राशि", "पैसे", "कितना", "कितने", "रुपये", "फायदा"),
+    "how_to_apply": ("how do i apply", "how to apply", "where do i apply", "apply link", "process", "आवेदन कैसे",
+                     "कैसे अप्लाई", "कहाँ आवेदन", "कहां आवेदन", "आवेदन करें"),
+    "jobs": ("job", "career", "internship", "नौकरी", "जॉब", "करियर"),
+}
+
+_DEVANAGARI = re.compile(r"[\u0900-\u097F]")
+
+
+def is_hindi(text: str) -> bool:
+    return bool(_DEVANAGARI.search(text or ""))
+
+
+def _keyword_intent(q: str) -> str | None:
+    for label, words in _KEYWORDS.items():
+        if any(w in q for w in words):
+            return label
+    return None
+
+
+def detect_intent(question: str, lang: str | None = None) -> dict:
+    """What the question is about: the trained intent classifier (app/ml), or keywords if it is not sure."""
+    from app.ml.predict import intent as ml_intent
+    qlang = local_answers.question_lang(question, lang)
+    if qlang != "en":
+        # The classifier was trained on English and Hindi questions; Indian languages go by their own keywords first
+        label = local_answers.keyword_intent(question, qlang) or (local_answers.keyword_intent(question, "hi") if qlang == "mr" else None)
+        if label:
+            return {"label": label, "confidence": None, "by": "keywords"}
+        if qlang not in ("hi", "mr"):
+            return {"label": "other", "confidence": None, "by": "keywords"}
+    r = ml_intent(question)
+    if r and r["confidence"] >= 0.4:
+        out = {"label": r["label"], "confidence": r["confidence"], "by": "model"}
+        # Two questions in one ("last date and documents?"): keep the second if it is clearly there too
+        second = r["top"][1] if len(r["top"]) > 1 else None
+        if second and second["score"] >= 0.25 and second["label"] != "other" and r["label"] != "other":
+            out["also"] = second["label"]
+        return out
+    label = _keyword_intent(question.lower())
+    if label:
+        return {"label": label, "confidence": None, "by": "keywords"}
+    return {"label": "other", "confidence": r["confidence"] if r else None, "by": "model" if r else "keywords"}
+
+
+def _named_scheme(q: str, matches: list[dict]) -> dict | None:
     for m in matches:
         title = m.get("title", "").lower()
-        # Extract keywords from title (e.g., "pragati", "yasasvi", "vidyasiri", "inspire", "vivekananda")
-        keywords = [w for w in title.replace("-", " ").replace("(", " ").replace(")", " ").split() if len(w) > 4]
+        keywords = [w for w in title.replace("-", " ").replace("(", " ").replace(")", " ").split()
+                    if len(w) > 4 and w not in _GENERIC]
         if any(kw in q for kw in keywords) or title in q:
+            return m
+    return None
+
+
+def _offline_answer(question: str, matches: list[dict], profile: dict | None, intent: str | None = None,
+                    lang: str | None = None) -> str:
+    """Answer without an LLM, routed by the question's intent, in the question's language."""
+    q = question.lower()
+    intent = intent or detect_intent(question, lang)["label"]
+    eligible = [m for m in matches if _is_open_eligible(m)]
+    qlang = local_answers.question_lang(question, lang)
+    if qlang != "en":
+        local = local_answers.answer(qlang, intent, eligible, profile)
+        if local:
+            return local
+
+    named = _named_scheme(q, matches)
+    if named and intent in ("eligibility", "documents", "deadlines"):
+        t = named["title"]
+        if intent == "eligibility":
+            if _is_open_eligible(named):
+                why = "; ".join(named.get("reasons") or [])[:300]
+                return f"Yes, you qualify for **{t}**" + (f": {why}." if why else ".") + f"\n\n**Next step:** {_when(named)}" + (f", apply at {named['url']}." if named.get("url") else ".")
+            missing = "; ".join(named.get("unmet") or ["some criteria"])
+            return f"Not yet for **{t}**. Missing: {missing}.\n\nOpen **Schemes → What if** to see what would change it."
+        if intent == "documents":
+            docs = named.get("documents") or []
+            return (f"Documents for **{t}**:\n" + "\n".join(f"• {d}" for d in docs)) if docs else f"The portal for **{t}** lists its documents; none are recorded here."
+        return f"**{t}**: {_when(named)}" + (f". Apply at {named['url']}." if named.get("url") else ".")
+
+    if named:  # about one scheme by name: where and how to apply, and what it gives
+        m = named
+        title = m.get("title", "").lower()
+        if title:
             # Special case for Pragati Scholarship
             if "pragati" in title:
                 return (
@@ -156,38 +266,79 @@ def _offline_answer(question: str, matches: list[dict], profile: dict | None) ->
                 ans += f"• **Where to apply**: You can submit your application on the official portal here: {url}\n"
             return ans
 
-    if any(w in q for w in ("eligible", "qualify", "can i")):
+    if intent == "eligibility":
         if eligible:
-            lines = [f"You're eligible for {len(eligible)} scheme(s):"]
-            for m in eligible[:5]:
-                lines.append(f"• {m['title']} — {m.get('amount', 'N/A')}")
+            ordered = sorted(eligible, key=lambda m: (_days_left(m.get("deadline")) is None, _days_left(m.get("deadline")) or 0))
+            lines = [f"You qualify for **{len(eligible)} scheme{'s' if len(eligible) != 1 else ''}**:", ""]
+            for m in ordered[:6]:
+                lines.append(f"• **{m['title']}**: {m.get('amount') or 'amount not stated'} · {_when(m)}")
+            first = ordered[0]
+            lines += ["", f"**Next step:** apply for {first['title']} first"
+                      + (f" ({_days_left(first.get('deadline'))} days left)" if _days_left(first.get("deadline")) is not None else "")
+                      + (f" at {first['url']}" if first.get("url") else "") + "."]
             return "\n".join(lines)
-        return "No fully eligible schemes found yet. Complete your profile for better matches."
+        return "You don't fully qualify for any scheme yet. Open **Schemes** to see what is missing for each partial match, or update your profile."
 
-    if any(w in q for w in ("document", "papers", "checklist")):
-        docs = set()
-        for m in eligible:
-            for d in m.get("documents", []):
-                docs.add(d)
-        if docs:
-            return "Documents you'll need:\n" + "\n".join(f"• {d}" for d in sorted(docs))
-        return "No documents to prepare yet."
+    if intent == "documents":
+        with_docs = [m for m in eligible if m.get("documents")]
+        if not with_docs:
+            return "No documents to prepare yet: you don't fully qualify for any scheme. Open **Schemes** to see what is missing."
+        common: dict[str, int] = {}
+        for m in with_docs:
+            for d in m["documents"]:
+                common[d] = common.get(d, 0) + 1
+        shared = [d for d, n in common.items() if n > 1]
+        lines = ["Documents for the schemes you qualify for:", ""]
+        if shared:
+            lines += ["**Needed for more than one scheme:** " + ", ".join(sorted(shared)), ""]
+        for m in with_docs[:5]:
+            own = [d for d in m["documents"] if d not in shared]
+            if own:
+                lines.append(f"• **{m['title']}**: " + ", ".join(own))
+        lines += ["", "**Next step:** keep scanned copies in **Documents** so they are ready when you apply."]
+        return "\n".join(lines)
 
-    if any(w in q for w in ("deadline", "when", "date")):
-        lines = ["Upcoming deadlines:"]
-        for m in matches[:5]:
-            if m.get("deadline"):
-                lines.append(f"• {m['title']} — {m['deadline']}")
-        return "\n".join(lines) if len(lines) > 1 else "No deadlines found."
+    if intent == "deadlines":
+        dated = sorted(((d, m) for m in eligible if (d := _days_left(m.get("deadline"))) is not None and d >= 0),
+                       key=lambda t: t[0])
+        if not dated:
+            return "None of the schemes you qualify for has a fixed deadline right now. Check each portal for dates."
+        lines = ["Next deadlines for schemes you qualify for:", ""]
+        for d, m in dated[:5]:
+            urgent = " ⚠️" if d <= 7 else ""
+            lines.append(f"• **{m['title']}**: {m['deadline']} ({d} day{'s' if d != 1 else ''} left){urgent}")
+        d, m = dated[0]
+        lines += ["", f"**Next step:** finish {m['title']} first" + (f" at {m['url']}" if m.get("url") else "") + "."]
+        return "\n".join(lines)
 
-    if any(w in q for w in ("how much", "benefit", "money", "amount")):
-        if eligible:
-            lines = [f"You could unlock benefits from {len(eligible)} scheme(s):"]
-            for m in eligible[:5]:
-                lines.append(f"• {m['title']} — {m.get('amount', 'varies')}")
-            return "\n".join(lines)
+    if intent == "benefits" and eligible:
+        lines = [f"What the {len(eligible)} scheme{'s' if len(eligible) != 1 else ''} you qualify for give:", ""]
+        for m in eligible[:6]:
+            lines.append(f"• **{m['title']}**: {m.get('amount') or 'varies'}")
+        lines += ["", "**Next step:** the Home page shows the total value and what to do first."]
+        return "\n".join(lines)
+
+    if intent == "how_to_apply":
+        with_links = [m for m in eligible if m.get("url")]
+        lines = ["Most scholarships are applied for online on the **National Scholarship Portal** (https://scholarships.gov.in/): "
+                 "register with your mobile number, fill the form, upload documents, then your college verifies it.", ""]
+        if with_links:
+            lines.append("Apply links for the schemes you qualify for:")
+            lines += [f"• **{m['title']}**: {m['url']}" for m in with_links[:5]]
+        lines += ["", "**Next step:** keep your documents ready in **Documents** before you start the form."]
+        return "\n".join(lines)
+
+    if intent == "other":
+        return (f"Hello{', ' + profile['name'].split()[0] if profile and profile.get('name') else ''}! I answer questions about the "
+                f"schemes you qualify for ({len(eligible)} right now), the documents you need, deadlines, amounts and how to apply. "
+                "Try: **Which schemes do I qualify for?**")
+
+    if intent == "jobs":
+        return ("For jobs, open the **Jobs** page: add your resume (or pick your experience), and you get matched openings "
+                "with a fit score, the skills to learn, and a week-by-week plan for any job you pick.")
 
     return (
-        f"You have {len(eligible)} eligible and {len(matches) - len(eligible)} partial matches. "
-        f"Ask about eligibility, documents, deadlines, or any specific scheme!"
+        f"You qualify for {len(eligible)} scheme{'s' if len(eligible) != 1 else ''} and partly match "
+        f"{len(matches) - len(eligible)} more. Ask me which ones you qualify for, the documents you need, "
+        f"the next deadlines, or about a scheme by name."
     )

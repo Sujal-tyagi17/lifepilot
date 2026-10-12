@@ -14,19 +14,23 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
 # Content-Security-Policy.
-# NOTE: 'unsafe-eval' is required ONLY by the Tailwind Play CDN's runtime JIT.
-# For production you would precompile Tailwind to a static .css and drop it.
+# Every script, stylesheet, font and icon is served from this server, so
+# scripts are 'self' only (no CDNs, no eval). 'unsafe-inline' for styles covers
+# style attributes the UI sets (bar widths); it does not allow inline scripts.
+# 'wasm-unsafe-eval' lets the document scanner compile Tesseract's WebAssembly
+# (served from /static/vendor/ocr); it does not allow JavaScript eval.
 _CSP = "; ".join([
     "default-src 'self'",
-    "script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://unpkg.com 'unsafe-eval'",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
-    "font-src 'self' https://fonts.gstatic.com",
-    "img-src 'self' data: https://*.googleusercontent.com https://*.gravatar.com https://*.kinde.com",
-    "connect-src 'self' https://*.kinde.com https://lifepilotauth.kinde.com",
-    "frame-src 'self' https://*.kinde.com https://lifepilotauth.kinde.com",
+    "script-src 'self' 'wasm-unsafe-eval'",
+    "worker-src 'self'",
+    "style-src 'self' 'unsafe-inline'",
+    "font-src 'self'",
+    "img-src 'self' data: blob: https://*.googleusercontent.com https://*.gravatar.com https://*.kinde.com",
+    "connect-src 'self' https://*.kinde.com",
+    "frame-src 'self' https://*.kinde.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
-    "form-action 'self' https://*.kinde.com https://lifepilotauth.kinde.com",
+    "form-action 'self' https://*.kinde.com",
     "object-src 'none'",
 ])
 
@@ -35,7 +39,7 @@ _SECURITY_HEADERS = {
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
     "Referrer-Policy": "no-referrer-when-downgrade",
-    "Permissions-Policy": "geolocation=(), camera=(), microphone=(), payment=()",
+    "Permissions-Policy": "geolocation=(), camera=(self), microphone=(self), payment=()",
     "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
 }
 
@@ -45,6 +49,13 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response: Response = await call_next(request)
         for key, value in _SECURITY_HEADERS.items():
             response.headers.setdefault(key, value)
+        # The UI is plain ES modules with no build step, so their URLs never
+        # change between versions. "no-cache" makes the browser revalidate each
+        # file (a cheap 304 when unchanged) instead of mixing old cached modules
+        # with new ones after an update, which leaves a blank page.
+        path = request.url.path
+        if path == "/" or path.startswith("/static/"):
+            response.headers["Cache-Control"] = "no-cache"
         return response
 
 

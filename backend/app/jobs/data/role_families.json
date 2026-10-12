@@ -1,0 +1,530 @@
+{
+  "software": {
+    "label": "Software engineer",
+    "keywords": [
+      "software engineer",
+      "software developer",
+      "software development engineer",
+      "sde",
+      "programmer",
+      "application developer",
+      "software engineering"
+    ],
+    "core": [
+      "Data Structures",
+      "Algorithms",
+      "Git",
+      "Python",
+      "Java",
+      "SQL"
+    ],
+    "project": "Build and deploy one complete app that solves a real problem (for example an expense tracker or a college notice board) with a database, login and tests, and keep the code on GitHub with a clear README.",
+    "interview": [
+      "Data structures and algorithms (arrays, strings, trees, graphs)",
+      "Object-oriented programming",
+      "DBMS and SQL basics",
+      "Operating systems and networking basics",
+      "Explaining one project end to end"
+    ]
+  },
+  "backend": {
+    "label": "Backend developer",
+    "keywords": [
+      "backend",
+      "back-end",
+      "back end",
+      "api developer",
+      "server-side",
+      "node.js developer",
+      "java developer",
+      "python developer"
+    ],
+    "core": [
+      "Python",
+      "SQL",
+      "REST APIs",
+      "Git",
+      "Data Structures"
+    ],
+    "project": "Build a REST API for a real problem (for example a library or clinic booking system) with login, a database and tests, and deploy it on a free tier.",
+    "interview": [
+      "Data structures and algorithms basics",
+      "Designing a REST API",
+      "SQL joins and indexes",
+      "How HTTP and authentication work",
+      "Explaining one project end to end"
+    ]
+  },
+  "frontend": {
+    "label": "Frontend developer",
+    "keywords": [
+      "frontend",
+      "front-end",
+      "front end",
+      "ui developer",
+      "web developer",
+      "react developer",
+      "angular developer",
+      "web designer"
+    ],
+    "core": [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "React",
+      "Git"
+    ],
+    "project": "Build a responsive website in React that uses a public API (for example data.gov.in), works on phones, and is deployed with a live link.",
+    "interview": [
+      "JavaScript fundamentals (closures, promises)",
+      "React state and hooks",
+      "CSS layout (flexbox, grid)",
+      "Accessibility basics",
+      "Web performance"
+    ]
+  },
+  "fullstack": {
+    "label": "Full-stack developer",
+    "keywords": [
+      "full stack",
+      "full-stack",
+      "fullstack",
+      "mern",
+      "mean stack"
+    ],
+    "core": [
+      "JavaScript",
+      "React",
+      "Node.js",
+      "SQL",
+      "Git"
+    ],
+    "project": "Build a full-stack app with sign-in, a database and a React frontend, and deploy both parts.",
+    "interview": [
+      "How the frontend talks to the backend",
+      "Database design",
+      "Authentication",
+      "Deployment",
+      "One project end to end"
+    ]
+  },
+  "mobile": {
+    "label": "Mobile app developer",
+    "keywords": [
+      "android",
+      "ios",
+      "mobile",
+      "flutter",
+      "react native",
+      "app developer"
+    ],
+    "core": [
+      "Kotlin",
+      "Android",
+      "Git"
+    ],
+    "project": "Publish a small useful app (for example an expense tracker with offline storage) and share the APK or store link.",
+    "interview": [
+      "App lifecycle",
+      "Storing data offline",
+      "Calling APIs from an app",
+      "Handling different screen sizes"
+    ]
+  },
+  "data_analyst": {
+    "label": "Data analyst",
+    "keywords": [
+      "data analyst",
+      "business analyst",
+      "mis analyst",
+      "analytics",
+      "bi analyst",
+      "reporting analyst",
+      "mis executive"
+    ],
+    "core": [
+      "Excel",
+      "SQL",
+      "Data Analysis",
+      "Power BI",
+      "Statistics"
+    ],
+    "project": "Analyse a public dataset from data.gov.in, clean it with Excel or Python, and publish a dashboard that answers three clear questions.",
+    "interview": [
+      "SQL queries (GROUP BY, joins)",
+      "Excel formulas and pivot tables",
+      "Explaining a chart to a non-technical person",
+      "Basic statistics (mean, median, correlation)",
+      "A case study: what would you measure?"
+    ]
+  },
+  "data_scientist": {
+    "label": "Data scientist / ML",
+    "keywords": [
+      "data scientist",
+      "machine learning",
+      "ml engineer",
+      "ai engineer",
+      "deep learning",
+      "nlp engineer"
+    ],
+    "core": [
+      "Python",
+      "Pandas",
+      "Statistics",
+      "Machine Learning",
+      "SQL"
+    ],
+    "project": "Train and evaluate a model on a public dataset (for example predicting crop yield), explain its accuracy honestly, and share a notebook.",
+    "interview": [
+      "Bias and variance",
+      "Train, validation and test splits",
+      "Evaluation metrics",
+      "Feature engineering",
+      "Explaining a model's mistakes"
+    ]
+  },
+  "devops": {
+    "label": "DevOps / cloud",
+    "keywords": [
+      "devops",
+      "cloud engineer",
+      "site reliability",
+      "sre",
+      "platform engineer",
+      "cloud operations",
+      "systems engineer",
+      "cloud",
+      "system administrator",
+      "systems administrator",
+      "sysadmin"
+    ],
+    "core": [
+      "Linux",
+      "Docker",
+      "Git",
+      "CI/CD",
+      "AWS"
+    ],
+    "project": "Containerise an app, set up automatic tests and deployment with GitHub Actions, and run it on a cloud free tier.",
+    "interview": [
+      "Linux commands and processes",
+      "Containers vs virtual machines",
+      "CI/CD pipelines",
+      "Monitoring and logs",
+      "Networking basics"
+    ]
+  },
+  "qa": {
+    "label": "QA / test engineer",
+    "keywords": [
+      "qa",
+      "quality assurance",
+      "test engineer",
+      "tester",
+      "sdet",
+      "automation testing"
+    ],
+    "core": [
+      "Testing",
+      "SQL",
+      "Python"
+    ],
+    "project": "Write an automated test suite (UI and API tests) for an open-source app and run it in CI.",
+    "interview": [
+      "Types of testing",
+      "Writing good bug reports",
+      "Test automation basics",
+      "Test case design"
+    ]
+  },
+  "design": {
+    "label": "UI/UX or graphic designer",
+    "keywords": [
+      "ui/ux",
+      "ux designer",
+      "ui designer",
+      "product designer",
+      "graphic designer",
+      "visual designer"
+    ],
+    "core": [
+      "Figma",
+      "UI/UX Design",
+      "Canva",
+      "Photoshop"
+    ],
+    "project": "Redesign one screen of a public-service website, show research, before and after, and a clickable Figma prototype in a portfolio.",
+    "interview": [
+      "Your design process",
+      "Walking through a portfolio piece",
+      "Accessibility and contrast",
+      "Taking feedback"
+    ]
+  },
+  "accounts": {
+    "label": "Accounts and finance",
+    "keywords": [
+      "accountant",
+      "accounts",
+      "finance",
+      "audit",
+      "tax",
+      "bookkeeper",
+      "ca article"
+    ],
+    "core": [
+      "Accounting",
+      "Tally",
+      "GST",
+      "Excel"
+    ],
+    "project": "Keep a full month of books for a sample business in Tally, file a mock GST return, and prepare a simple profit and loss statement.",
+    "interview": [
+      "Journal entries and ledgers",
+      "GST basics (CGST, SGST, IGST)",
+      "TDS basics",
+      "Bank reconciliation",
+      "Excel for accounts"
+    ]
+  },
+  "sales": {
+    "label": "Sales and business development",
+    "keywords": [
+      "sales",
+      "business development",
+      "bde",
+      "inside sales",
+      "relationship manager",
+      "field sales"
+    ],
+    "core": [
+      "Sales",
+      "Communication",
+      "CRM",
+      "Negotiation"
+    ],
+    "project": "Write a short sales pitch for a local product, role-play it, and track ten sample leads in a free CRM.",
+    "interview": [
+      "Pitching a product in two minutes",
+      "Handling objections",
+      "Targets and follow-ups",
+      "Using a CRM"
+    ]
+  },
+  "marketing": {
+    "label": "Marketing",
+    "keywords": [
+      "marketing",
+      "digital marketing",
+      "seo",
+      "social media",
+      "content marketing",
+      "brand"
+    ],
+    "core": [
+      "Digital Marketing",
+      "Marketing",
+      "Content Writing",
+      "Canva"
+    ],
+    "project": "Run a small social media page for a month, plan the posts, and report reach and engagement with screenshots.",
+    "interview": [
+      "Choosing a target audience",
+      "SEO basics",
+      "Reading campaign numbers",
+      "A content calendar"
+    ]
+  },
+  "content": {
+    "label": "Content writer",
+    "keywords": [
+      "content writer",
+      "copywriter",
+      "writer",
+      "editor",
+      "journalist",
+      "video editor",
+      "video editing"
+    ],
+    "core": [
+      "Content Writing",
+      "English",
+      "Communication"
+    ],
+    "project": "Publish five well-researched articles on a free blog and collect them as writing samples.",
+    "interview": [
+      "Writing for a target reader",
+      "Research and fact-checking",
+      "Editing your own work",
+      "SEO basics"
+    ]
+  },
+  "hr": {
+    "label": "Human resources",
+    "keywords": [
+      "hr",
+      "human resources",
+      "recruiter",
+      "talent acquisition",
+      "people operations"
+    ],
+    "core": [
+      "HR",
+      "Communication",
+      "MS Office"
+    ],
+    "project": "Design a full hiring process for a sample role: job post, screening questions, interview sheet and offer letter.",
+    "interview": [
+      "Screening candidates",
+      "Labour law basics",
+      "Onboarding",
+      "Handling a difficult conversation"
+    ]
+  },
+  "support": {
+    "label": "Customer support",
+    "keywords": [
+      "customer support",
+      "customer service",
+      "customer care",
+      "call centre",
+      "call center",
+      "bpo",
+      "helpdesk"
+    ],
+    "core": [
+      "Customer Service",
+      "Communication",
+      "English",
+      "MS Office"
+    ],
+    "project": "Write answers for twenty common customer questions for a sample product and practise them in a mock call.",
+    "interview": [
+      "Calming an upset customer",
+      "Explaining a process clearly",
+      "Typing speed and accuracy",
+      "Escalating issues"
+    ]
+  },
+  "operations": {
+    "label": "Operations and logistics",
+    "keywords": [
+      "operations",
+      "logistics",
+      "supply chain",
+      "warehouse",
+      "inventory",
+      "procurement"
+    ],
+    "core": [
+      "Operations",
+      "Inventory Management",
+      "Excel",
+      "Communication"
+    ],
+    "project": "Build an Excel stock tracker with reorder alerts for a sample shop and write a one-page process guide.",
+    "interview": [
+      "Inventory basics",
+      "Excel for operations",
+      "Handling delays",
+      "Working with vendors"
+    ]
+  },
+  "teaching": {
+    "label": "Teaching",
+    "keywords": [
+      "teacher",
+      "tutor",
+      "faculty",
+      "lecturer",
+      "educator",
+      "trainer"
+    ],
+    "core": [
+      "Teaching",
+      "Lesson Planning",
+      "Communication",
+      "English"
+    ],
+    "project": "Plan and record a 15-minute lesson on one topic, with a worksheet and a short quiz.",
+    "interview": [
+      "A demo lesson",
+      "Classroom management",
+      "Helping a struggling student",
+      "Using digital tools in class"
+    ]
+  },
+  "healthcare": {
+    "label": "Healthcare",
+    "keywords": [
+      "nurse",
+      "nursing",
+      "healthcare",
+      "medical",
+      "pharmacist",
+      "lab technician",
+      "patient"
+    ],
+    "core": [
+      "Nursing",
+      "Patient Care",
+      "Communication"
+    ],
+    "project": "Complete a recognised certificate (for example first aid) and keep a log of supervised clinical practice.",
+    "interview": [
+      "Patient safety",
+      "Infection control",
+      "Handling emergencies",
+      "Working in a team"
+    ]
+  },
+  "office": {
+    "label": "Office and data entry",
+    "keywords": [
+      "data entry",
+      "office assistant",
+      "back office",
+      "admin",
+      "clerk",
+      "computer operator"
+    ],
+    "core": [
+      "MS Office",
+      "Excel",
+      "Data Entry",
+      "English"
+    ],
+    "project": "Build a clean, formatted Excel record book for a sample office with sorting, filters and a summary sheet.",
+    "interview": [
+      "Typing speed and accuracy",
+      "Excel basics",
+      "Email etiquette",
+      "Keeping records confidential"
+    ]
+  },
+  "engineering": {
+    "label": "Core engineering",
+    "keywords": [
+      "mechanical",
+      "civil",
+      "electrical",
+      "design engineer",
+      "site engineer",
+      "cad",
+      "production engineer"
+    ],
+    "core": [
+      "AutoCAD",
+      "MATLAB",
+      "MS Office"
+    ],
+    "project": "Model and document a small real design (for example a bracket or a floor plan) in AutoCAD or SolidWorks with drawings.",
+    "interview": [
+      "Core subject fundamentals",
+      "Reading engineering drawings",
+      "Safety standards",
+      "A college project in detail"
+    ]
+  }
+}

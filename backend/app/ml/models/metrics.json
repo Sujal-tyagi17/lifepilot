@@ -1,0 +1,1136 @@
+{
+ "trained_at": "2026-10-11 23:34",
+ "sklearn": "1.6.1",
+ "python": "3.13.16",
+ "split": "stratified 80/20, random_state=42",
+ "models": {
+  "fit": {
+   "name": "Job fit scorer",
+   "type": "Logistic regression on 7 features (multinomial, balanced classes)",
+   "used_for": "Fit score and its breakdown on every job card; the learned weights replace the hand-set ones",
+   "dataset": {
+    "file": "fit_pairs.csv",
+    "rows": 260,
+    "team_labels": 0,
+    "classes": {
+     "Poor": 87,
+     "Okay": 87,
+     "Good": 86
+    },
+    "train": 208,
+    "test": 52
+   },
+   "features": [
+    "must",
+    "nice",
+    "role",
+    "experience",
+    "education",
+    "field",
+    "text"
+   ],
+   "weights": {
+    "hand_set": {
+     "must": 0.4,
+     "nice": 0.1,
+     "role": 0.2,
+     "experience": 0.1,
+     "education": 0.1,
+     "field": 0.05,
+     "text": 0.05
+    },
+    "learned": {
+     "must": 0.239,
+     "nice": 0.019,
+     "role": 0.238,
+     "experience": 0.21,
+     "education": 0.177,
+     "field": 0.019,
+     "text": 0.098
+    }
+   },
+   "cutoffs": {
+    "good": 0.71,
+    "okay": 0.54
+   },
+   "test": {
+    "accuracy": 0.865,
+    "macro_f1": 0.863,
+    "per_class": {
+     "Good": {
+      "precision": 0.85,
+      "recall": 1.0,
+      "f1": 0.919,
+      "support": 17
+     },
+     "Okay": {
+      "precision": 0.867,
+      "recall": 0.722,
+      "f1": 0.788,
+      "support": 18
+     },
+     "Poor": {
+      "precision": 0.882,
+      "recall": 0.882,
+      "f1": 0.882,
+      "support": 17
+     }
+    },
+    "labels": [
+     "Good",
+     "Okay",
+     "Poor"
+    ],
+    "confusion_matrix": [
+     [
+      17,
+      0,
+      0
+     ],
+     [
+      3,
+      13,
+      2
+     ],
+     [
+      0,
+      2,
+      15
+     ]
+    ]
+   },
+   "rules_baseline": {
+    "accuracy": 0.808,
+    "macro_f1": 0.804,
+    "confusion_matrix": [
+     [
+      14,
+      3,
+      0
+     ],
+     [
+      1,
+      11,
+      6
+     ],
+     [
+      0,
+      0,
+      17
+     ]
+    ]
+   },
+   "learned_weights_test": {
+    "accuracy": 0.808,
+    "macro_f1": 0.793
+   }
+  },
+  "role": {
+   "name": "Job role-family classifier",
+   "type": "TF-IDF (words and word pairs) + linear SVM",
+   "used_for": "Role tag on every job; picks the roadmap template and the skills a short post usually asks for",
+   "dataset": {
+    "file": "role_jobs.csv",
+    "rows": 555,
+    "classes": 21,
+    "sources": {
+     "template": 504,
+     "curated sample role": 51
+    },
+    "train": 444,
+    "test": 111
+   },
+   "test": {
+    "accuracy": 0.991,
+    "macro_f1": 0.991,
+    "per_class": {
+     "accounts": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 6
+     },
+     "backend": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 6
+     },
+     "content": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 5
+     },
+     "data_analyst": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 6
+     },
+     "data_scientist": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 5
+     },
+     "design": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 5
+     },
+     "devops": {
+      "precision": 1.0,
+      "recall": 0.833,
+      "f1": 0.909,
+      "support": 6
+     },
+     "engineering": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 5
+     },
+     "frontend": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 5
+     },
+     "fullstack": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 5
+     },
+     "healthcare": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 5
+     },
+     "hr": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 5
+     },
+     "marketing": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 5
+     },
+     "mobile": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 6
+     },
+     "office": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 5
+     },
+     "operations": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 5
+     },
+     "qa": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 5
+     },
+     "sales": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 6
+     },
+     "software": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 5
+     },
+     "support": {
+      "precision": 0.833,
+      "recall": 1.0,
+      "f1": 0.909,
+      "support": 5
+     },
+     "teaching": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 5
+     }
+    },
+    "labels": [
+     "accounts",
+     "backend",
+     "content",
+     "data_analyst",
+     "data_scientist",
+     "design",
+     "devops",
+     "engineering",
+     "frontend",
+     "fullstack",
+     "healthcare",
+     "hr",
+     "marketing",
+     "mobile",
+     "office",
+     "operations",
+     "qa",
+     "sales",
+     "software",
+     "support",
+     "teaching"
+    ],
+    "confusion_matrix": [
+     [
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5
+     ]
+    ]
+   },
+   "rules_baseline": {
+    "accuracy": 0.973,
+    "macro_f1": 0.969
+   },
+   "unseen_real_roles": {
+    "rows": 51,
+    "accuracy": 0.902,
+    "macro_f1": 0.919
+   },
+   "note": "Template-made descriptions are easier than real posts; the unseen real roles score is the fairer number."
+  },
+  "skills": {
+   "name": "Skill extractor",
+   "type": "Dictionary with aliases + fuzzy matching for typos + section-aware strength",
+   "used_for": "Skill chips, What we read from your resume, focus areas, roadmap",
+   "dataset": {
+    "file": "skill_eval.json",
+    "rows": 20,
+    "dictionary_skills": 111,
+    "aliases": 210
+   },
+   "test": {
+    "precision": 0.972,
+    "recall": 0.972,
+    "f1": 0.972
+   },
+   "rules_baseline": {
+    "precision": 0.97,
+    "recall": 0.889,
+    "f1": 0.928
+   },
+   "note": "Baseline is exact matching only; the model adds fuzzy matching for typos."
+  },
+  "document": {
+   "name": "Document type classifier",
+   "type": "TF-IDF (character 3–5-grams, robust to OCR mistakes) + logistic regression",
+   "used_for": "Labels a scanned certificate (document scanner, Phase 4)",
+   "dataset": {
+    "file": "documents.csv",
+    "rows": 240,
+    "classes": 8,
+    "train": 192,
+    "test": 48
+   },
+   "test": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "per_class": {
+     "aadhaar": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 6
+     },
+     "bank_passbook": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 6
+     },
+     "caste": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 6
+     },
+     "disability": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 6
+     },
+     "domicile": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 6
+     },
+     "fee_receipt": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 6
+     },
+     "income": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 6
+     },
+     "marksheet": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 6
+     }
+    },
+    "labels": [
+     "aadhaar",
+     "bank_passbook",
+     "caste",
+     "disability",
+     "domicile",
+     "fee_receipt",
+     "income",
+     "marksheet"
+    ],
+    "confusion_matrix": [
+     [
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      6,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      6,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      6,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6
+     ]
+    ]
+   }
+  },
+  "intent": {
+   "name": "Assistant intent classifier",
+   "type": "TF-IDF (character 2–5-grams, works for Hindi and Hinglish) + logistic regression",
+   "used_for": "Routes each chat question to the right answer; intent badge in the chat",
+   "dataset": {
+    "file": "intents.csv",
+    "rows": 252,
+    "classes": 7,
+    "languages": {
+     "en": 199,
+     "hi": 53
+    },
+    "train": 201,
+    "test": 51
+   },
+   "test": {
+    "accuracy": 0.922,
+    "macro_f1": 0.916,
+    "per_class": {
+     "benefits": {
+      "precision": 0.875,
+      "recall": 1.0,
+      "f1": 0.933,
+      "support": 7
+     },
+     "deadlines": {
+      "precision": 1.0,
+      "recall": 0.714,
+      "f1": 0.833,
+      "support": 7
+     },
+     "documents": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 7
+     },
+     "eligibility": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 8
+     },
+     "how_to_apply": {
+      "precision": 0.727,
+      "recall": 1.0,
+      "f1": 0.842,
+      "support": 8
+     },
+     "jobs": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 8
+     },
+     "other": {
+      "precision": 1.0,
+      "recall": 0.667,
+      "f1": 0.8,
+      "support": 6
+     }
+    },
+    "labels": [
+     "benefits",
+     "deadlines",
+     "documents",
+     "eligibility",
+     "how_to_apply",
+     "jobs",
+     "other"
+    ],
+    "confusion_matrix": [
+     [
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      5,
+      0,
+      0,
+      2,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      7,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      8,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      8,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      8,
+      0
+     ],
+     [
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      4
+     ]
+    ]
+   },
+   "cv5": {
+    "mean": 0.854,
+    "std": 0.104,
+    "folds": [
+     0.922,
+     0.647,
+     0.9,
+     0.92,
+     0.88
+    ]
+   }
+  },
+  "search": {
+   "name": "Semantic scheme search",
+   "type": "Sentence embeddings (ChromaDB's built-in all-MiniLM-L6-v2)",
+   "used_for": "Scheme search and the assistant's scheme lookup",
+   "dataset": {
+    "file": "search_eval.json",
+    "rows": 30
+   },
+   "test": null,
+   "skipped": "Not evaluated on this machine: the vector store is empty or unavailable"
+  }
+ },
+ "seconds": 16.8
+}

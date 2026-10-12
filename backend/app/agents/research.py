@@ -37,12 +37,13 @@ class ResearchAgent(BaseAgent):
         except Exception as e:
             logger.warning(f"Failed to load curated scholarships: {e}")
 
-        # If running in What-If Simulation mode, skip slow live web search and return curated schemes immediately
-        if state.profile.get("name") == "Simulation":
+        # What-If runs and offline mode use the curated dataset only (instant, no network)
+        if state.is_simulation or not settings.scraping_enabled:
             state.raw_opportunities = curated_schemes
+            reason = "simulation mode" if state.is_simulation else "web discovery disabled"
             state.add_log(
                 agent=self.name,
-                message=f"Discovered {len(curated_schemes)} curated opportunities (fast simulation mode).",
+                message=f"Discovered {len(curated_schemes)} curated opportunities ({reason}).",
                 confidence=1.0
             )
             return state

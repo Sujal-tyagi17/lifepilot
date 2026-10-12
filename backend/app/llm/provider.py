@@ -66,12 +66,14 @@ def _extract_json(text: str) -> dict:
     return {}
 
 
-def _retry(fn, max_retries: int = 3, base_delay: float = 1.0):
+def _retry(fn, max_retries: int = 3, base_delay: float = 1.0, retry_if=lambda e: True):
     """Execute fn with exponential backoff retries."""
     for attempt in range(max_retries):
         try:
             return fn()
         except Exception as e:
+            if not retry_if(e):
+                raise  # not worth retrying (e.g. the model does not exist); the caller logs it
             if attempt == max_retries - 1:
                 logger.error(f"All {max_retries} retries failed: {e}")
                 raise
@@ -96,6 +98,10 @@ class GroqProvider(LLMProvider):
     def available(self) -> bool:
         return bool(self.api_key)
 
+    # Groq retires models often. If the configured one is gone, try these in order
+    # and remember the first that works.
+    FALLBACK_MODELS = ["openai/gpt-oss-120b", "llama-3.3-70b-versatile", "openai/gpt-oss-20b", "llama-3.1-8b-instant"]
+
     def generate(self, prompt: str, *, system: str | None = None) -> str:
         if not self.available():
             return self._fallback.generate(prompt, system=system)
@@ -105,30 +111,44 @@ class GroqProvider(LLMProvider):
             messages.append({"role": "system", "content": system})
         messages.append({"role": "user", "content": prompt})
 
-        def _call():
-            with httpx.Client(timeout=60.0) as client:
+        def _call(model: str):
+            with httpx.Client(timeout=httpx.Timeout(20.0, connect=5.0)) as client:
                 resp = client.post(
                     "https://api.groq.com/openai/v1/chat/completions",
-                    headers={
-                        "Authorization": f"Bearer {self.api_key}",
-                        "Content-Type": "application/json",
-                    },
-                    json={
-                        "model": self.model,
-                        "messages": messages,
-                        "temperature": 0.4,
-                        "max_tokens": 4096,
-                    },
+                    headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"},
+                    json={"model": model, "messages": messages, "temperature": 0.3, "max_tokens": 1200},
                 )
-                resp.raise_for_status()
-                data = resp.json()
-                return data["choices"][0]["message"]["content"].strip()
+            if resp.status_code in (400, 404) and "model" in resp.text.lower():
+                raise _ModelGone(f"{model}: {resp.text[:200]}")
+            resp.raise_for_status()
+            return clean_reply(resp.json()["choices"][0]["message"]["content"] or "")
 
-        try:
-            return _retry(_call)
-        except Exception as e:
-            logger.error(f"Groq failed: {e}")
-            return self._fallback.generate(prompt, system=system)
+        models = [self.model] + [m for m in self.FALLBACK_MODELS if m != self.model]
+        for model in models:
+            try:
+                out = _retry(lambda: _call(model), max_retries=2, retry_if=lambda e: not isinstance(e, (_ModelGone, httpx.HTTPStatusError)))
+                if model != self.model:
+                    logger.warning(f"Groq model '{self.model}' is unavailable; using '{model}'. Set GROQ_MODEL={model} in .env")
+                    self.model = model
+                return out
+            except _ModelGone as e:
+                logger.warning(f"Groq model not available: {e}")
+                continue
+            except Exception as e:
+                logger.error(f"Groq failed: {e}")
+                break
+        return self._fallback.generate(prompt, system=system)
+
+
+class _ModelGone(Exception):
+    pass
+
+
+def clean_reply(text: str) -> str:
+    """Drop hidden reasoning some models print (<think>...</think>) and surrounding space."""
+    text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL | re.IGNORECASE)
+    text = re.sub(r"^.*?</think>", "", text, flags=re.DOTALL | re.IGNORECASE)  # unclosed opening tag
+    return text.strip()
 
 
 # ─────────────────────────────────────────────────────────────
@@ -163,14 +183,14 @@ class GeminiProvider(LLMProvider):
         )
 
         def _call():
-            with httpx.Client(timeout=60.0) as client:
+            with httpx.Client(timeout=httpx.Timeout(20.0, connect=5.0)) as client:
                 resp = client.post(
                     url,
                     json={"contents": contents, "generationConfig": {"temperature": 0.4, "maxOutputTokens": 4096}},
                 )
                 resp.raise_for_status()
                 data = resp.json()
-                return data["candidates"][0]["content"]["parts"][0]["text"].strip()
+                return clean_reply(data["candidates"][0]["content"]["parts"][0]["text"])
 
         try:
             return _retry(_call)
@@ -226,7 +246,9 @@ class MockProvider(LLMProvider):
     name = "mock"
 
     def generate(self, prompt: str, *, system: str | None = None) -> str:
-        return prompt.strip()
+        # Never echo the prompt back: callers see an empty reply and use their
+        # own offline answer instead.
+        return ""
 
     def generate_json(self, prompt: str, *, system: str | None = None) -> dict:
         """Return a sensible default dict for offline mode."""

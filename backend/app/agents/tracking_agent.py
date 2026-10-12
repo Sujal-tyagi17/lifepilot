@@ -54,7 +54,7 @@ class TrackingAgent(BaseAgent):
             u["days_left"] if u["days_left"] is not None else 9999
         ))
 
-        open_count = sum(1 for u in urgency_list if (u["days_left"] or -1) >= 0)
+        open_count = sum(1 for u in urgency_list if u["days_left"] is not None and u["days_left"] >= 0)
         critical = [u for u in urgency_list if u["level"] == "critical" and u["eligible"]]
 
         state.deadline_summary = {

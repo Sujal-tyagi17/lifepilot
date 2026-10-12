@@ -135,23 +135,25 @@ def extract_opportunities(state: AgentGraphState):
                 "title": r.get("title", "Unknown Opportunity"),
                 "provider": "Web Search",
                 "description": r.get("snippet", ""),
-                "amount": "TBD",
-                "deadline": "Check Portal",
+                "amount": None,
+                "deadline": None,
+                "deadline_note": "See the official page",
                 "url": r.get("link", r.get("url", "")),
                 "source": "web"
             })
     else:
-        # We would use LangChain's structured output here
-        # For prototype simplicity and since we don't have a guaranteed LangChain LLM setup yet,
-        # we'll map the raw content manually with heuristics, but log that extraction ran.
+        # Structured extraction with the LLM is not implemented yet: pages are
+        # passed on with their title and an excerpt. They have no criteria, so
+        # the eligibility engine marks them "needs review", never "eligible".
         for url, data in content_map.items():
             opps.append({
                 "id": url,
                 "title": data["title"],
                 "provider": "Extracted from Web",
                 "description": data["text"][:200] + "...",
-                "amount": "TBD",
-                "deadline": "Check Portal",
+                "amount": None,
+                "deadline": None,
+                "deadline_note": "See the official page",
                 "url": url,
                 "source": "web"
             })
@@ -165,10 +167,9 @@ def extract_opportunities(state: AgentGraphState):
         if profile.get("field_of_study"):
             kw.append(profile["field_of_study"])
             
-        portal_urls = [
-            "https://www.myscheme.gov.in",
-            f"https://rss.indeed.com/rss?q={' '.join(kw)}"
-        ]
+        # Indeed's RSS feed was shut down and its terms forbid scraping; only
+        # government portals are scraped here.
+        portal_urls = ["https://www.myscheme.gov.in"]
         
         scraped = scrape_portals(portal_urls, keywords=kw)
         opps.extend(scraped)

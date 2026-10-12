@@ -7,7 +7,8 @@ if (-not (Test-Path ".venv")) {
     python -m venv .venv
 }
 
-if (-not (Test-Path ".venv\Lib\site-packages\fastapi")) {
+# Installs again when a new dependency is added (scikit-learn came with Phase 3)
+if (-not (Test-Path ".venv\Lib\site-packages\fastapi") -or -not (Test-Path ".venv\Lib\site-packages\sklearn")) {
     Write-Host "Installing dependencies..." -ForegroundColor Cyan
     .\.venv\Scripts\python.exe -m pip install --disable-pip-version-check -r requirements.txt
 }

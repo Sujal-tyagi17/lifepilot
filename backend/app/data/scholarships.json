@@ -192,7 +192,8 @@
     "provider": "Ministry of Skill Development & Entrepreneurship",
     "url": "https://www.skillindiadigital.gov.in/",
     "amount": "Free training + placement assistance",
-    "deadline": "2025-12-31",
+    "deadline": null,
+    "deadline_note": "Rolling: applications accepted year-round (verify on the portal)",
     "category": "skilling",
     "description": "Free short-term skill training and certification for youth to improve employability.",
     "criteria": {
@@ -212,7 +213,8 @@
     "provider": "DPIIT, Government of India",
     "url": "https://seedfund.startupindia.gov.in/",
     "amount": "Up to \u20b920 lakh (grant) / \u20b950 lakh (investment)",
-    "deadline": "2025-12-31",
+    "deadline": null,
+    "deadline_note": "Rolling: applications accepted year-round (verify on the portal)",
     "category": "grant",
     "description": "Seed funding for early-stage startups for proof of concept, prototype development and market entry.",
     "criteria": {

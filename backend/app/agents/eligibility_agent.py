@@ -7,10 +7,34 @@ from __future__ import annotations
 
 import json
 import logging
+from datetime import date
 
 from app.agents.base import BaseAgent
 from app.agents.state import AgentState
 from app.services import eligibility as elig_engine
+
+STATUS_RANK = {"eligible": 0, "partial": 1, "needs_review": 2, "closed": 3}
+
+
+def _days_left(deadline: str | None) -> int | None:
+    if not deadline:
+        return None
+    try:
+        return (date.fromisoformat(deadline) - date.today()).days
+    except (TypeError, ValueError):
+        return None
+
+
+def match_sort_key(m: dict):
+    """Eligible first (soonest open deadline first), then partial matches
+    (closest match first), then needs-review, then closed."""
+    rank = STATUS_RANK.get(m.get("status"), 9)
+    days = _days_left(m.get("deadline"))
+    days = days if days is not None and days >= 0 else 9999
+    if rank == 0:
+        return (rank, days, -m.get("score", 0))
+    return (rank, -m.get("score", 0), days)
+
 
 logger = logging.getLogger("lifepilot.agents.eligibility")
 
@@ -53,33 +77,26 @@ class EligibilityAgent(BaseAgent):
         profile = state.profile
         opportunities = state.raw_opportunities
         matches: list[dict] = []
-        eligible_count = 0
 
         for opp in opportunities:
-            # Step 1: Rule-based evaluation (always runs, fast, deterministic)
+            # Step 1: Rule-based evaluation. This is the source of truth for
+            # eligibility: it is deterministic and every verdict has reasons.
             elig = elig_engine.evaluate(profile, opp)
 
-            # Step 2: LLM enhancement (if available, skip in simulation mode)
-            llm_conf = elig.confidence
-            if self.llm.name != "mock" and opp.get("criteria") and profile.get("name") != "Simulation":
+            # Step 2: optional LLM notes. The LLM may point out things the rules
+            # missed, but it never changes the verdict (eligibility is a legal rule).
+            notes: list[str] = []
+            if self.llm.name != "mock" and opp.get("criteria") and not state.is_simulation:
                 try:
                     llm_result = self._llm_evaluate(profile, opp, elig)
                     if llm_result:
-                        # Merge LLM insights with rule-based results
-                        if llm_result.get("additional_reasons"):
-                            elig.reasons.extend(llm_result["additional_reasons"])
-                        if llm_result.get("additional_gaps"):
-                            elig.unmet.extend(llm_result["additional_gaps"])
-                        llm_conf = llm_result.get("confidence", elig.confidence)
-                        # LLM can override eligibility only if it has higher confidence
-                        if llm_conf > elig.confidence:
-                            elig.eligible = llm_result.get("eligible", elig.eligible)
-                            elig.confidence = llm_conf
+                        notes.extend(str(n) for n in (llm_result.get("additional_reasons") or []))
+                        notes.extend(f"Check: {g}" for g in (llm_result.get("additional_gaps") or []))
                 except Exception as e:
                     logger.warning(f"LLM eligibility check failed for {opp.get('id')}: {e}")
 
-            if elig.eligible:
-                eligible_count += 1
+            days = _days_left(opp.get("deadline"))
+            status = "closed" if days is not None and days < 0 else elig.status
 
             matches.append({
                 "opportunity_id": opp.get("id", opp.get("title", "unknown")),
@@ -88,37 +105,34 @@ class EligibilityAgent(BaseAgent):
                 "url": opp.get("url"),
                 "amount": opp.get("amount"),
                 "deadline": opp.get("deadline"),
+                "deadline_note": opp.get("deadline_note"),
                 "category": opp.get("category"),
                 "description": opp.get("description"),
                 "eligible": elig.eligible,
+                "status": status,
                 "score": elig.score,
                 "confidence": elig.confidence,
                 "reasons": elig.reasons,
                 "unmet": elig.unmet,
+                "notes": notes,
                 "documents": opp.get("documents", []),
                 "roadmap": [],
                 "source": opp.get("source", "curated"),
-                "criteria": opp.get("criteria", {}),
+                "criteria": opp.get("criteria") or {},
             })
 
-        # Sort: eligible first → highest score → soonest deadline
-        from datetime import date
-        def _sort_key(m):
-            dl = m.get("deadline")
-            try:
-                days = (date.fromisoformat(dl) - date.today()).days if dl else 9999
-            except ValueError:
-                days = 9999
-            return (not m["eligible"], -m["score"], days)
-
-        matches.sort(key=_sort_key)
+        matches.sort(key=match_sort_key)
         state.matches = matches
 
+        eligible_count = sum(1 for m in matches if m["status"] == "eligible")
+        closed_count = sum(1 for m in matches if m["status"] == "closed")
+        review_count = sum(1 for m in matches if m["status"] == "needs_review")
         avg_conf = round(sum(m["confidence"] for m in matches) / max(len(matches), 1), 2)
         state.add_log(
             agent=self.name,
-            message=f"Evaluated {len(matches)} opportunities: {eligible_count} eligible, "
-                    f"{len(matches) - eligible_count} partial/ineligible. "
+            message=f"Evaluated {len(matches)} opportunities: {eligible_count} eligible and open, "
+                    f"{len(matches) - eligible_count - closed_count - review_count} partial, "
+                    f"{review_count} need manual review, {closed_count} closed. "
                     f"Average confidence: {avg_conf}.",
             confidence=avg_conf,
         )

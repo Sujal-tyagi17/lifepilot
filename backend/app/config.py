@@ -30,7 +30,7 @@ class Settings(BaseSettings):
 
     # Groq (free tier — 30 req/min, Llama 3.3 70B)
     groq_api_key: str = ""
-    groq_model: str = "qwen/qwen3.6-27b"
+    groq_model: str = "openai/gpt-oss-120b"
 
     # Google Gemini (free tier — 15 req/min)
     gemini_api_key: str = ""
@@ -44,6 +44,15 @@ class Settings(BaseSettings):
     scraping_enabled: bool = True
     scraping_cache_hours: int = 24
     serper_api_key: str = ""  # optional — serper.dev free tier (2500 searches)
+
+    # Adzuna job search API (optional, free developer tier: developer.adzuna.com)
+    adzuna_app_id: str = ""
+    adzuna_app_key: str = ""
+    adzuna_country: str = "in"
+    # Jooble job search API (optional, free key on request: jooble.org/api/about)
+    jooble_api_key: str = ""
+    # SerpApi Google Jobs (optional, free plan: serpapi.com) — structured listings with place and company
+    serpapi_key: str = ""
 
     # ── ChromaDB ─────────────────────────────────────────────
     chroma_persist_dir: str = "./chroma_data"
