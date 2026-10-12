@@ -96,12 +96,12 @@ export const profile = {
       const btn = el.querySelector('#pSave');
       btn.disabled = true; btn.innerHTML = `<span class="spinner"></span>${esc(t('run.workingShort', 'Matching…'))}`;
       try {
-        await saveAndRun(profilePayload(next));
+        // Go to Home as soon as the profile is saved, so the loader shows while the agents run
+        await saveAndRun(profilePayload(next), () => { location.hash = '#/home'; });
         toast(t('prof.saved', 'Profile saved'));
-        location.hash = '#/home';
       } catch (ex) {
         toast(ex.message, 'bad');
-        btn.disabled = false; btn.textContent = t('prof.save', 'Save and check again');
+        if (btn.isConnected) { btn.disabled = false; btn.textContent = t('prof.save', 'Save and check again'); }
       }
     });
     el.querySelectorAll('#pLang input').forEach((r) => r.addEventListener('change', async () => { await setLang(r.value); ctx.refresh(); }));

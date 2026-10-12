@@ -127,3 +127,10 @@ def test_fixes_from_the_ml_lab_test_sheet():
 ])
 def test_describe_reads_names(text, name):
     assert describe(text)["profile"].get("name") == name
+
+
+def test_describe_reads_a_bare_age_between_commas():
+    from app.ml.describe import describe
+    p = describe("I'm Rahul, 20, male, OBC, from Karnataka, B.Tech Computer Science, family income 3 lakh")["profile"]
+    assert p["age"] == 20 and p["name"] == "Rahul" and p["annual_income"] == 300000
+    assert "age" not in describe("I scored 85, in class 12, OBC")["profile"]

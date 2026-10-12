@@ -119,6 +119,11 @@ def describe(text: str) -> dict:
         age = int(next(g for g in m.groups() if g))
         if 5 <= age <= 100:
             put("age", age, m.group(0))
+    else:
+        # A number on its own between commas, as in "I'm Rahul, 20, male"
+        m = re.search(r"(?:^|,)\s*(\d{2})\s*(?=,|$)", low.strip())
+        if m and 10 <= int(m.group(1)) <= 70:
+            put("age", int(m.group(1)), m.group(1))
 
     m = re.search(FEMALE, low)
     if m:
