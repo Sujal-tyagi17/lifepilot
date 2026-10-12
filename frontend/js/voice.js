@@ -8,6 +8,14 @@ const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 export const canListen = () => !!Recognition && window.isSecureContext !== false;
 export const canSpeak = () => 'speechSynthesis' in window && typeof SpeechSynthesisUtterance === 'function';
+
+/** Why voice input cannot work here, in words a user can act on (null when it can). */
+export function whyNoVoice() {
+  if (window.isSecureContext === false) return 'Voice input needs a secure page. Open LifePilot at http://localhost:8000 (not a network address).';
+  if (!Recognition) return 'Voice input works in Google Chrome or Microsoft Edge. This browser does not support it.';
+  if (/Brave/i.test(navigator.userAgent) || navigator.brave) return 'Brave blocks the speech service. Use Chrome or Edge for voice input.';
+  return null;
+}
 export const voiceLang = () => langInfo().speech;
 
 let current = null;
@@ -23,6 +31,7 @@ export function listen({ onText = () => {}, lang = voiceLang() } = {}) {
     rec.maxAlternatives = 1;
     rec.continuous = false;
     let finalText = '';
+    let failed = false;
     rec.onresult = (e) => {
       let interim = '';
       for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -33,14 +42,21 @@ export function listen({ onText = () => {}, lang = voiceLang() } = {}) {
     };
     rec.onerror = (e) => {
       current = null;
-      const msg = e.error === 'not-allowed' || e.error === 'service-not-allowed' ? 'Microphone permission was refused'
-        : e.error === 'no-speech' ? 'Did not hear anything. Try again'
-          : e.error === 'network' ? 'Voice input needs an internet connection' : `Voice input stopped (${e.error})`;
+      if (e.error === 'aborted') return;   // we stopped it ourselves
+      const msg = {
+        'not-allowed': 'Microphone permission was refused. Click the lock icon next to the address, allow the microphone, and try again.',
+        'service-not-allowed': 'The browser\'s speech service is blocked. Use Chrome or Edge, and check that it is allowed in site settings.',
+        'no-speech': 'Did not hear anything. Speak right after pressing the microphone.',
+        'audio-capture': 'No microphone was found. Plug one in or check your sound settings.',
+        'network': 'Voice input needs an internet connection: the browser sends the audio to its speech service.',
+        'language-not-supported': 'This browser cannot recognise this language. Try English or Hindi.',
+      }[e.error] || `Voice input stopped (${e.error}).`;
+      failed = true;
       reject(new Error(msg));
     };
-    rec.onend = () => { current = null; onText(finalText.trim(), true); resolve(finalText.trim()); };
+    rec.onend = () => { current = null; if (failed) return; onText(finalText.trim(), true); resolve(finalText.trim()); };
     current = rec;
-    rec.start();
+    try { rec.start(); } catch (err) { current = null; reject(new Error(`Voice input could not start (${err.message})`)); }
   });
 }
 
@@ -59,7 +75,44 @@ export const speakOn = {
 
 function pickVoice(lang) {
   const voices = window.speechSynthesis.getVoices();
-  return voices.find((v) => v.lang === lang) || voices.find((v) => v.lang?.startsWith(lang.slice(0, 2))) || null;
+  return voices.find((v) => v.lang === lang) || voices.find((v) => v.lang?.replace('_', '-').startsWith(lang.slice(0, 2))) || null;
+}
+
+/* Voices load in the background; wait for them once (at most a second). */
+let voicesReady = null;
+function waitForVoices() {
+  if (!canSpeak()) return Promise.resolve();
+  if (window.speechSynthesis.getVoices().length) return Promise.resolve();
+  return (voicesReady ||= new Promise((resolve) => {
+    window.speechSynthesis.addEventListener('voiceschanged', () => resolve(), { once: true });
+    setTimeout(resolve, 1000);
+  }));
+}
+
+/** Call from a click: some browsers only allow speech that starts from a user action. */
+export function unlockSpeech() {
+  if (!canSpeak()) return;
+  try {
+    const u = new SpeechSynthesisUtterance(' ');
+    u.volume = 0;
+    window.speechSynthesis.speak(u);
+  } catch { /* nothing to unlock */ }
+  waitForVoices();
+}
+
+/** Chrome stops reading long text after about 15 seconds, so speak in short pieces. */
+function chunks(text, max = 180) {
+  const parts = text.match(/[^.!?।\n]+[.!?।]?/g) || [text];
+  const out = [];
+  for (let p of parts) {
+    p = p.trim();
+    while (p.length > max) {
+      const cut = p.lastIndexOf(' ', max);
+      out.push(p.slice(0, cut > 40 ? cut : max)); p = p.slice(cut > 40 ? cut : max).trim();
+    }
+    if (p) out.push(p);
+  }
+  return out;
 }
 
 /** Strip Markdown and links so the speech sounds natural. */
@@ -83,17 +136,26 @@ function scriptLang(text) {
   return voiceLang();
 }
 
-export function speak(text, lang) {
+export async function speak(text, lang) {
   if (!canSpeak()) return;
-  window.speechSynthesis.cancel();
+  const synth = window.speechSynthesis;
+  synth.cancel();
+  await waitForVoices();
   // Hindi text is read with a Hindi voice even when the app is in English
   const l = lang || scriptLang(text);
-  const u = new SpeechSynthesisUtterance(plain(text).slice(0, 1200));
-  u.lang = l;
   const v = pickVoice(l);
-  if (v) u.voice = v;
-  u.rate = 1;
-  window.speechSynthesis.speak(u);
+  const pieces = chunks(plain(text).slice(0, 1500));
+  // Chrome can drop an utterance queued in the same tick as cancel()
+  setTimeout(() => {
+    for (const piece of pieces) {
+      const u = new SpeechSynthesisUtterance(piece);
+      u.lang = l;
+      if (v) u.voice = v;
+      u.rate = 1;
+      synth.speak(u);
+    }
+    if (synth.paused) synth.resume();
+  }, 80);
 }
 
 export function stopSpeaking() {
