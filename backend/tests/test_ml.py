@@ -113,3 +113,17 @@ def test_fixes_from_the_ml_lab_test_sheet():
     ev = {s["name"]: s["evidence"] for s in analyse_resume(
         "Skills: Pyhton, MS Excel\nProjects: dashboard in Power BI with SQL\nExperience: intern, built REST APIs with FastAPI")["skills"]}
     assert ev["FastAPI"] == "work" and ev["SQL"] == "project" and ev["Python"] == "work"
+
+
+@pytest.mark.parametrize("text,name", [
+    ("I’m Aisha Kumar, a 21-year-old girl from Bengaluru", "Aisha Kumar"),   # curly apostrophe
+    ("i'm aisha kumar, 21", "Aisha Kumar"),                                  # lowercase
+    ("I am rohan from bihar", "Rohan"),
+    ("my name is meera patil and i am 23", "Meera Patil"),
+    ("Name: Arjun Singh", "Arjun Singh"),
+    ("मेरा नाम राहुल है", "राहुल"),
+    ("I am a 21 year old girl from Pune", None),
+    ("I am interested in jobs", None),
+])
+def test_describe_reads_names(text, name):
+    assert describe(text)["profile"].get("name") == name

@@ -66,6 +66,38 @@ def _income(text: str) -> tuple[int, str] | None:
     return None
 
 
+# Words that end a name ("I'm Aisha from Pune", "I am a student")
+_NOT_NAME = {"a", "an", "the", "from", "doing", "studying", "in", "and", "i", "im", "am", "my", "student", "girl", "boy",
+             "woman", "man", "studying", "pursuing", "currently", "living", "based", "here", "with", "of", "at", "to",
+             "female", "male", "not", "also", "looking", "years", "year", "yrs", "old", "aged", "age", "is", "was",
+             "interested", "working", "unemployed", "fresher", "graduate", "engineer", "obc", "sc", "st", "ews",
+             "general", "very", "so", "really", "currently", "hoping", "trying", "planning", "going", "applying"}
+
+
+def _name(t: str) -> tuple[str | None, str]:
+    """The person's name, however the apostrophe or capitals are typed:
+    "I'm Aisha Kumar", "I’m aisha", "I am Rohan", "my name is meera patil", "Name: Arjun", "मेरा नाम राहुल"."""
+    s = t.replace("’", "'").replace("‘", "'").replace("`", "'")
+    m = re.search(r"मेरा नाम\s+([\u0900-\u097F]+(?:\s+[\u0900-\u097F]+)?)", s)
+    if m:
+        return m.group(1).strip().removesuffix(" है").strip(), m.group(0)
+    m = re.search(r"(?:\bi'?m\b|\bi am\b|\bmy name is\b|\bname\s*[:\-]|\bmera naam\b|\bthis is\b)\s*([A-Za-z][A-Za-z.]*(?:\s+[A-Za-z][A-Za-z.]*){0,3})", s, re.I)
+    if not m:
+        m = re.match(r"\s*([A-Z][a-z]+\s+[A-Z][a-z]+)\s*,", s)   # "Aisha Kumar, 21, ..."
+    if not m:
+        return None, ""
+    words = []
+    for w in m.group(1).split():
+        if w.lower().strip(".") in _NOT_NAME or any(ch.isdigit() for ch in w):
+            break
+        words.append(w.strip("."))
+        if len(words) == 3:
+            break
+    if not words:
+        return None, ""
+    return " ".join(w[:1].upper() + w[1:] for w in words), m.group(0)
+
+
 def describe(text: str) -> dict:
     """{"profile": {...fields found...}, "found": [{"field", "value", "from"}], "missing": [...]}"""
     t = " " + (text or "").strip() + " "
@@ -78,11 +110,9 @@ def describe(text: str) -> dict:
             prof[field] = value
             found.append({"field": field, "value": value, "from": source.strip()})
 
-    m = (re.search(r"(?:[Ii]'?m|[Ii] am|[Mm]y name is|[Nn]ame\s*[:\-]|[Mm]era naam)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)", t)
-         or re.search(r"मेरा नाम\s+([\u0900-\u097F]+)", t)
-         or re.match(r"\s*([A-Z][a-z]+\s+[A-Z][a-z]+)\s*,", t))
-    if m and m.group(1).lower() not in {"a", "an", "from", "doing", "studying", "in"}:
-        put("name", m.group(1).strip(), m.group(0))
+    name, src = _name(t)
+    if name:
+        put("name", name, src)
 
     m = re.search(r"(\d{1,2})\s*(?:-|\s)?\s*(?:years?|yrs?|yo|साल|saal)(?:\s*-?\s*old)?|age\s*(?:is|:)?\s*(\d{1,2})|उम्र\s*(\d{1,2})", low)
     if m:
