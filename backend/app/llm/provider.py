@@ -112,7 +112,7 @@ class GroqProvider(LLMProvider):
         messages.append({"role": "user", "content": prompt})
 
         def _call(model: str):
-            with httpx.Client(timeout=60.0) as client:
+            with httpx.Client(timeout=httpx.Timeout(20.0, connect=5.0)) as client:
                 resp = client.post(
                     "https://api.groq.com/openai/v1/chat/completions",
                     headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"},
@@ -126,7 +126,7 @@ class GroqProvider(LLMProvider):
         models = [self.model] + [m for m in self.FALLBACK_MODELS if m != self.model]
         for model in models:
             try:
-                out = _retry(lambda: _call(model), retry_if=lambda e: not isinstance(e, (_ModelGone, httpx.HTTPStatusError)))
+                out = _retry(lambda: _call(model), max_retries=2, retry_if=lambda e: not isinstance(e, (_ModelGone, httpx.HTTPStatusError)))
                 if model != self.model:
                     logger.warning(f"Groq model '{self.model}' is unavailable; using '{model}'. Set GROQ_MODEL={model} in .env")
                     self.model = model
@@ -183,7 +183,7 @@ class GeminiProvider(LLMProvider):
         )
 
         def _call():
-            with httpx.Client(timeout=60.0) as client:
+            with httpx.Client(timeout=httpx.Timeout(20.0, connect=5.0)) as client:
                 resp = client.post(
                     url,
                     json={"contents": contents, "generationConfig": {"temperature": 0.4, "maxOutputTokens": 4096}},

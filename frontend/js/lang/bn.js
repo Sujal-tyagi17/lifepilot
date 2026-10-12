@@ -82,6 +82,7 @@ export default {
   "edu.Diploma": "ডিপ্লোমা",
   "edu.Postgraduate": "স্নাতকোত্তর (মাস্টার্স)",
   "edu.Undergraduate": "স্নাতক (কলেজ ডিগ্রি)",
+  "err.timeout": "সার্ভার উত্তর দিতে অনেক দেরি করছে। একটু পরে আবার চেষ্টা করুন।",
   "err.network": "সার্ভারে পৌঁছানো যায়নি। LifePilot চলছে কিনা দেখুন।",
   "ev.form": "আপনার লেখা",
   "ev.listed": "শুধু তালিকায়",
