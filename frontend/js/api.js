@@ -18,16 +18,21 @@ export class ApiError extends Error {
   constructor(message, status) { super(message); this.status = status; }
 }
 
-export async function api(path, { method = 'GET', json, body, headers = {} } = {}) {
+export async function api(path, { method = 'GET', json, body, headers = {}, timeout = 0 } = {}) {
   const h = { ...headers };
   if (auth.token) h.Authorization = `Bearer ${auth.token}`;
   if (auth.profileKey) h['X-Profile-Key'] = auth.profileKey;
   if (json !== undefined) { h['Content-Type'] = 'application/json'; body = JSON.stringify(json); }
   let r;
+  const ctrl = timeout ? new AbortController() : null;
+  const timer = ctrl && setTimeout(() => ctrl.abort(), timeout);
   try {
-    r = await fetch(path, { method, headers: h, body });
+    r = await fetch(path, { method, headers: h, body, signal: ctrl?.signal });
   } catch {
+    if (ctrl?.signal.aborted) throw new ApiError(t('err.timeout', 'The server took too long to answer. Try again in a moment.'), 0);
     throw new ApiError(t('err.network', 'Could not reach the server. Check that LifePilot is running.'), 0);
+  } finally {
+    if (timer) clearTimeout(timer);
   }
   if (!r.ok) {
     let detail = r.statusText;

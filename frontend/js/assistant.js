@@ -9,6 +9,7 @@ import { canListen, canSpeak, listen, stopListening, listening, speak, stopSpeak
 
 const log = [];   // { who: 'user' | 'bot', text, intent }
 let noVoiceTold = false;    // the no-voice notice is shown once
+let pending = false;        // one question at a time, so a second click cannot send it again
 
 const INTENT_NAMES = {
   eligibility: ['int.eligibility', 'Eligibility'], documents: ['int.documents', 'Documents'], deadlines: ['int.deadlines', 'Deadlines'],
@@ -69,7 +70,7 @@ function render() {
       <input class="input" id="chatInput" autocomplete="off" maxlength="500" placeholder="${esc(t('asst.ph', 'Ask about eligibility, documents, deadlines'))}" ${state.profileId ? '' : 'disabled'} />
       ${!canListen() ? `<button class="btn btn-secondary btn-icon mic-btn" type="button" id="micBtn" data-why="${esc(whyNoVoice() || '')}" aria-label="${esc(t('voice.mic', 'Speak your question ({lang})', { lang: langInfo().native }))}" title="${esc(whyNoVoice() || '')}">${icon('mic')}</button>` : ''}
       ${canListen() ? `<button class="btn btn-secondary btn-icon mic-btn" type="button" id="micBtn" aria-pressed="false" aria-label="${esc(t('voice.mic', 'Speak your question ({lang})', { lang: langInfo().native }))}" title="${esc(t('voice.micTip', 'Speak in {lang}. Your browser sends the audio to its speech service to turn it into text.', { lang: langInfo().native }))}" ${state.profileId ? '' : 'disabled'}>${icon('mic')}</button>` : ''}
-      <button class="btn btn-primary btn-icon" type="submit" aria-label="${esc(t('asst.send', 'Send'))}" ${state.profileId ? '' : 'disabled'}>${icon('send')}</button>
+      <button class="btn btn-primary btn-icon" type="submit" aria-label="${esc(t('asst.send', 'Send'))}" ${state.profileId && !pending ? '' : 'disabled'}>${icon('send')}</button>
     </form>`;
   const chat = $('#chatLog'); chat.scrollTop = chat.scrollHeight;
   $('#drawerClose').addEventListener('click', closeAssistant);
@@ -114,12 +115,13 @@ async function toggleMic() {
 
 async function ask(q, { spoken = false } = {}) {
   q = (q || '').trim();
-  if (!q || !state.profileId) return;
+  if (!q || !state.profileId || pending) return;
+  pending = true;
   log.push({ who: 'user', text: q });
   log.push({ who: 'bot', text: '', typing: true });
   render();
   try {
-    const res = await api('/api/agent/assistant', { method: 'POST', json: { profile_id: state.profileId, question: q, lang: getLang() } });
+    const res = await api('/api/agent/assistant', { method: 'POST', json: { profile_id: state.profileId, question: q, lang: getLang() }, timeout: 45000 });
     log[log.length - 1] = { who: 'bot', text: res.answer, intent: res.intent };
     if (speakOn.get() || spoken) {
       speak(res.answer).then((ok) => {
@@ -133,6 +135,8 @@ async function ask(q, { spoken = false } = {}) {
     }
   } catch (err) {
     log[log.length - 1] = { who: 'bot', text: t('asst.error', 'Could not get an answer: {msg}', { msg: err.message }) };
+  } finally {
+    pending = false;
   }
   render();
   $('#chatInput')?.focus();

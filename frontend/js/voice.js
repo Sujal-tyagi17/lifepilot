@@ -32,6 +32,7 @@ export function listen({ onText = () => {}, lang = voiceLang() } = {}) {
     rec.continuous = false;
     let finalText = '';
     let failed = false;
+    let done = false;   // some browsers fire onend twice
     rec.onresult = (e) => {
       let interim = '';
       for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -54,7 +55,7 @@ export function listen({ onText = () => {}, lang = voiceLang() } = {}) {
       failed = true;
       reject(new Error(msg));
     };
-    rec.onend = () => { current = null; if (failed) return; onText(finalText.trim(), true); resolve(finalText.trim()); };
+    rec.onend = () => { if (current === rec) current = null; if (failed || done) return; done = true; onText(finalText.trim(), true); resolve(finalText.trim()); };
     current = rec;
     try { rec.start(); } catch (err) { current = null; reject(new Error(`Voice input could not start (${err.message})`)); }
   });
