@@ -567,6 +567,7 @@ export default {
   "todo.resume": "চাকরির মিল দেখতে রিজিউম যোগ করুন",
   "todo.resumeMeta": "প্রতিটি চাকরির মিল স্কোর আর শেখার দক্ষতা পাবেন।",
   "voice.listening": "শুনছি…",
+  "voice.noVoice": "এই কম্পিউটারে {lang} কণ্ঠ নেই, তাই উত্তর জোরে পড়া যাবে না। Microsoft Edge-এ বাংলা, মারাঠি, তেলুগু ও তামিল কণ্ঠ আছে; Windows-এ Settings → Time & language → Speech-এ ভাষাটি যোগ করতেও পারেন।",
   "voice.mic": "আপনার প্রশ্ন বলুন ({lang})",
   "voice.micTip": "{lang}-এ বলুন। আপনার ব্রাউজার আওয়াজকে টেক্সটে বদলাতে তার স্পিচ সেবায় পাঠায়।",
   "voice.role": "ভূমিকা বলুন",

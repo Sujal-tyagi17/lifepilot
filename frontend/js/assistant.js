@@ -1,13 +1,14 @@
 /* Assistant: a drawer available on every page. Answers come from your saved results. */
 import { $, esc } from './util.js';
-import { t, langInfo } from './i18n.js';
+import { t, langInfo, getLang, LANGS } from './i18n.js';
 import { icon } from './ui.js';
 import { logoMark } from './brand.js';
 import { api } from './api.js';
 import { state } from './state.js';
-import { canListen, canSpeak, listen, stopListening, listening, speak, stopSpeaking, speakOn, voiceLang, whyNoVoice, unlockSpeech } from './voice.js';
+import { canListen, canSpeak, listen, stopListening, listening, speak, stopSpeaking, speakOn, voiceLang, whyNoVoice, unlockSpeech, replyVoiceLang } from './voice.js';
 
 const log = [];   // { who: 'user' | 'bot', text, intent }
+let noVoiceTold = false;    // the no-voice notice is shown once
 
 const INTENT_NAMES = {
   eligibility: ['int.eligibility', 'Eligibility'], documents: ['int.documents', 'Documents'], deadlines: ['int.deadlines', 'Deadlines'],
@@ -118,9 +119,18 @@ async function ask(q, { spoken = false } = {}) {
   log.push({ who: 'bot', text: '', typing: true });
   render();
   try {
-    const res = await api('/api/agent/assistant', { method: 'POST', json: { profile_id: state.profileId, question: q } });
+    const res = await api('/api/agent/assistant', { method: 'POST', json: { profile_id: state.profileId, question: q, lang: getLang() } });
     log[log.length - 1] = { who: 'bot', text: res.answer, intent: res.intent };
-    if (speakOn.get() || spoken) speak(res.answer);
+    if (speakOn.get() || spoken) {
+      speak(res.answer).then((ok) => {
+        if (ok !== false || noVoiceTold) return;
+        noVoiceTold = true;   // say it once, not after every answer
+        const code = replyVoiceLang(res.answer).slice(0, 2);
+        const name = (LANGS.find((l) => l.code === code) || {}).native || code;
+        log.push({ who: 'bot', text: t('voice.noVoice', 'This computer has no {lang} voice, so I cannot read the answer aloud. Microsoft Edge has voices for Bengali, Marathi, Telugu and Tamil; on Windows you can also add the language under Settings → Time & language → Speech.', { lang: name }) });
+        render();
+      });
+    }
   } catch (err) {
     log[log.length - 1] = { who: 'bot', text: t('asst.error', 'Could not get an answer: {msg}', { msg: err.message }) };
   }

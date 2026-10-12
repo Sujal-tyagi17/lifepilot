@@ -178,6 +178,7 @@ export const HI = {
   'scan.fAadhaar': "आधार (आखिरी 4 अंक)",
   'scan.fName': "नाम मिलान",
   'voice.listening': "सुन रहे हैं…",
+  'voice.noVoice': "इस कंप्यूटर में {lang} आवाज़ नहीं है, इसलिए जवाब ज़ोर से नहीं पढ़ा जा सकता। Microsoft Edge में बांग्ला, मराठी, तेलुगु और तमिल की आवाज़ें हैं; Windows में Settings → Time & language → Speech में भाषा जोड़ भी सकते हैं।",
   'voice.mic': "अपना सवाल बोलें ({lang})",
   'voice.micTip': "{lang} में बोलें। आपका ब्राउज़र आवाज़ को टेक्स्ट में बदलने के लिए उसे अपनी स्पीच सेवा को भेजता है।",
   'voice.role': "भूमिका बोलें",

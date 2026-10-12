@@ -144,6 +144,7 @@ def assistant(
         name=profile.name,
         profile_id=profile.id,
         profile=profile_dict,
+        lang=payload.lang,
     )
     return schemas.AssistantResponse(**reply)
 

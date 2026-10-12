@@ -1,3 +1,4 @@
+import pytest
 """Phase 4: what would change it, priority planner, knowledge graph, document check, Hindi answers."""
 from datetime import date, timedelta
 
@@ -196,3 +197,19 @@ def test_planner_beats_nearest_deadline_first_when_time_is_short():
     res = planner.plan(matches, hours_per_week=2)
     assert res["weeks"][0]["tasks"][0]["title"] == "Apply to Big"
     assert res["totals"]["value"] > res["totals"]["naive_value"]
+
+
+@pytest.mark.parametrize("q,hint,lang,intent,word", [
+    ("আমি কোন প্রকল্পের জন্য যোগ্য?", None, "bn", "eligibility", "যোগ্য"),
+    ("मला कोणती कागदपत्रे लागतील?", "mr", "mr", "documents", "कागदपत्र"),
+    ("నాకు ఏ పత్రాలు కావాలి?", None, "te", "documents", "పత్రాలు"),
+    ("கடைசி தேதி எப்போது?", None, "ta", "deadlines", ""),
+])
+def test_other_indian_languages_get_answers_in_their_language(q, hint, lang, intent, word):
+    from app.knowledge import local_answers, rag
+    assert local_answers.question_lang(q, hint) == lang
+    assert rag.detect_intent(q, hint)["label"] == intent
+    matches = [_m("Test scholarship", 20, ["Income certificate"])]
+    ans = rag._offline_answer(q, matches, PROFILE, lang=hint)
+    assert ans and word in ans
+    assert local_answers.question_lang(ans, hint) == lang

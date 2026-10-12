@@ -20,6 +20,7 @@ def answer(
     name: str | None = None,
     profile_id: int | None = None,
     profile: dict | None = None,
+    lang: str | None = None,
 ) -> dict:
     """Answer a user question using RAG + conversation memory."""
 
@@ -42,6 +43,7 @@ def answer(
         matches=matches,
         profile=profile,
         chat_history=context,
+        lang=lang,
     )
 
     # Store assistant response in memory
@@ -51,5 +53,5 @@ def answer(
     return {
         "answer": reply,
         "grounded_on": len(matches),
-        "intent": detect_intent(question),
+        "intent": detect_intent(question, lang),
     }
