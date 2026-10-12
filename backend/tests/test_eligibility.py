@@ -110,3 +110,15 @@ def test_past_deadline_is_closed():
     EligibilityAgent(MockProvider()).execute(state)
     assert state.matches[0]["eligible"] is True
     assert state.matches[0]["status"] == "closed"
+
+
+def test_computer_science_is_not_a_natural_science():
+    import json
+    from pathlib import Path
+    data = json.loads((Path(__file__).parents[1] / "app/data/scholarships.json").read_text(encoding="utf-8"))
+    inspire = next(s for s in (data if isinstance(data, list) else data["schemes"]) if s["title"].startswith("INSPIRE"))
+    base = {"education_level": "Undergraduate", "nationality": "Indian", "age": 20}
+    assert not evaluate({**base, "field_of_study": "Computer Science"}, inspire).eligible
+    assert not evaluate({**base, "field_of_study": "Political Science"}, inspire).eligible
+    assert evaluate({**base, "field_of_study": "Physics"}, inspire).eligible
+    assert evaluate({**base, "field_of_study": "Science"}, inspire).eligible
