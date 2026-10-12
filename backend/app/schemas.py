@@ -102,6 +102,7 @@ class SimulateResponse(BaseModel):
 class AssistantRequest(BaseModel):
     profile_id: int
     question: str = Field(min_length=1, max_length=500)
+    lang: str | None = Field(default=None, pattern=r"^(en|hi|mr|bn|te|ta)$")   # the app's language
 
 
 class AssistantResponse(BaseModel):

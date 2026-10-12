@@ -137,13 +137,15 @@ function scriptLang(text) {
 }
 
 export async function speak(text, lang) {
-  if (!canSpeak()) return;
+  if (!canSpeak()) return false;
   const synth = window.speechSynthesis;
   synth.cancel();
   await waitForVoices();
   // Hindi text is read with a Hindi voice even when the app is in English
   const l = lang || scriptLang(text);
   const v = pickVoice(l);
+  // No voice for this language on this computer: reading it with an English voice would be gibberish
+  if (!v && synth.getVoices().length && !l.startsWith('en')) return false;
   const pieces = chunks(plain(text).slice(0, 1500));
   // Chrome can drop an utterance queued in the same tick as cancel()
   setTimeout(() => {
@@ -156,7 +158,11 @@ export async function speak(text, lang) {
     }
     if (synth.paused) synth.resume();
   }, 80);
+  return true;
 }
+
+/** The language a reply would be read in (from its script). */
+export const replyVoiceLang = (text) => scriptLang(text);
 
 export function stopSpeaking() {
   if (canSpeak()) window.speechSynthesis.cancel();
