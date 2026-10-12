@@ -5,7 +5,7 @@ import { icon } from './ui.js';
 import { logoMark } from './brand.js';
 import { api } from './api.js';
 import { state } from './state.js';
-import { canListen, canSpeak, listen, stopListening, listening, speak, stopSpeaking, speakOn, voiceLang } from './voice.js';
+import { canListen, canSpeak, listen, stopListening, listening, speak, stopSpeaking, speakOn, voiceLang, whyNoVoice, unlockSpeech } from './voice.js';
 
 const log = [];   // { who: 'user' | 'bot', text, intent }
 
@@ -66,15 +66,17 @@ function render() {
     <form class="chat-form" id="chatForm">
       <label class="sr-only" for="chatInput">${esc(t('asst.ph', 'Ask about eligibility, documents, deadlines'))}</label>
       <input class="input" id="chatInput" autocomplete="off" maxlength="500" placeholder="${esc(t('asst.ph', 'Ask about eligibility, documents, deadlines'))}" ${state.profileId ? '' : 'disabled'} />
+      ${!canListen() ? `<button class="btn btn-secondary btn-icon mic-btn" type="button" id="micBtn" data-why="${esc(whyNoVoice() || '')}" aria-label="${esc(t('voice.mic', 'Speak your question ({lang})', { lang: langInfo().native }))}" title="${esc(whyNoVoice() || '')}">${icon('mic')}</button>` : ''}
       ${canListen() ? `<button class="btn btn-secondary btn-icon mic-btn" type="button" id="micBtn" aria-pressed="false" aria-label="${esc(t('voice.mic', 'Speak your question ({lang})', { lang: langInfo().native }))}" title="${esc(t('voice.micTip', 'Speak in {lang}. Your browser sends the audio to its speech service to turn it into text.', { lang: langInfo().native }))}" ${state.profileId ? '' : 'disabled'}>${icon('mic')}</button>` : ''}
       <button class="btn btn-primary btn-icon" type="submit" aria-label="${esc(t('asst.send', 'Send'))}" ${state.profileId ? '' : 'disabled'}>${icon('send')}</button>
     </form>`;
   const chat = $('#chatLog'); chat.scrollTop = chat.scrollHeight;
   $('#drawerClose').addEventListener('click', closeAssistant);
   d.querySelectorAll('[data-q]').forEach((b) => b.addEventListener('click', () => ask(b.dataset.q)));
-  $('#chatForm').addEventListener('submit', (e) => { e.preventDefault(); ask($('#chatInput').value); });
+  $('#chatForm').addEventListener('submit', (e) => { e.preventDefault(); if (speakOn.get()) unlockSpeech(); ask($('#chatInput').value); });
   $('#speakBtn')?.addEventListener('click', () => {
     speakOn.set(!speakOn.get());
+    if (speakOn.get()) unlockSpeech();
     if (!speakOn.get()) stopSpeaking();
     render();
     $('#speakBtn')?.focus();
@@ -84,8 +86,14 @@ function render() {
 
 async function toggleMic() {
   const btn = $('#micBtn');
+  if (btn.dataset.why !== undefined || whyNoVoice()) {   // voice cannot work here: say why instead of doing nothing
+    log.push({ who: 'bot', text: whyNoVoice() || t('voice.unsupported', 'Voice input is not available in this browser.') });
+    render();
+    return;
+  }
   if (listening()) { stopListening(); return; }
   stopSpeaking();
+  unlockSpeech();
   btn.setAttribute('aria-pressed', 'true');
   btn.classList.add('live');
   const input = $('#chatInput');
