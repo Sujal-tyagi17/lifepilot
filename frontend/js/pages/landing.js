@@ -106,7 +106,7 @@ export const landing = {
       <span class="flight-plane" aria-hidden="true">${logoMark('plane-only')}</span>
       <div class="wrap hero">
         <div class="hero-copy">
-          <span class="badge badge-ink"><span class="dot">${icon('check', 'icon-sm')}</span>${esc(t('land.badge2', 'Free · 5 Indian languages · Works offline'))}</span>
+          <span class="badge badge-ink"><span class="dot">${icon('check', 'icon-sm')}</span>${esc(t('land.badge2', 'Free · 5 Indian languages'))}</span>
           <h1 class="hero-title" id="heroTitle">${esc(t('land.h1a', 'Find the'))}<br />
             <span class="cycle" aria-hidden="true">${words.map((w, i) => `<span class="${i === 0 ? 'on' : ''}">${esc(w)}</span>`).join('')}</span><br />
             ${esc(t('land.h1b', 'you qualify for.'))}

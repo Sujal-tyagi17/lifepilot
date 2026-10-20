@@ -47,7 +47,7 @@ export function t(key, english, vars) {
 
 export const HI = {
   /* Phase 4 */
-  'land.badge2': 'मुफ़्त · 5 भारतीय भाषाएँ · ऑफ़लाइन भी', 'land.c4b': 'आपकी भाषा में आवाज़',
+  'land.badge2': 'मुफ़्त · 5 भारतीय भाषाएँ', 'land.c4b': 'आपकी भाषा में आवाज़',
   'land.c4pb': 'अपना सवाल हिन्दी, बांग्ला, मराठी, तेलुगु, तमिल या अंग्रेज़ी में बोलें, और जवाब सुनें।',
   'home.day1': '1 दिन', 'home.dayN': '{d} दिन',
   'foot.theme': 'हल्का / गहरा', 'foot.find': 'खोजें', 'foot.plan': 'योजना बनाएँ', 'foot.learn': 'जानें', 'foot.trust': 'आपका डेटा',
