@@ -218,7 +218,7 @@ export const landing = {
         <div class="trust ink reveal"><div class="trust-rosette">${rosette()}</div>
           <div>${icon('scale')}<h3 class="h3">${esc(t('land.t1', 'Rules decide, not AI'))}</h3><p class="small quiet">${esc(t('land.t1p', 'Eligibility comes from each scheme’s published rules. AI never overrules them.'))}</p></div>
           <div>${icon('shield-check')}<h3 class="h3">${esc(t('land.t2', 'Your files stay with you'))}</h3><p class="small quiet">${esc(t('land.t2p', 'Documents are kept in your browser and never uploaded.'))}</p></div>
-          <div>${icon('wifi-off')}<h3 class="h3">${esc(t('land.t3', 'Works offline'))}</h3><p class="small quiet">${esc(t('land.t3p', 'Nothing loads from outside sites, so it runs even on a weak connection.'))}</p></div>
+          <div>${icon('gauge')}<h3 class="h3">${esc(t('land.t3', 'Light and fast'))}</h3><p class="small quiet">${esc(t('land.t3p', 'Nothing loads from outside sites, so pages open quickly even on a weak connection.'))}</p></div>
           <div>${icon('heart-handshake')}<h3 class="h3">${esc(t('land.t4', 'Free'))}</h3><p class="small quiet">${esc(t('land.t4p', 'No fees, no ads, no paid AI keys needed.'))}</p></div>
         </div>
       </section>
