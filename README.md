@@ -98,7 +98,3 @@ LifePilot is not a government website. Always confirm details on the official po
 cd backend
 .venv\Scripts\python -m pytest -q
 ```
-
-## Credits
-
-[Anek](https://github.com/EkType/Anek) fonts (OFL) · [Lucide](https://lucide.dev) icons (ISC) · [Tesseract.js](https://github.com/naptha/tesseract.js) (Apache 2.0) · [Cytoscape.js](https://js.cytoscape.org) (MIT). Licence texts are in `frontend/fonts/` and `frontend/vendor/`.
