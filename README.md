@@ -13,6 +13,16 @@ Eligibility is decided by each scheme's published rules, never by an AI guess. M
 
 > First time? **[SETUP.md](SETUP.md)** covers installation, running and how the team works with Git.
 
+## Screenshots
+
+**Live demo:** https://lifepilot-my76.onrender.com (free hosting: the first visit after a quiet spell can take about a minute to wake up)
+
+| Landing page | Home dashboard |
+|---|---|
+| ![Landing page](docs/screenshots/landing.jpg) | ![Home dashboard: the verdict, key figures, this week's tasks and coming deadlines](docs/screenshots/home.jpg) |
+| **Schemes** | **Jobs** |
+| ![Schemes: verdicts with reasons and "What would change it?"](docs/screenshots/schemes.jpg) | ![Jobs: resume read, best next skill and job matches](docs/screenshots/jobs.jpg) |
+
 ## Run it
 
 ```powershell
@@ -38,7 +48,7 @@ It works with no account and no API key. Optional keys in `backend/.env`:
 | **Documents** | One checklist for all your schemes; a **scanner** that reads a certificate in your browser and checks it against your profile; files never leave your device |
 | **Planning** | A **weekly plan** fitted to your hours (0/1 knapsack, earliest deadline first); deadlines to your calendar; a printable action plan |
 | **Jobs** | Resume reading with proof-weighted skills; live openings, your state first; an ML **fit score** with its breakdown; the best next skill; a roadmap for each job |
-| **Assistant** | Answers about your own results, by text or **voice**. Hindi and English answers work offline; with an LLM key it replies in any of the six languages |
+| **Assistant** | Answers about your own results, by text or **voice**. Hindi and English answers work even without an LLM key; with an LLM key it can also reply in the other interface languages |
 | **ML Lab** | Six trained models with real test accuracy and a box to try each one (`#/ml-lab`) |
 
 ### The models
@@ -88,7 +98,3 @@ LifePilot is not a government website. Always confirm details on the official po
 cd backend
 .venv\Scripts\python -m pytest -q
 ```
-
-## Credits
-
-[Anek](https://github.com/EkType/Anek) fonts (OFL) · [Lucide](https://lucide.dev) icons (ISC) · [Tesseract.js](https://github.com/naptha/tesseract.js) (Apache 2.0) · [Cytoscape.js](https://js.cytoscape.org) (MIT). Licence texts are in `frontend/fonts/` and `frontend/vendor/`.

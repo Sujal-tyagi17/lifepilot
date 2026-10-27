@@ -141,7 +141,7 @@ function renderFooter() {
         <h2 class="foot-h">${esc(t('foot.trust', 'Your data'))}</h2>
         <p>${icon('shield-check', 'icon-sm')}${esc(t('foot.t1', 'Documents and scans stay in your browser.'))}</p>
         <p>${icon('scale', 'icon-sm')}${esc(t('foot.t2', 'Eligibility comes from each scheme’s published rules.'))}</p>
-        <p>${icon('wifi-off', 'icon-sm')}${esc(t('foot.t3', 'Nothing loads from outside sites.'))}</p>
+        <p>${icon('gauge', 'icon-sm')}${esc(t('foot.t3', 'Nothing loads from outside sites.'))}</p>
       </div>
     </div>
     <div class="wrap foot-base">
