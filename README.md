@@ -38,7 +38,7 @@ It works with no account and no API key. Optional keys in `backend/.env`:
 | **Documents** | One checklist for all your schemes; a **scanner** that reads a certificate in your browser and checks it against your profile; files never leave your device |
 | **Planning** | A **weekly plan** fitted to your hours (0/1 knapsack, earliest deadline first); deadlines to your calendar; a printable action plan |
 | **Jobs** | Resume reading with proof-weighted skills; live openings, your state first; an ML **fit score** with its breakdown; the best next skill; a roadmap for each job |
-| **Assistant** | Answers about your own results, by text or **voice**. Hindi and English answers work offline; with an LLM key it replies in any of the six languages |
+| **Assistant** | Answers about your own results, by text or **voice**. Hindi and English answers work even without an LLM key; with an LLM key it can also reply in the other interface languages |
 | **ML Lab** | Six trained models with real test accuracy and a box to try each one (`#/ml-lab`) |
 
 ### The models
