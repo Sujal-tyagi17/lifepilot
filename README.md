@@ -13,6 +13,16 @@ Eligibility is decided by each scheme's published rules, never by an AI guess. M
 
 > First time? **[SETUP.md](SETUP.md)** covers installation, running and how the team works with Git.
 
+## Screenshots
+
+**Live demo:** https://lifepilot-my76.onrender.com (free hosting: the first visit after a quiet spell can take about a minute to wake up)
+
+| Landing page | Home dashboard |
+|---|---|
+| ![Landing page](docs/screenshots/landing.jpg) | ![Home dashboard: the verdict, key figures, this week's tasks and coming deadlines](docs/screenshots/home.jpg) |
+| **Schemes** | **Jobs** |
+| ![Schemes: verdicts with reasons and "What would change it?"](docs/screenshots/schemes.jpg) | ![Jobs: resume read, best next skill and job matches](docs/screenshots/jobs.jpg) |
+
 ## Run it
 
 ```powershell
